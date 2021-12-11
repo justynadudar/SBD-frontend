@@ -33,3 +33,25 @@
   color: black;
   border: 2px solid rgb(125, 186, 236);
 }
+
+.ClientsList .TableOfClients {
+  margin-left: 2%;
+  width: 80%;
+}
+
+.ClientsList .TableOfClients .row {
+  display: flex;
+  flex-direction: row;
+  text-align: center;
+
+  border: 2px solid rgb(170, 173, 175);
+  width: 100%;
+}
+
+.ClientsList .TableOfClients .row h4 {
+  width: 100%;
+}
+
+.ClientsList .TableOfClients .row p {
+  width: 100%;
+}

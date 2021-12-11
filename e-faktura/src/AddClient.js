@@ -9,6 +9,7 @@ function AddClient() {
   let [nameInput, setNameInput] = useState("");
   let [surnameInput, setSurnameInput] = useState("");
   let [numberInput, setNumberInput] = useState("");
+  let [clients, setClientsState] = useState("");
 
   function handleOnClick() {
     navigate("/klienci");
@@ -23,12 +24,26 @@ function AddClient() {
     setNumberInput(e.target.value);
   }
 
+  function componentDidMount() {
+    fetch('/klienci', {
+        headers : {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+         }})
+        .then(response => response.json())
+        .then(data => setClientsState(data));
+}
+
   function addClientToClientsList() {
+      
+componentDidMount();
     console.log(nameInput);
     console.log(surnameInput);
     console.log(numberInput);
+    console.log(clients);
 
     const clientObjectInTab = {
+
       imie: nameInput,
       nazwisko: surnameInput,
       telefon: numberInput,
@@ -44,8 +59,8 @@ function AddClient() {
     fetch("http://localhost:8080/klienci", {
       method: "POST",
       headers: {
-        'Content-Type': "application/json",
-        'Accept': "application/json",
+        'Content-Type': 'application/json',
+          'Accept': 'application/json'
       },
       body: JSON.stringify(clientObjectInTab),
     })
@@ -59,6 +74,7 @@ function AddClient() {
 
 
   return (
+    
     <div className="ClientsList">
       <aside>
         <button onClick={handleOnClick}>Dodaj klienta</button>
