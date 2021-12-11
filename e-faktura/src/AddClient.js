@@ -1,7 +1,7 @@
 import "./style/ClientsList.css";
 import "./style/AddClient.css";
 import { useNavigate } from "react-router-dom";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 function AddClient() {
   let navigate = useNavigate();
@@ -24,26 +24,22 @@ function AddClient() {
     setNumberInput(e.target.value);
   }
 
-  function componentDidMount() {
-    fetch('/klienci', {
-        headers : {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
-         }})
-        .then(response => response.json())
-        .then(data => setClientsState(data));
-}
+  useEffect(() => {
+    const fetchData = async () => {
+      const response = await fetch("http://localhost:8080/klienci");
+      const body = await response.json();
+      setClientsState(body);
+    };
+    fetchData();
+  }, []);
 
   function addClientToClientsList() {
-      
-componentDidMount();
     console.log(nameInput);
     console.log(surnameInput);
     console.log(numberInput);
     console.log(clients);
 
-    const clientObjectInTab = {
-
+    const clientObject= {
       imie: nameInput,
       nazwisko: surnameInput,
       telefon: numberInput,
@@ -56,25 +52,27 @@ componentDidMount();
       kraj: "",
     };
 
-    fetch("http://localhost:8080/klienci", {
-      method: "POST",
-      headers: {
-        'Content-Type': 'application/json',
-          'Accept': 'application/json'
-      },
-      body: JSON.stringify(clientObjectInTab),
-    })
-      .then(() => {
-        alert("Dodano użytkownika");
+    const postData = async () => {
+      await fetch("http://localhost:8080/klienci", {
+        method: "POST",
+        mode: 'no-cors',
+        headers: {
+          "Content-Type": "application/json; charset=utf-8",
+          "Accept": "application/json",
+        },
+        body: JSON.stringify(clientObject),
       })
-      .catch((error) => {
-        console.error(error);
-      });
+        .then(() => {
+          alert("Dodano użytkownika");
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    };
+    postData();
   }
 
-
   return (
-    
     <div className="ClientsList">
       <aside>
         <button onClick={handleOnClick}>Dodaj klienta</button>
@@ -84,9 +82,7 @@ componentDidMount();
         <div className="nextLineToAdd">
           <div className="inputContainer">
             <p>Nazwa firmy</p>
-            <input
-              type="text"
-            />
+            <input type="text" />
           </div>
           <div className="inputContainer">
             <p>Numer NIP</p>
