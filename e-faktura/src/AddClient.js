@@ -1,81 +1,99 @@
 import "./style/ClientsList.css";
 import "./style/AddClient.css";
-import { useNavigate } from "react-router-dom";
-import React, { useState, useEffect } from "react";
+import React, { Component } from 'react';
 
-function AddClient() {
-  let navigate = useNavigate();
+class AddClient extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            nameInput: "",
+            surnameInput: "",
+            numberInput: "",
+            clients: [],
+        };
+        this.changeName = this.changeName.bind(this);
+        this.changeSurname = this.changeSurname.bind(this);
+        this.changeNumber = this.changeNumber.bind(this);
+        this.addClientToClientsList = this.addClientToClientsList.bind(this);
+    }
 
-  let [nameInput, setNameInput] = useState("");
-  let [surnameInput, setSurnameInput] = useState("");
-  let [numberInput, setNumberInput] = useState("");
-  let [clients, setClientsState] = useState("");
+    async componentDidMount() {
+            const clients = await (await fetch(`/klienci`)).json();
+            this.setState({clients: clients});
+    }
 
-  function handleOnClick() {
-    navigate("/klienci");
+
+  changeName(e) {
+    this.setState({
+        nameInput: e.target.value
+    }
+    )
   }
-  function changeName(e) {
-    setNameInput(e.target.value);
+  
+  changeSurname(e) {
+    this.setState({
+        surnameInput: e.target.value
+    }
+    )
   }
-  function changeSurname(e) {
-    setSurnameInput(e.target.value);
-  }
-  function changeNumber(e) {
-    setNumberInput(e.target.value);
+  
+  changeNumber(e) {
+    this.setState({
+        numberInput: e.target.value
+    }
+    )
   }
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const response = await fetch("http://localhost:8080/klienci");
-      const body = await response.json();
-      setClientsState(body);
-    };
-    fetchData();
-  }, []);
+//   useEffect(() => {
+//     const fetchData = async () => {
+//       const response = await fetch("http://localhost:8080/klienci", {
+//         method: 'GET',
+//         mode: 'no-cors', 
+//         headers: {
+//             'Content-Type': 'application/json'
+//         },
+//     });
+//       const body = await response.json();
+//       setClientsState(body);
+//     };
+//     fetchData();
+//   }, []);
 
-  function addClientToClientsList() {
-    console.log(nameInput);
-    console.log(surnameInput);
-    console.log(numberInput);
-    console.log(clients);
+async addClientToClientsList() {
+    console.log(this.state.nameInput);
+    console.log(this.state.surnameInput);
+    console.log(this.state.numberInput);
+    console.log(this.state.clients);
 
     const clientObject= {
-      imie: nameInput,
-      nazwisko: surnameInput,
-      telefon: numberInput,
-      nazwaFirmy: "",
-      NIP: "",
-      ulica: "",
-      nrLokalu: "",
-      miejscowosc: "",
-      kodPocztowy: "",
-      kraj: "",
+        nip:"",
+        imie:this.state.nameInput,
+         kod_pocztowy:"",
+         kraj:"",
+         miejscowosc:"",
+         nazwa_firmy:"",
+         nazwisko:this.state.surnameInput,
+         nr_lokalu:"",
+         telefon:this.state.numberInput,
+         ulica:""
     };
 
-    const postData = async () => {
-      await fetch("http://localhost:8080/klienci", {
-        method: "POST",
-        mode: 'no-cors',
+    await fetch('/klienci', {
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json; charset=utf-8",
-          "Accept": "application/json",
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
         },
         body: JSON.stringify(clientObject),
-      })
-        .then(() => {
-          alert("Dodano użytkownika");
-        })
-        .catch((error) => {
-          console.error(error);
-        });
-    };
-    postData();
+    });
   }
 
-  return (
+  render(){
+      const {nameInput, surnameInput, numberInput} = this.state;
+      return (
     <div className="ClientsList">
       <aside>
-        <button onClick={handleOnClick}>Dodaj klienta</button>
+        <button>Dodaj klienta</button>
       </aside>
       <div className="AddClientForm">
         <h2>Nowy klient</h2>
@@ -114,7 +132,7 @@ function AddClient() {
               type="text"
               name="name"
               value={nameInput}
-              onChange={changeName}
+              onChange={this.changeName}
             />
           </div>
           <div className="inputContainer">
@@ -123,7 +141,7 @@ function AddClient() {
               type="text"
               name="surname"
               value={surnameInput}
-              onChange={changeSurname}
+              onChange={this.changeSurname}
             />
           </div>
         </div>
@@ -135,7 +153,7 @@ function AddClient() {
               pattern="[0-9]{3} [0-9]{3} [0-9]{3}"
               name="phone"
               value={numberInput}
-              onChange={changeNumber}
+              onChange={this.changeNumber}
             />
           </div>
           <div className="inputContainer">
@@ -143,10 +161,13 @@ function AddClient() {
             <input type="text" />
           </div>
         </div>
-        <button onClick={addClientToClientsList}>Dodaj Klienta</button>
+        <button onClick={this.addClientToClientsList}>Dodaj Klienta</button>
       </div>
     </div>
   );
+  }
+
+  
 }
 
 export default AddClient;
