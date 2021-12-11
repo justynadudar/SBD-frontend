@@ -10,7 +10,7 @@ function App() {
       <Router>
         <Navbar />
         <Routes>
-          <Route exect path="/klienci" element={<ClientsList />} />
+          <Route path="/klienci" element={<ClientsList />} />
           <Route path="/klienci/1" element={<AddClient />} />
         </Routes>
       </Router>

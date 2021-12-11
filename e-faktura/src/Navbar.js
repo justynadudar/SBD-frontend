@@ -6,19 +6,13 @@ function Navbar() {
     <nav className="Navbar">
       <ul>
         <li className="logo">
-          <Link exact to="/">
-            E-Faktura
-          </Link>
+          <Link to="/">E-Faktura</Link>
         </li>
         <li>
-          <Link exact to="/faktury">
-            Faktury
-          </Link>
+          <Link to="/faktury">Faktury</Link>
         </li>
         <li>
-          <Link exact to="/magazyn">
-            Magazyn
-          </Link>
+          <Link to="/magazyn">Magazyn</Link>
         </li>
         <li>
           <Link to="/klienci">Klienci</Link>
