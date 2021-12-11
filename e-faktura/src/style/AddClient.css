@@ -1,0 +1,40 @@
+.ClientsList .AddClientForm {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  width: 80%;
+}
+
+.ClientsList .AddClientForm h2 {
+  padding-left: 2%;
+  width: 100%;
+}
+
+.ClientsList .AddClientForm .nextLineToAdd {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+.ClientsList .AddClientForm button {
+  margin-top: 5%;
+  margin-left: 2%;
+  width: 50%;
+}
+
+.ClientsList .AddClientForm button a {
+  text-decoration: none;
+  color: black;
+}
+
+.ClientsList .AddClientForm .nextLineToAdd .inputContainer {
+  padding: 0 2%;
+  width: 20%;
+}
+.ClientsList .AddClientForm .nextLineToAdd .inputContainer {
+  padding: 0 2%;
+  width: 20%;
+}
+.ClientsList .AddClientForm .nextLineToAdd .inputContainer input {
+  width: 80%;
+}
