@@ -38,3 +38,6 @@
 .ClientsList .AddClientForm .nextLineToAdd .inputContainer input {
   width: 80%;
 }
+.ClientsList .AddClientForm .nextLineToAdd .inputContainer p {
+  margin-bottom: 1%;
+}
