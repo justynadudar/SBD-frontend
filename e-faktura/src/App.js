@@ -4,6 +4,8 @@ import "./style/App.css";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import ClientsList from "./ClientsList";
 import AddClient from "./AddClient";
+import Warehouse from "./Warehouse";
+import AddProduct from "./AddProduct";
 
 function App() {
   let [clients, setClientsState] = useState({ clients: [] });
@@ -23,26 +25,12 @@ function App() {
         <Navbar />
         <Routes>
           <Route path="/klienci" element={<ClientsList clients={clients} />} />
-          <Route path="/klienci/1" element={<AddClient />} />
+          <Route path="/magazyn" element={<Warehouse />} />
+          <Route path="/klienci/dodaj" element={<AddClient />} />
+          <Route path="/magazyn/dodaj" element={<AddProduct />} />
         </Routes>
       </Router>
     </div>
   );
 }
 export default App;
-
-// function App() {
-//   return (
-//     <div className="App">
-//       <Router>
-//         <Navbar />
-//         <Routes>
-//           <Route path="/klienci" element={<ClientsList />} />
-//           <Route path="/klienci/1" element={<AddClient />} />
-//         </Routes>
-//       </Router>
-//     </div>
-//   );
-// }
-
-// export default App;

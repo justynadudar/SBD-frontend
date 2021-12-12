@@ -18,7 +18,7 @@ function ClientsList({ clients }) {
   }, []);
 
   function handleOnClick() {
-    navigate("/klienci/1");
+    navigate("/klienci/dodaj");
   }
 
   return (

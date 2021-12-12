@@ -1,0 +1,56 @@
+.Warehouse {
+  display: flex;
+  flex-direction: row;
+}
+
+.Warehouse aside {
+  display: flex;
+  flex-direction: column;
+  align-content: center;
+  justify-content: flex-start;
+  align-items: center;
+  background-color: black;
+  width: 15%;
+  height: 90vh;
+}
+
+.Warehouse aside button {
+  margin-top: 10%;
+  width: 70%;
+  height: 5%;
+  font-size: 0.6rem;
+  border-radius: 8px;
+  background-color: black;
+  border: 2px solid #7dbaec;
+  text-decoration: none;
+  color: rgb(125, 186, 236);
+  transition-duration: 0.6s;
+  cursor: pointer;
+}
+
+.Warehouse aside button:hover {
+  background-color: rgb(125, 186, 236);
+  color: black;
+  border: 2px solid rgb(125, 186, 236);
+}
+
+.Warehouse .TableOfProducts {
+  margin-left: 2%;
+  width: 80%;
+}
+
+.Warehouse .TableOfProducts .row {
+  display: flex;
+  flex-direction: row;
+  text-align: center;
+  border: 2px solid rgb(170, 173, 175);
+  width: 100%;
+}
+
+.Warehouse .TableOfProducts .row h4 {
+  width: 100%;
+}
+
+.Warehouse .TableOfProducts .row p {
+  width: 100%;
+}
