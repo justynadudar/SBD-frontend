@@ -1,0 +1,44 @@
+.EmployeesList .AddEmployeeForm {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    width: 80%;
+  }
+  
+  .EmployeesList .AddEmployeeForm  h2 {
+    padding-left: 2%;
+    width: 100%;
+  }
+  
+  .EmployeesList .AddEmployeeForm  .nextLineToAdd {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+  
+  .EmployeesList .AddEmployeeForm  button {
+    margin-top: 5%;
+    margin-left: 2%;
+    width: 50%;
+  }
+  
+  .EmployeesList .AddEmployeeForm  button a {
+    text-decoration: none;
+    color: black;
+  }
+  
+  .EmployeesList .AddEmployeeForm  .nextLineToAdd .inputContainer {
+    padding: 0 2%;
+    width: 20%;
+  }
+  .EmployeesList .AddEmployeeForm  .nextLineToAdd .inputContainer {
+    padding: 0 2%;
+    width: 20%;
+  }
+  .EmployeesList .AddEmployeeForm  .nextLineToAdd .inputContainer input {
+    width: 80%;
+  }
+  .EmployeesList .AddEmployeeForm  .nextLineToAdd .inputContainer p {
+    margin-bottom: 1%;
+  }
+  

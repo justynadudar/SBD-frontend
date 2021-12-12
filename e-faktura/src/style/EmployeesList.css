@@ -1,0 +1,57 @@
+.EmployeesList {
+    display: flex;
+    flex-direction: row;
+  }
+  
+  .EmployeesList aside {
+    display: flex;
+    flex-direction: column;
+    align-content: center;
+    justify-content: flex-start;
+    align-items: center;
+    background-color: black;
+    width: 15%;
+    height: 90vh;
+  }
+  
+  .EmployeesList aside button {
+    margin-top: 10%;
+    width: 70%;
+    height: 5%;
+    font-size: 0.6rem;
+    border-radius: 8px;
+    background-color: black;
+    border: 2px solid #7dbaec;
+    text-decoration: none;
+    color: rgb(125, 186, 236);
+    transition-duration: 0.6s;
+    cursor: pointer;
+  }
+  
+  .EmployeesList aside button:hover {
+    background-color: rgb(125, 186, 236);
+    color: black;
+    border: 2px solid rgb(125, 186, 236);
+  }
+  
+  .EmployeesList .TableOfEmployees {
+    margin-left: 2%;
+    width: 80%;
+  }
+  
+  .EmployeesList .TableOfEmployees .row {
+    display: flex;
+    flex-direction: row;
+    text-align: center;
+    border: 2px solid rgb(170, 173, 175);
+    width: 100%;
+  }
+  
+  .EmployeesList .TableOfEmployees .row h4 {
+    width: 100%;
+  }
+  
+  .EmployeesList .TableOfEmployees .row p {
+    width: 100%;
+  }
+  

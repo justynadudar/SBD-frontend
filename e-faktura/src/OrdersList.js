@@ -34,7 +34,7 @@ function OrdersList({ orders }) {
           <h4>Id klienta</h4>
           <h4>Id pracownika</h4>
           <h4>Stan zamówienia</h4>
-          <h4>Pozycje</h4>
+          {/* <h4>Pozycje</h4> */}
         </div>
 
         {loaded ? (
@@ -45,10 +45,10 @@ function OrdersList({ orders }) {
                 <p>{order.klient.idKlienta}</p>
                 <p>{order.pracownik.idPracownika}</p>
                 <p>{order.stanZamowienia}</p>
-                <p><Link to={{
+                {/* <p><Link to={{
                     pathname: `/zamowienia/${order.idZamowienia}`,
                     state: {modal: true},
-                }}>Szczegóły</Link></p>
+                }}>Szczegóły</Link></p> */}
               </div>
             );
           })
