@@ -1,8 +1,9 @@
 import "./style/ClientsList.css";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import React, { useState, useEffect } from "react";
+import { MdReadMore } from "react-icons/md";
 
-function ClientsList({ clients }) {
+function ClientsList() {
   let navigate = useNavigate();
   let [clientsList, setClientsListState] = useState({ clientsList: [] });
   let [loaded, setLoaded] = useState("");
@@ -34,6 +35,7 @@ function ClientsList({ clients }) {
           <h4>Nazwisko</h4>
           <h4>Telefon</h4>
           <h4>E-mail</h4>
+          <h4 className="last"></h4>
         </div>
 
         {loaded ? (
@@ -44,6 +46,14 @@ function ClientsList({ clients }) {
                 <p key={Math.random()}>{client.nazwisko}</p>
                 <p key={Math.random()}>{client.telefon}</p>
                 <p key={Math.random()}>{client.email}</p>
+                <Link
+                  to={{
+                    pathname: `/klienci/${client.idKlienta}`,
+                    state: { modal: true },
+                  }}
+                >
+                  <MdReadMore />
+                </Link>
               </div>
             );
           })

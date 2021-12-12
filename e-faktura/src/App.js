@@ -8,6 +8,7 @@ import Warehouse from "./Warehouse";
 import AddProduct from "./AddProduct";
 import OrdersList from "./OrdersList";
 import InvoiceList from "./InvoiceList";
+import ClientDetails from "./ClientDetails";
 
 function App() {
   let [clients, setClientsState] = useState({ clients: [] });
@@ -37,6 +38,8 @@ function App() {
         <Navbar />
         <Routes>
           <Route path="/klienci" element={<ClientsList clients={clients} />} />
+          <Route path="/klienci/:id" element={<ClientDetails />} />
+          <Route path="/klienci/dodaj" element={<AddClient />} />
           <Route path="/zamowienia" element={<OrdersList orders={orders} />} />
           {/* <Route 
             path="/zamowienia/:id"
@@ -44,7 +47,6 @@ function App() {
           /> */}
           <Route path="/magazyn" element={<Warehouse />} />
           <Route path="/faktury" element={<InvoiceList />} />
-          <Route path="/klienci/dodaj" element={<AddClient />} />
           <Route path="/magazyn/dodaj" element={<AddProduct />} />
         </Routes>
       </Router>
