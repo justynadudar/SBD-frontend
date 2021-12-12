@@ -9,6 +9,9 @@ function Navbar() {
           <Link to="/">E-Faktura</Link>
         </li>
         <li>
+          <Link to="/zamowienia">Zamówienia</Link>
+        </li>
+        <li>
           <Link to="/faktury">Faktury</Link>
         </li>
         <li>
