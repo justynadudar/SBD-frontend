@@ -1,0 +1,43 @@
+.Warehouse .AddProductForm {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  width: 80%;
+}
+
+.Warehouse .AddProductForm h2 {
+  padding-left: 2%;
+  width: 100%;
+}
+
+.Warehouse .AddProductForm .nextLineToAdd {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+.Warehouse .AddProductForm button {
+  margin-top: 5%;
+  margin-left: 2%;
+  width: 50%;
+}
+
+.Warehouse .AddProductForm button a {
+  text-decoration: none;
+  color: black;
+}
+
+.Warehouse .AddProductForm .nextLineToAdd .inputContainer {
+  padding: 0 2%;
+  width: 20%;
+}
+.Warehouse .AddProductForm .nextLineToAdd .inputContainer {
+  padding: 0 2%;
+  width: 20%;
+}
+.Warehouse .AddProductForm .nextLineToAdd .inputContainer input {
+  width: 80%;
+}
+.Warehouse .AddProductForm .nextLineToAdd .inputContainer p {
+  margin-bottom: 1%;
+}

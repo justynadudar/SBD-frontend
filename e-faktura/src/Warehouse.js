@@ -7,7 +7,6 @@ function ClientsList() {
   let [productsList, setProductsListState] = useState({ productsList: [] });
   let [categoryList, setCategoryListState] = useState({ categoryList: [] });
   let [producersList, setProducersListState] = useState({ producersList: [] });
-  let [costList, setCostListState] = useState({ costList: [] });
   let [loaded, setLoaded] = useState("");
 
   useEffect(() => {
@@ -47,14 +46,14 @@ function ClientsList() {
           productsList.map((product) => {
             return (
               <div className="row">
-                <p>{product.nazwa}</p>
-                <p>{product.ilosc}</p>
-                <p>{product.cena}</p>
+                <p key={Math.random()}>{product.nazwa}</p>
+                <p key={Math.random()}>{product.ilosc}</p>
+                <p key={Math.random()}>{product.cena}</p>
               </div>
             );
           })
-        ) : productsList.length <= 0 ? (
-          <h2>Brak</h2>
+        ) : loaded ? (
+          <h2> Nie masz jeszcze żadnych produktów </h2>
         ) : (
           <h2>Loading...</h2>
         )}

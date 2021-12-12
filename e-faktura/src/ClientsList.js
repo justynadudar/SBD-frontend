@@ -38,11 +38,11 @@ function ClientsList({ clients }) {
         {loaded ? (
           clientsList.map((client) => {
             return (
-              <div key={client.id} className="row">
-                <p>{client.imie}</p>
-                <p>{client.nazwisko}</p>
-                <p>{client.telefon}</p>
-                <p>-</p>
+              <div key={Math.random()} className="row">
+                <p key={Math.random()}>{client.imie}</p>
+                <p key={Math.random()}>{client.nazwisko}</p>
+                <p key={Math.random()}>{client.telefon}</p>
+                <p key={Math.random()}>{client.email}</p>
               </div>
             );
           })

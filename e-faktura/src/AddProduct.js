@@ -1,5 +1,5 @@
-import "./style/ClientsList.css";
-import "./style/AddClient.css";
+import "./style/Warehouse.css";
+import "./style/AddProduct.css";
 import React, { Component } from "react";
 
 class AddProduct extends Component {
@@ -7,6 +7,8 @@ class AddProduct extends Component {
     super(props);
     this.state = {
       nameInput: "",
+      amountInput: "",
+      costInput: "",
       categoryInput: "",
       producerInput: "",
       producers: [],
@@ -16,7 +18,11 @@ class AddProduct extends Component {
     };
 
     this.changeName = this.changeName.bind(this);
+    this.changeAmount = this.changeAmount.bind(this);
+    this.changeCost = this.changeCost.bind(this);
+    this.changeProducer = this.changeProducer.bind(this);
     this.changeCategory = this.changeCategory.bind(this);
+    this.addProductToProductsList = this.addProductToProductsList.bind(this);
   }
 
   componentDidMount() {
@@ -39,6 +45,16 @@ class AddProduct extends Component {
       nameInput: e.target.value,
     });
   }
+  changeAmount(e) {
+    this.setState({
+      amountInput: e.target.value,
+    });
+  }
+  changeCost(e) {
+    this.setState({
+      costInput: e.target.value,
+    });
+  }
 
   changeCategory(e) {
     this.setState({
@@ -53,9 +69,22 @@ class AddProduct extends Component {
   }
 
   async addProductToProductsList() {
+    const findedCategory = this.state.categories.find(
+      (el) => el.nazwa === this.state.categoryInput
+    );
+    console.log(findedCategory);
+    const findedProducer = this.state.producers.find(
+      (el) => el.nazwa === this.state.producerInput
+    );
+
     const productObject = {
       nazwa: this.state.nameInput,
+      producent: findedProducer,
+      ilosc: this.state.amountInput,
+      cenaNetto: this.state.costInput,
+      kategoria: findedCategory,
     };
+    console.log(productObject);
 
     fetch(`http://localhost:8080/towary`, {
       method: "POST", // or 'PUT'
@@ -76,22 +105,51 @@ class AddProduct extends Component {
   render() {
     const {
       nameInput,
+      amountInput,
+      costInput,
       categoryInput,
       producerInput,
       loaded,
       categories,
       producers,
     } = this.state;
-    console.log(this.state.categories);
-    console.log(loaded);
 
     return (
-      <div className="ClientsList">
+      <div className="Warehouse">
         <aside>
           <button>Dodaj produkt</button>
         </aside>
-        <div className="AddClientForm">
-          <h2>Nowy klient</h2>
+        <div className="AddProductForm">
+          <h2>Nowy produkt</h2>
+          <div className="nextLineToAdd">
+            <div className="inputContainer">
+              <p>Nazwa produktu</p>
+              <input
+                type="text"
+                name="name"
+                value={nameInput}
+                onChange={this.changeName}
+              />
+            </div>
+            <div className="inputContainer">
+              <p>Ilość</p>
+              <input
+                type="number"
+                name="amount"
+                value={amountInput}
+                onChange={this.changeAmount}
+              />
+            </div>
+            <div className="inputContainer">
+              <p>Cena netto</p>
+              <input
+                type="number"
+                name="cost"
+                value={costInput}
+                onChange={this.changeCost}
+              />
+            </div>
+          </div>
           <div className="nextLineToAdd">
             <div className="inputContainer">
               <p>Kategoria</p>
@@ -109,6 +167,8 @@ class AddProduct extends Component {
                     ))
                   : null}
               </datalist>
+            </div>
+            <div className="inputContainer">
               <p>Producent</p>
               <input
                 type="text"
@@ -126,7 +186,7 @@ class AddProduct extends Component {
               </datalist>
             </div>
           </div>
-          <button onClick={this.addProductToProductsList}>Dodaj Klienta</button>
+          <button onClick={this.addProductToProductsList}>Dodaj produkt</button>
         </div>
       </div>
     );
