@@ -24,7 +24,7 @@ function OrdersList({ orders }) {
   return (
     <div className="OrdersList">
       <aside>
-        <button onClick={handleOnClick}>Dodaj zamowienie</button>
+        <button onClick={handleOnClick}>Nowe zamówienie</button>
       </aside>
       <div className="TableOfOrders">
         <h2>Zamówienia</h2>

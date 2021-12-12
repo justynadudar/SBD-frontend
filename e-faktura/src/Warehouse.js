@@ -17,9 +17,9 @@ function ClientsList() {
       const body2 = await respCategory.json();
       const respProducers = await fetch("/producenci");
       const body3 = await respProducers.json();
-      setProductsListState({ productsList: body1 });
-      setCategoryListState({ categoryList: body2 });
-      setProducersListState({ producersList: body3 });
+      setProductsListState(body1);
+      setCategoryListState(body2);
+      setProducersListState(body3);
       setLoaded(true);
     };
     fetchData();
@@ -31,8 +31,9 @@ function ClientsList() {
 
   return (
     <div className="Warehouse">
+      {console.log(productsList)}
       <aside>
-        <button onClick={handleOnClick}>Dodaj produkt</button>
+        <button onClick={handleOnClick}>Nowy produkt</button>
       </aside>
       <div className="TableOfProducts">
         <h2>Towary</h2>
@@ -42,18 +43,17 @@ function ClientsList() {
           <h4>Cena netto</h4>
           <h4>Cena brutto</h4>
         </div>
-        {loaded && productsList.length > 0 ? (
+        {loaded ? (
           productsList.map((product) => {
             return (
-              <div className="row">
+              <div key={Math.random()} className="row">
                 <p key={Math.random()}>{product.nazwa}</p>
                 <p key={Math.random()}>{product.ilosc}</p>
-                <p key={Math.random()}>{product.cena}</p>
+                <p key={Math.random()}>{product.cenaNetto}</p>
+                <p key={Math.random()}>{product.cenaBrutto}</p>
               </div>
             );
           })
-        ) : loaded ? (
-          <h2> Nie masz jeszcze żadnych produktów </h2>
         ) : (
           <h2>Loading...</h2>
         )}

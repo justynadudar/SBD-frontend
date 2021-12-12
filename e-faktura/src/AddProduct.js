@@ -78,11 +78,11 @@ class AddProduct extends Component {
     );
 
     const productObject = {
-      nazwa: this.state.nameInput,
       producent: findedProducer,
+      kategoria: findedCategory,
+      nazwa: this.state.nameInput,
       ilosc: this.state.amountInput,
       cenaNetto: this.state.costInput,
-      kategoria: findedCategory,
     };
     console.log(productObject);
 

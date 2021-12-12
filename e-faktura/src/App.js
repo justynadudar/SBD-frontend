@@ -7,6 +7,7 @@ import AddClient from "./AddClient";
 import Warehouse from "./Warehouse";
 import AddProduct from "./AddProduct";
 import OrdersList from "./OrdersList";
+import InvoiceList from "./InvoiceList";
 
 function App() {
   let [clients, setClientsState] = useState({ clients: [] });
@@ -38,6 +39,7 @@ function App() {
           <Route path="/klienci" element={<ClientsList clients={clients} />} />
           <Route path="/zamowienia" element={<OrdersList orders={orders} />} />
           <Route path="/magazyn" element={<Warehouse />} />
+          <Route path="/faktury" element={<InvoiceList />} />
           <Route path="/klienci/dodaj" element={<AddClient />} />
           <Route path="/magazyn/dodaj" element={<AddProduct />} />
         </Routes>

@@ -2,42 +2,42 @@ import "./style/ClientsList.css";
 import { useNavigate } from "react-router-dom";
 import React, { useState, useEffect } from "react";
 
-function ClientsList({ clients }) {
+function InvoiceList() {
   let navigate = useNavigate();
-  let [clientsList, setClientsListState] = useState({ clientsList: [] });
+  let [invoiceList, setInvoiceListState] = useState({ invoiceList: [] });
   let [loaded, setLoaded] = useState("");
 
   useEffect(() => {
     const fetchData = async () => {
-      const response = await fetch("/klienci");
+      const response = await fetch("/faktury");
       const body = await response.json();
-      setClientsListState(body);
+      setInvoiceListState(body);
       setLoaded(true);
     };
     fetchData();
   }, []);
 
   function handleOnClick() {
-    navigate("/klienci/dodaj");
+    navigate("/faktury/dodaj");
   }
 
   return (
     <div className="ClientsList">
-      {console.log(clientsList)}
       <aside>
-        <button onClick={handleOnClick}>Nowy klient</button>
+        <button onClick={handleOnClick}>Nowa faktura</button>
       </aside>
       <div className="TableOfClients">
-        <h2>Klienci</h2>
+        <h2>Wystawione faktury</h2>
         <div className="row">
-          <h4>Imie</h4>
-          <h4>Nazwisko</h4>
-          <h4>Telefon</h4>
-          <h4>E-mail</h4>
+          <h4>Id zamowienia</h4>
+          <h4>Id pracownika</h4>
+          <h4>Data wystawienia</h4>
+          <h4>Suma brutto</h4>
+          <h4>Nabywca</h4>
         </div>
 
         {loaded ? (
-          clientsList.map((client) => {
+          invoiceList.map((client) => {
             return (
               <div key={Math.random()} className="row">
                 <p key={Math.random()}>{client.imie}</p>
@@ -55,4 +55,4 @@ function ClientsList({ clients }) {
   );
 }
 
-export default ClientsList;
+export default InvoiceList;
