@@ -37,6 +37,10 @@ function App() {
         <Routes>
           <Route path="/klienci" element={<ClientsList clients={clients} />} />
           <Route path="/zamowienia" element={<OrdersList orders={orders} />} />
+          {/* <Route 
+            path="/zamowienia/:id"
+            render
+          /> */}
           <Route path="/magazyn" element={<Warehouse />} />
           <Route path="/klienci/dodaj" element={<AddClient />} />
           <Route path="/magazyn/dodaj" element={<AddProduct />} />
