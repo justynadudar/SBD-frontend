@@ -21,7 +21,7 @@ function Navbar() {
           <Link to="/klienci">Klienci</Link>
         </li>
         <li>
-          <Link to="/pracownicy">Konto</Link>
+          <Link to="/pracownicy">Pracownicy</Link>
         </li>
       </ul>
     </nav>
