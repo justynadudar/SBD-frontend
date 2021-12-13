@@ -1,0 +1,61 @@
+.OrdersList .AddOrderForm {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  width: 80%;
+}
+
+.OrdersList .AddOrderForm h2 {
+  padding-left: 2%;
+  width: 100%;
+}
+.OrdersList .AddOrderForm h4 {
+  padding-left: 2%;
+  width: 100%;
+}
+
+.OrdersList .AddOrderForm .nextLineToAdd {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+.OrdersList .AddOrderForm .clientInfo {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  height: 10%;
+  padding-left: 2%;
+}
+
+.OrdersList .AddOrderForm button {
+  margin-top: 5%;
+  margin-left: 2%;
+  width: 50%;
+}
+
+.OrdersList .AddOrderForm button a {
+  text-decoration: none;
+  color: black;
+}
+.OrdersList .AddOrderForm .clientInfo p {
+  padding-right: 5%;
+  display: block;
+  width: 10%;
+}
+
+.OrdersList .AddOrderForm .nextLineToAdd .inputContainer {
+  padding: 0 2%;
+  width: 20%;
+}
+.OrdersList .AddOrderForm .nextLineToAdd .inputContainer {
+  padding: 0 2%;
+  width: 20%;
+}
+.OrdersList .AddOrderForm .nextLineToAdd .inputContainer input {
+  width: 80%;
+}
+.OrdersList .AddOrderForm .nextLineToAdd .inputContainer p {
+  margin-bottom: 1%;
+}

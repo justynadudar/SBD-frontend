@@ -1,12 +1,10 @@
 import "./style/ClientDetails.css";
-import { useNavigate, useParams, Link } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import React, { useState, useEffect } from "react";
-import { MdReadMore } from "react-icons/md";
 
 function ClientDetails() {
   const { id } = useParams();
   let navigate = useNavigate();
-  let [clientsList, setClientsListState] = useState([]);
   let [thatClient, setThatClientState] = useState({});
   let [loaded, setLoaded] = useState("");
 
@@ -14,8 +12,7 @@ function ClientDetails() {
     const fetchData = async () => {
       const response = await fetch("/klienci");
       const body = await response.json();
-      setClientsListState(body);
-      setThatClientState(body.find((client) => client.idKlienta == id));
+      setThatClientState(body.find((client) => client.idKlienta === id));
       setLoaded(true);
     };
     fetchData();

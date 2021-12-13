@@ -1,7 +1,6 @@
 import "./style/EmployeesList.css";
 import { useNavigate } from "react-router-dom";
 import React, { useState, useEffect } from "react";
-import { NavLink as Link } from "react-router-dom";
 
 function EmployeesList({ orders }) {
   let navigate = useNavigate();

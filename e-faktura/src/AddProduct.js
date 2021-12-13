@@ -1,4 +1,3 @@
-import "./style/Warehouse.css";
 import "./style/AddProduct.css";
 import React, { Component } from "react";
 
@@ -144,6 +143,9 @@ class AddProduct extends Component {
               <p>Cena netto</p>
               <input
                 type="number"
+                step="0.01"
+                min="0"
+                max="20"
                 name="cost"
                 value={costInput}
                 onChange={this.changeCost}
