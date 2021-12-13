@@ -7,14 +7,16 @@ class AddOrder extends Component {
     super(props);
     this.state = {
       clientNameInput: "",
-      thatClient: {
+      defaultClient: {
         imie: "imie",
         nazwisko: "nazwisko",
         telefon: "telefon",
         email: "e-mail",
       },
+      thatClient: {},
       clients: [],
       loaded: false,
+      clientLoaded: false,
     };
 
     this.changeClient = this.changeClient.bind(this);
@@ -33,12 +35,21 @@ class AddOrder extends Component {
   }
 
   changeClient(e) {
-    this.setState({
-      clientNameInput: e.target.value,
-      thatClient: this.state.clients.find(
-        (client) => client.nazwaFirmy === e.target.value
-      ),
-    });
+    console.log(e.target.value);
+    if (e.target.value === "") {
+      this.setState({
+        clientNameInput: e.target.value,
+        clientLoaded: false,
+      });
+    } else {
+      this.setState({
+        clientNameInput: e.target.value,
+        thatClient: this.state.clients.find(
+          (client) => client.nazwaFirmy === e.target.value
+        ),
+        clientLoaded: true,
+      });
+    }
   }
 
   async addOrderToOrdersList() {
@@ -59,7 +70,14 @@ class AddOrder extends Component {
   }
 
   render() {
-    const { clientNameInput, thatClient, loaded, clients } = this.state;
+    const {
+      clientNameInput,
+      thatClient,
+      loaded,
+      clients,
+      clientLoaded,
+      defaultClient,
+    } = this.state;
 
     return (
       <div className="OrdersList">
@@ -71,28 +89,35 @@ class AddOrder extends Component {
           <div className="nextLineToAdd">
             <div className="inputContainer">
               <p>Klient</p>
-              <input
-                type="text"
-                list="clients"
+              <select
                 name="name"
                 value={clientNameInput}
                 onChange={this.changeClient}
-              />
-              <datalist id="clients">
+              >
+                <option key={Math.random()}>{""}</option>
                 {loaded
                   ? clients.map((client) => (
                       <option key={Math.random()}>{client.nazwaFirmy}</option>
                     ))
                   : null}
-              </datalist>
+              </select>
             </div>
           </div>
-          <div className="clientInfo">
-            <p>{thatClient.imie}</p>
-            <p>{thatClient.nazwisko}</p>
-            <p>{thatClient.telefon}</p>
-            <p>{thatClient.email}</p>
-          </div>
+          {clientLoaded ? (
+            <div className="clientInfo">
+              <p>{thatClient.imie}</p>
+              <p>{thatClient.nazwisko}</p>
+              <p>{thatClient.telefon}</p>
+              <p>{thatClient.email}</p>
+            </div>
+          ) : (
+            <div className="clientInfo">
+              <p>{defaultClient.imie}</p>
+              <p>{defaultClient.nazwisko}</p>
+              <p>{defaultClient.telefon}</p>
+              <p>{defaultClient.email}</p>
+            </div>
+          )}
           <h4>Pozycje: </h4>
           <InvoiceItem />
         </div>

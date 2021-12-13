@@ -1,4 +1,4 @@
-import "./style/AddOrder.css";
+import "./style/InvoiceItem.css";
 import React, { Component } from "react";
 
 class InvoiceItem extends Component {
@@ -6,6 +6,13 @@ class InvoiceItem extends Component {
     super(props);
     this.state = {
       productNameInput: "",
+      defaultProduct: {
+        nazwa: "nazwa",
+        producent: { nazwa: "producent" },
+        kategoria: { nazwa: "kategoria", stawkaVat: "stawka Vat" },
+        cenaNetto: "cena netto",
+        cenaBrutto: "cena brutto",
+      },
       thatProduct: {},
       amountInput: "",
       products: [],
@@ -30,13 +37,20 @@ class InvoiceItem extends Component {
   }
 
   changeProduct(e) {
-    this.setState({
-      productNameInput: e.target.value,
-      thatProduct: this.state.products.find(
-        (product) => product.nazwa === e.target.value
-      ),
-      productLoaded: true,
-    });
+    if (e.target.value === "") {
+      this.setState({
+        productNameInput: e.target.value,
+        productLoaded: false,
+      });
+    } else {
+      this.setState({
+        productNameInput: e.target.value,
+        thatProduct: this.state.products.find(
+          (product) => product.nazwa === e.target.value
+        ),
+        productLoaded: true,
+      });
+    }
   }
   changeAmount(e) {
     this.setState({
@@ -79,39 +93,64 @@ class InvoiceItem extends Component {
   }
 
   render() {
-    const { productNameInput, thatProduct, productLoaded, loaded, products } =
-      this.state;
+    const {
+      productNameInput,
+      thatProduct,
+      defaultProduct,
+      productLoaded,
+      loaded,
+      products,
+    } = this.state;
 
     return (
-      <div className="AddOrderForm">
+      <div className="AddItemForm">
         <div className="nextLineToAdd">
           <div className="inputContainer">
             <p>Towar</p>
-            <input
-              type="text"
-              list="products"
+            <select
               name="name"
               value={productNameInput}
               onChange={this.changeProduct}
-            />
-            <datalist id="products">
+            >
+              <option key={Math.random()}>{""}</option>
               {loaded
                 ? products.map((product) => (
                     <option key={Math.random()}>{product.nazwa}</option>
                   ))
                 : null}
-            </datalist>
+            </select>
           </div>
         </div>
+        <ul className="productInfo">
+          <li>Nazwa</li>
+          <li>Kategoria</li>
+          <li>Producent</li>
+          <li>Cena netto</li>
+          <li>Stawka VAT</li>
+          <li>Cena brutto</li>
+          <li>Ilość</li>
+        </ul>
         {productLoaded ? (
-          <div className="clientInfo">
-            <p>{thatProduct.nazwa}</p>
-            {console.log(thatProduct)}
-            <p>{thatProduct.kategoria.nazwa}</p>
-            <p>{thatProduct.producent.nazwa}</p>
-            <p>{thatProduct.cenaNetto}</p>
-          </div>
-        ) : null}
+          <ul className="productInfo">
+            <li>{thatProduct.nazwa}</li>
+            <li>{thatProduct.kategoria.nazwa}</li>
+            <li>{thatProduct.producent.nazwa}</li>
+            <li>{thatProduct.cenaNetto}</li>
+            <li>{thatProduct.kategoria.stawkaVat}</li>
+            <li>{thatProduct.cenaBrutto}</li>
+            <input type="number" />
+          </ul>
+        ) : (
+          <ul className="productInfo">
+            <li>{defaultProduct.nazwa}</li>
+            <li>{defaultProduct.kategoria.nazwa}</li>
+            <li>{defaultProduct.producent.nazwa}</li>
+            <li>{defaultProduct.cenaNetto}</li>
+            <li>{defaultProduct.kategoria.stawkaVat}</li>
+            <li>{defaultProduct.cenaBrutto}</li>
+            <li>{""}</li>
+          </ul>
+        )}
       </div>
     );
   }
