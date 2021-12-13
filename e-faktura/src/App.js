@@ -13,6 +13,7 @@ import ClientDetails from "./ClientDetails";
 import EmployeesList from "./EmployeesList";
 import AddEmployee from "./AddEmployee";
 import ProducersList from "./ProducersList";
+import PositionsList from "./PositionsList";
 
 function App() {
   return (
@@ -28,11 +29,8 @@ function App() {
           <Route path="/pracownicy/dodaj" element={<AddEmployee />} />
 
           <Route path="/zamowienia" element={<OrdersList />} />
+          <Route path="/pozycje/zamowienie/:id" element={<PositionsList />} />
           <Route path="/zamowienia/dodaj" element={<AddOrder />} />
-          {/* <Route 
-            path="/zamowienia/:id"
-            render
-          /> */}
 
           <Route path="/magazyn" element={<Warehouse />} />
           <Route path="/magazyn/dodaj" element={<AddProduct />} />
