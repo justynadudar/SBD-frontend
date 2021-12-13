@@ -7,11 +7,12 @@ import AddClient from "./AddClient";
 import Warehouse from "./Warehouse";
 import AddProduct from "./AddProduct";
 import OrdersList from "./OrdersList";
+import AddOrder from "./AddOrder";
 import InvoiceList from "./InvoiceList";
 import ClientDetails from "./ClientDetails";
 import EmployeesList from "./EmployeesList";
 import AddEmployee from "./AddEmployee";
-import AddOrder from "./AddOrder";
+import ProducersList from "./ProducersList";
 
 function App() {
   return (
@@ -37,6 +38,8 @@ function App() {
           <Route path="/magazyn/dodaj" element={<AddProduct />} />
 
           <Route path="/faktury" element={<InvoiceList />} />
+
+          <Route path="/producenci" element={<ProducersList />} />
         </Routes>
       </Router>
     </div>

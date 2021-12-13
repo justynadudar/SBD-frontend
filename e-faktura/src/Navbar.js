@@ -23,6 +23,9 @@ function Navbar() {
         <li>
           <Link to="/pracownicy">Pracownicy</Link>
         </li>
+        <li>
+          <Link to="/producenci">Producenci</Link>
+        </li>
       </ul>
     </nav>
   );
