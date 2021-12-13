@@ -12,7 +12,9 @@ function ClientDetails() {
     const fetchData = async () => {
       const response = await fetch("/klienci");
       const body = await response.json();
-      setThatClientState(body.find((client) => client.idKlienta === id));
+      setThatClientState(
+        body.find((client) => client.idKlienta === parseInt(id))
+      );
       setLoaded(true);
     };
     fetchData();

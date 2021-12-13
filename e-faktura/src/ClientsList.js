@@ -24,7 +24,6 @@ function ClientsList() {
 
   return (
     <div className="ClientsList">
-      {console.log(clientsList)}
       <aside>
         <button onClick={handleOnClick}>Nowy klient</button>
       </aside>
