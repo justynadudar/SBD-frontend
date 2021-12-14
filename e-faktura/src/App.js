@@ -13,6 +13,7 @@ import ClientDetails from "./ClientDetails";
 import EmployeesList from "./EmployeesList";
 import AddEmployee from "./AddEmployee";
 import ProducersList from "./ProducersList";
+import AddProducer from "./AddProducer";
 import PositionsList from "./PositionsList";
 
 function App() {
@@ -38,6 +39,7 @@ function App() {
           <Route path="/faktury" element={<InvoiceList />} />
 
           <Route path="/producenci" element={<ProducersList />} />
+          <Route path="/producenci/dodaj" element={<AddProducer />} />
         </Routes>
       </Router>
     </div>

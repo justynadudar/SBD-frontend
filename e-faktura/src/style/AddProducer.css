@@ -1,0 +1,44 @@
+.ProducersList .AddProducerForm {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    width: 80%;
+  }
+  
+  .ProducersList .AddProducerForm h2 {
+    padding-left: 2%;
+    width: 100%;
+  }
+  
+  .ProducersList .AddProducerForm .nextLineToAdd {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+  
+  .ProducersList .AddProducerForm button {
+    margin-top: 5%;
+    margin-left: 2%;
+    width: 50%;
+  }
+  
+  .ProducersList .AddProducerForm button a {
+    text-decoration: none;
+    color: black;
+  }
+  
+  .ProducersList .AddProducerForm .nextLineToAdd .inputContainer {
+    padding: 0 2%;
+    width: 20%;
+  }
+  .ProducersList .AddProducerForm .nextLineToAdd .inputContainer {
+    padding: 0 2%;
+    width: 20%;
+  }
+  .ProducersList .AddProducerForm .nextLineToAdd .inputContainer input {
+    width: 80%;
+  }
+  .ProducersList .AddProducerForm .nextLineToAdd .inputContainer p {
+    margin-bottom: 1%;
+  }
+  
