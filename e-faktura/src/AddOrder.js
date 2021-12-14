@@ -1,6 +1,6 @@
 import "./style/AddOrder.css";
 import React, { Component } from "react";
-import InvoiceItem from "./InvoiceItem";
+import OrderItems from "./OrderItems";
 
 class AddOrder extends Component {
   constructor(props) {
@@ -35,7 +35,6 @@ class AddOrder extends Component {
   }
 
   changeClient(e) {
-    console.log(e.target.value);
     if (e.target.value === "") {
       this.setState({
         clientNameInput: e.target.value,
@@ -53,20 +52,21 @@ class AddOrder extends Component {
   }
 
   async addOrderToOrdersList() {
-    // fetch(`http://localhost:8080/towary`, {
-    //   method: "POST", // or 'PUT'
-    //   headers: {
-    //     "content-type": "application/json",
-    //     Accept: "application/json",
-    //   },
-    //   body: JSON.stringify(productObject),
-    // })
-    //   .then((response) => {
-    //     return response.json();
-    //   })
-    //   .catch((error) => {
-    //     console.error("Error:", error);
-    //   });
+    const orderObject = {};
+    fetch(`http://localhost:8080/towary`, {
+      method: "POST", // or 'PUT'
+      headers: {
+        "content-type": "application/json",
+        Accept: "application/json",
+      },
+      body: JSON.stringify(orderObject),
+    })
+      .then((response) => {
+        return response.json();
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
   }
 
   render() {
@@ -119,7 +119,17 @@ class AddOrder extends Component {
             </div>
           )}
           <h4>Pozycje: </h4>
-          <InvoiceItem />
+          <ul className="productInfo">
+            <li>Nazwa</li>
+            <li>Kategoria</li>
+            <li>Producent</li>
+            <li>Cena netto</li>
+            <li>Stawka VAT</li>
+            <li>Cena brutto</li>
+            <li>Ilość</li>
+          </ul>
+          <OrderItems />
+          <button onClick={this.addOrderToOrdersList}>Dodaj zamówienie</button>
         </div>
       </div>
     );

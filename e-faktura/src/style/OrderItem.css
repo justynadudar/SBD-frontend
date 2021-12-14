@@ -13,7 +13,7 @@
 .AddItemForm .nextLineToAdd {
   display: flex;
   flex-direction: row;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
 }
 
 .AddItemForm .productInfo {
@@ -23,6 +23,11 @@
   display: flex;
   flex-direction: row;
   height: 20%;
+}
+.OrdersList .AddItemForm select {
+  margin-bottom: 5%;
+  font-size: 10px;
+  width: 80%;
 }
 
 .OrdersList .AddItemForm .productInfo li {
@@ -34,6 +39,24 @@
 
 .OrdersList .AddItemForm .productInfo input {
   font-size: 10px;
-  width: 2%;
-  flex-grow: 0.1;
+  width: 4%;
+}
+
+.OrdersList .AddItemForm .productInfo svg {
+  padding-left: 2%;
+  color: rgb(212, 18, 18);
+  font-size: 15px;
+}
+
+.OrdersList .AddItemForm .productInfo .true {
+  color: green;
+  font-size: 15px;
+}
+
+.OrdersList .AddItemForm .productInfo button {
+  padding-left: 2%;
+  border: none;
+  outline: none;
+  background-color: transparent;
+  cursor: pointer;
 }

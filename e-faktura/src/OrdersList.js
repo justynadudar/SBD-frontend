@@ -34,7 +34,6 @@ function OrdersList({ orders }) {
           <h4>Id klienta</h4>
           <h4>Id pracownika</h4>
           <h4>Stan zamówienia</h4>
-          {/* <h4>Pozycje</h4> */}
         </div>
 
         {loaded ? (

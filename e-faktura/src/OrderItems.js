@@ -1,7 +1,8 @@
-import "./style/InvoiceItem.css";
+import "./style/OrderItem.css";
 import React, { Component } from "react";
+import { AiOutlineClose, AiOutlineCheck } from "react-icons/ai";
 
-class InvoiceItem extends Component {
+class OrderItems extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -16,12 +17,17 @@ class InvoiceItem extends Component {
       thatProduct: {},
       amountInput: "",
       products: [],
+      items: [],
+      itemId: 0,
       loaded: false,
       productLoaded: false,
+      itemsLoaded: false,
     };
 
     this.changeProduct = this.changeProduct.bind(this);
     this.changeAmount = this.changeAmount.bind(this);
+    this.handleConfirm = this.handleConfirm.bind(this);
+    this.handleDelete = this.handleDelete.bind(this);
     this.addItemToOrdersList = this.addItemToOrdersList.bind(this);
   }
 
@@ -55,6 +61,32 @@ class InvoiceItem extends Component {
   changeAmount(e) {
     this.setState({
       amountInput: e.target.value,
+    });
+  }
+
+  handleConfirm() {
+    const newItem = {
+      id: this.state.itemId,
+      towar: this.state.thatProduct,
+      ilosc: parseInt(this.state.amountInput),
+    };
+    this.setState({
+      items: [...this.state.items, newItem],
+      itemsLoaded: true,
+      thatProduct: {},
+      productNameInput: "",
+      productLoaded: false,
+      id: this.state.itemId++,
+    });
+  }
+
+  handleDelete(id) {
+    this.setState({
+      items: this.state.items.filter((item) => item.id !== id),
+      itemsLoaded: true,
+      thatProduct: {},
+      productNameInput: "",
+      productLoaded: false,
     });
   }
 
@@ -98,38 +130,35 @@ class InvoiceItem extends Component {
       thatProduct,
       defaultProduct,
       productLoaded,
+      itemsLoaded,
       loaded,
       products,
+      items,
     } = this.state;
 
     return (
       <div className="AddItemForm">
-        <div className="nextLineToAdd">
-          <div className="inputContainer">
-            <p>Towar</p>
-            <select
-              name="name"
-              value={productNameInput}
-              onChange={this.changeProduct}
-            >
-              <option key={Math.random()}>{""}</option>
-              {loaded
-                ? products.map((product) => (
-                    <option key={Math.random()}>{product.nazwa}</option>
-                  ))
-                : null}
-            </select>
-          </div>
-        </div>
-        <ul className="productInfo">
-          <li>Nazwa</li>
-          <li>Kategoria</li>
-          <li>Producent</li>
-          <li>Cena netto</li>
-          <li>Stawka VAT</li>
-          <li>Cena brutto</li>
-          <li>Ilość</li>
-        </ul>
+        {itemsLoaded
+          ? items.map((item) => {
+              return (
+                <ul key={Math.random()} className="productInfo">
+                  <li key={Math.random()}>{item.towar.nazwa}</li>
+                  <li key={Math.random()}>{item.towar.kategoria.nazwa}</li>
+                  <li key={Math.random()}>{item.towar.producent.nazwa}</li>
+                  <li key={Math.random()}>{item.towar.cenaNetto}</li>
+                  <li key={Math.random()}>{item.towar.kategoria.stawkaVat}</li>
+                  <li key={Math.random()}>{item.towar.cenaBrutto}</li>
+                  <li key={Math.random()}>{item.ilosc}</li>
+                  <button
+                    key={Math.random()}
+                    onClick={() => this.handleDelete(item.id)}
+                  >
+                    <AiOutlineClose className="false" />
+                  </button>
+                </ul>
+              );
+            })
+          : null}
         {productLoaded ? (
           <ul className="productInfo">
             <li>{thatProduct.nazwa}</li>
@@ -138,7 +167,11 @@ class InvoiceItem extends Component {
             <li>{thatProduct.cenaNetto}</li>
             <li>{thatProduct.kategoria.stawkaVat}</li>
             <li>{thatProduct.cenaBrutto}</li>
-            <input type="number" />
+            <input onChange={this.changeAmount} type="number" />
+            <button onClick={this.handleConfirm}>
+              <AiOutlineCheck className="true" />
+            </button>
+            {/* <AiOutlineClose /> */}
           </ul>
         ) : (
           <ul className="productInfo">
@@ -151,9 +184,21 @@ class InvoiceItem extends Component {
             <li>{""}</li>
           </ul>
         )}
+        <select
+          name="name"
+          value={productNameInput}
+          onChange={this.changeProduct}
+        >
+          <option key={Math.random()}>{""}</option>
+          {loaded
+            ? products.map((product) => (
+                <option key={Math.random()}>{product.nazwa}</option>
+              ))
+            : null}
+        </select>
       </div>
     );
   }
 }
 
-export default InvoiceItem;
+export default OrderItems;
