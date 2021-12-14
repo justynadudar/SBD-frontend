@@ -26,7 +26,7 @@ class OrderItems extends Component {
 
     this.changeProduct = this.changeProduct.bind(this);
     this.changeAmount = this.changeAmount.bind(this);
-    this.handleConfirm = this.handleConfirm.bind(this);
+    //this.handleConfirm = this.handleConfirm.bind(this);
     this.handleDelete = this.handleDelete.bind(this);
     this.addItemToOrdersList = this.addItemToOrdersList.bind(this);
   }
@@ -78,6 +78,7 @@ class OrderItems extends Component {
       productLoaded: false,
       id: this.state.itemId++,
     });
+    this.props.confirmItems(newItem);
   }
 
   handleDelete(id) {
@@ -88,6 +89,7 @@ class OrderItems extends Component {
       productNameInput: "",
       productLoaded: false,
     });
+    this.props.deleteItem(id);
   }
 
   async addItemToOrdersList() {
@@ -168,7 +170,7 @@ class OrderItems extends Component {
             <li>{thatProduct.kategoria.stawkaVat}</li>
             <li>{thatProduct.cenaBrutto}</li>
             <input onChange={this.changeAmount} type="number" />
-            <button onClick={this.handleConfirm}>
+            <button onClick={() => this.handleConfirm()}>
               <AiOutlineCheck className="true" />
             </button>
             {/* <AiOutlineClose /> */}
