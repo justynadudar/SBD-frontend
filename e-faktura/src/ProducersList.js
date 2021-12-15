@@ -1,7 +1,6 @@
 import "./style/ProducersList.css";
 import { useNavigate } from "react-router-dom";
 import React, { useState, useEffect } from "react";
-import { NavLink as Link } from "react-router-dom";
 
 function ProducersList({ producers }) {
   let navigate = useNavigate();

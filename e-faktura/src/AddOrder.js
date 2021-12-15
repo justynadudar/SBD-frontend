@@ -27,6 +27,7 @@ class AddOrder extends Component {
         pracownik: "faktura.zamowienie.pracownik.nazwaFirmy",
         data: "data wystawienia",
       },
+      thatOrder: {},
       thatClient: {},
       thatEmployee: {},
       thatInvoice: {},
@@ -34,6 +35,7 @@ class AddOrder extends Component {
       employees: [],
       invoices: [],
       itemsList: [],
+      orders: [],
       loaded: false,
       clientLoaded: false,
       employeeLoaded: false,
@@ -43,21 +45,30 @@ class AddOrder extends Component {
     this.changeClient = this.changeClient.bind(this);
     this.changeEmployee = this.changeEmployee.bind(this);
     this.changeInvoice = this.changeInvoice.bind(this);
-    this.confirmItems = this.confirmItems.bind(this);
+    // this.confirmItems = this.confirmItems.bind(this);
     this.deleteItem = this.deleteItem.bind(this);
     this.addOrderToOrdersList = this.addOrderToOrdersList.bind(this);
+    this.addInvoiceBeforeAddOrder = this.addInvoiceBeforeAddOrder.bind(this);
+    this.refreshInvoice = this.refreshInvoice.bind(this);
   }
 
   componentDidMount() {
-    Promise.all([fetch("/klienci"), fetch("/pracownicy"), fetch("/faktury")])
-      .then(([res1, res2, res3]) =>
-        Promise.all([res1.json(), res2.json(), res3.json()])
+    Promise.all([
+      fetch("/klienci"),
+      fetch("/pracownicy"),
+      fetch("/faktury"),
+      fetch("/zamowienia"),
+    ])
+      .then(([res1, res2, res3, res4]) =>
+        Promise.all([res1.json(), res2.json(), res3.json(), res4.json()])
       )
-      .then(([data1, data2, data3]) =>
+      .then(([data1, data2, data3, data4]) =>
         this.setState({
           clients: data1,
           employees: data2,
           invoices: data3,
+          orders: data4,
+          thatOrder: data4[0],
           loaded: true,
         })
       );
@@ -70,11 +81,12 @@ class AddOrder extends Component {
         invoiceLoaded: false,
       });
     } else if (e.target.value == -1) {
+      this.addInvoiceBeforeAddOrder();
       this.setState({
         invoiceNameInput: e.target.value,
-        thatInvoice: { idFaktury: -1 },
         invoiceLoaded: true,
       });
+      this.refreshInvoice();
     } else {
       const finded = this.state.invoices.find(
         (invoice) => invoice.idFaktury == e.target.value
@@ -128,8 +140,7 @@ class AddOrder extends Component {
     }
   }
 
-  //zmienić na confirmItem, bo jednak jeden będziemy potwierdzać
-  confirmItems(item) {
+  confirmItem(item) {
     this.setState({
       itemsList: [...this.state.itemsList, item],
     });
@@ -142,20 +153,107 @@ class AddOrder extends Component {
     });
   }
 
-  async addOrderToOrdersList() {
-    const orderObject = {
-      klient: this.state.thatClient,
-      pracownik: this.state.thatEmployee,
-      faktura: this.state.thatInvoice,
-    };
-    fetch(`http://localhost:8080/zamowienia`, {
+  async refreshInvoice() {
+    fetch("/faktury", {
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        this.setState({
+          thatInvoice: data[data.length - 1],
+          invoiceLoaded: true,
+        });
+      });
+  }
+
+  // async addPositionsToOrder() {
+  //   fetch(`http://localhost:8080/zamowienie`, {
+  //     method: "POST", // or 'PUT'
+  //     headers: {
+  //       "content-type": "application/json",
+  //       Accept: "application/json",
+  //     },
+  //     body: JSON.stringify(this.state.thatInvoice),
+  //   })
+  //     .then((response) => {
+  //       this.setState({
+  //         invoiceLoaded: true,
+  //       });
+  //       console.log(this.state.invoiceLoaded);
+  //       return response.json();
+  //     })
+  //     .catch((error) => {
+  //       console.error("Error:", error);
+  //     });
+  // }
+
+  async addInvoiceBeforeAddOrder() {
+    fetch(`http://localhost:8080/faktury`, {
       method: "POST", // or 'PUT'
       headers: {
         "content-type": "application/json",
         Accept: "application/json",
       },
-      body: JSON.stringify(orderObject),
+      body: JSON.stringify(this.state.thatInvoice),
     })
+      .then((response) => {
+        this.setState({
+          invoiceLoaded: true,
+        });
+        console.log(this.state.invoiceLoaded);
+        return response.json();
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+    this.componentDidMount();
+  }
+
+  async addOrderToOrdersList() {
+    const orderObject = {
+      klient: this.state.thatClient,
+      pracownik: this.state.thatEmployee,
+    };
+    console.log(orderObject);
+    console.log(this.state.thatOrder.idZamowienia);
+    fetch(
+      `http://localhost:8080/zamowienia/${this.state.thatOrder.idZamowienia}`,
+      {
+        method: "PUT", // or 'PUT'
+        headers: {
+          "content-type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify(orderObject),
+      }
+    )
+      .then((response) => {
+        return response.json();
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+
+    const orderToInvoice = {
+      id: this.state.thatOrder.idZamowienia,
+      faktura: this.state.thatInvoice,
+    };
+    console.log(orderToInvoice);
+
+    fetch(
+      `http://localhost:8080/zamowienia/faktura/${this.state.thatOrder.idZamowienia}`,
+      {
+        method: "PUT", // or 'PUT'
+        headers: {
+          "content-type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify(this.state.thatInvoice),
+      }
+    )
       .then((response) => {
         return response.json();
       })
@@ -186,9 +284,6 @@ class AddOrder extends Component {
         <aside>
           <button>Dodaj zamówienie</button>
         </aside>
-        {console.log(this.state.clients)}
-        {console.log(this.state.employees)}
-        {console.log(this.state.invoices)}
         <div className="AddOrderForm">
           <h2>Nowe zamówienie</h2>
           <div className="nextLineToAdd">
@@ -287,7 +382,6 @@ class AddOrder extends Component {
           </div>
           {employeeLoaded ? (
             <div className="clientInfo">
-              {console.log(thatEmployee)}
               <p>{thatEmployee.imie}</p>
               <p>{thatEmployee.nazwisko}</p>
               <p>{thatEmployee.telefon}</p>
@@ -312,11 +406,18 @@ class AddOrder extends Component {
             <li>Ilość</li>
           </ul>
           <OrderItems
-            confirmItems={this.confirmItems}
+            confirmItem={this.confirmItem}
             deleteItem={this.deleteItem}
           />
-          {console.log(this.state.itemsList)}
-          <button onClick={this.addOrderToOrdersList}>Dodaj zamówienie</button>
+          <button
+            className="confirmPositions"
+            onClick={this.addOrderToOrdersList}
+          >
+            Potwierdź pozycje
+          </button>
+          <button className="submit" onClick={this.addOrderToOrdersList}>
+            Dodaj zamówienie
+          </button>
         </div>
       </div>
     );

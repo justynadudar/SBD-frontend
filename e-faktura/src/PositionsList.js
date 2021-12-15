@@ -1,7 +1,6 @@
 import "./style/PositionsList.css";
 import { useNavigate, useParams } from "react-router-dom";
 import React, { useState, useEffect } from "react";
-import { NavLink as Link } from "react-router-dom";
 
 function PositionsList({ positions }) {
   const { id } = useParams();
@@ -11,7 +10,7 @@ function PositionsList({ positions }) {
 
   useEffect(() => {
     const fetchData = async () => {
-      const response = await fetch("/pozycje/zamowienie/"+id);
+      const response = await fetch("/pozycje/zamowienie/" + id);
       const body = await response.json();
       setPositionsListState(body);
       setLoaded(true);
@@ -20,7 +19,7 @@ function PositionsList({ positions }) {
   }, []);
 
   function handleOnClick() {
-    navigate("/zamowienie/"+id);
+    navigate("/zamowienie/" + id);
   }
 
   return (

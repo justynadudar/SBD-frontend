@@ -2,20 +2,36 @@ import "./style/Warehouse.css";
 import { useNavigate } from "react-router-dom";
 import React, { useState, useEffect } from "react";
 
-function ClientsList() {
+function EditProduct() {
   let navigate = useNavigate();
-  let [productsList, setProductsListState] = useState({ productsList: [] });
+  let [products, setProductsState] = useState({ products: [] });
+  let [productNameInput, setProductNameState] = useState({
+    productNameInput: "-",
+  });
   let [loaded, setLoaded] = useState("");
 
   useEffect(() => {
     const fetchData = async () => {
       const respProducts = await fetch("/towary");
       const body1 = await respProducts.json();
-      setProductsListState(body1);
+      setProductsState(body1);
       setLoaded(true);
     };
     fetchData();
   }, []);
+
+  function changeProduct(e) {
+    if (e.target.value === "-") {
+      setProductNameState({ productNameInput: e.target.value });
+    } else {
+      setProductNameState({
+        productNameInput: products.find(
+          (product) => product.nazwa == e.target.value
+        ),
+      });
+      console.log(products);
+    }
+  }
 
   function handleOnClick() {
     navigate("/magazyn/dodaj");
@@ -41,25 +57,17 @@ function ClientsList() {
           <h4>Cena netto</h4>
           <h4>Cena brutto</h4>
         </div>
-        {loaded ? (
-          productsList.map((product) => {
-            return (
-              <div key={Math.random()} className="row">
-                <p key={Math.random()}>{product.nazwa}</p>
-                <p key={Math.random()}>{product.kategoria.nazwa}</p>
-                <p key={Math.random()}>{product.producent.nazwa}</p>
-                <p key={Math.random()}>{product.ilosc}</p>
-                <p key={Math.random()}>{product.cenaNetto.toFixed(2)}</p>
-                <p key={Math.random()}>{product.cenaBrutto.toFixed(2)}</p>
-              </div>
-            );
-          })
-        ) : (
-          <h2>Loading...</h2>
-        )}
+        <select name="name" value={productNameInput} onChange={changeProduct}>
+          <option key={Math.random()}>{""}</option>
+          {loaded
+            ? products.map((product) => (
+                <option key={Math.random()}>{product.nazwa}</option>
+              ))
+            : null}
+        </select>
       </div>
     </div>
   );
 }
 
-export default ClientsList;
+export default EditProduct;

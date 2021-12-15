@@ -15,6 +15,7 @@ import AddEmployee from "./AddEmployee";
 import ProducersList from "./ProducersList";
 import AddProducer from "./AddProducer";
 import PositionsList from "./PositionsList";
+import EditProduct from "./EditProduct";
 
 function App() {
   return (
@@ -35,6 +36,7 @@ function App() {
 
           <Route path="/magazyn" element={<Warehouse />} />
           <Route path="/magazyn/dodaj" element={<AddProduct />} />
+          <Route path="/magazyn/edytuj" element={<EditProduct />} />
 
           <Route path="/faktury" element={<InvoiceList />} />
 

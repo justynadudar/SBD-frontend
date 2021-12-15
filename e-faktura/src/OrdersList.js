@@ -19,6 +19,21 @@ function OrdersList({ orders }) {
   }, []);
 
   function handleOnClick() {
+    const orderObject = {};
+    fetch(`http://localhost:8080/zamowienia`, {
+      method: "POST", // or 'PUT'
+      headers: {
+        "content-type": "application/json",
+        Accept: "application/json",
+      },
+      body: JSON.stringify(orderObject),
+    })
+      .then((response) => {
+        return response.json();
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
     navigate("/zamowienia/dodaj");
   }
 
