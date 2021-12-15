@@ -2,6 +2,7 @@ import "./style/OrderItem.css";
 import React, { Component } from "react";
 import { AiOutlineClose, AiOutlineCheck } from "react-icons/ai";
 
+//tutaj powinno byc add order item
 class OrderItems extends Component {
   constructor(props) {
     super(props);
@@ -26,7 +27,7 @@ class OrderItems extends Component {
 
     this.changeProduct = this.changeProduct.bind(this);
     this.changeAmount = this.changeAmount.bind(this);
-    //this.handleConfirm = this.handleConfirm.bind(this);
+    this.handleConfirm = this.handleConfirm.bind(this);
     this.handleDelete = this.handleDelete.bind(this);
     this.addItemToOrdersList = this.addItemToOrdersList.bind(this);
   }
@@ -58,6 +59,7 @@ class OrderItems extends Component {
       });
     }
   }
+
   changeAmount(e) {
     this.setState({
       amountInput: e.target.value,
@@ -65,6 +67,7 @@ class OrderItems extends Component {
   }
 
   handleConfirm() {
+    window.scrollBy(0, 200);
     const newItem = {
       id: this.state.itemId,
       towar: this.state.thatProduct,
@@ -78,7 +81,7 @@ class OrderItems extends Component {
       productLoaded: false,
       id: this.state.itemId++,
     });
-    this.props.confirmItems(newItem);
+    this.props.confirmItem(newItem);
   }
 
   handleDelete(id) {
@@ -108,7 +111,6 @@ class OrderItems extends Component {
       ilosc: this.state.amountInput,
       cenaNetto: this.state.costInput,
     };
-    console.log(productObject);
 
     fetch(`http://localhost:8080/towary`, {
       method: "POST", // or 'PUT'
@@ -173,16 +175,15 @@ class OrderItems extends Component {
             <button onClick={() => this.handleConfirm()}>
               <AiOutlineCheck className="true" />
             </button>
-            {/* <AiOutlineClose /> */}
           </ul>
         ) : (
           <ul className="productInfo">
-            <li>{defaultProduct.nazwa}</li>
-            <li>{defaultProduct.kategoria.nazwa}</li>
-            <li>{defaultProduct.producent.nazwa}</li>
-            <li>{defaultProduct.cenaNetto}</li>
-            <li>{defaultProduct.kategoria.stawkaVat}</li>
-            <li>{defaultProduct.cenaBrutto}</li>
+            <li>{""}</li>
+            <li>{""}</li>
+            <li>{""}</li>
+            <li>{""}</li>
+            <li>{""}</li>
+            <li>{""}</li>
             <li>{""}</li>
           </ul>
         )}

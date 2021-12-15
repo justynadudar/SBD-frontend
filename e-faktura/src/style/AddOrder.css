@@ -33,6 +33,14 @@
   flex-direction: row;
   align-items: center;
 }
+
+.OrdersList .AddOrderForm .submit {
+  padding-right: 5%;
+  margin-bottom: 5%;
+  align-self: center;
+  width: 50%;
+}
+
 .OrdersList .AddOrderForm .productInfo li {
   display: block;
   font-size: 10px;
