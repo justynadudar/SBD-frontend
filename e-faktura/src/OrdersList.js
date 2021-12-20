@@ -2,6 +2,7 @@ import "./style/OrdersList.css";
 import { useNavigate } from "react-router-dom";
 import React, { useState, useEffect } from "react";
 import { NavLink as Link } from "react-router-dom";
+import { AiOutlineClose } from "react-icons/ai";
 
 function OrdersList({ orders }) {
   let navigate = useNavigate();
@@ -37,6 +38,11 @@ function OrdersList({ orders }) {
     navigate("/zamowienia/dodaj");
   }
 
+  function handleDelete(id) {
+    fetch(`http://localhost:8080/zamowienia/${id}`, { method: 'DELETE' })
+        .then(() => console.log('Delete successful'));
+  }
+
   return (
     <div className="OrdersList">
       <aside>
@@ -70,6 +76,12 @@ function OrdersList({ orders }) {
                     Szczegóły
                   </Link>
                 </p>
+                <button
+                    key={Math.random()}
+                    onClick={() => handleDelete(order.idZamowienia)}
+                  >
+                    <AiOutlineClose className="false" />
+                  </button>
               </div>
             );
           })

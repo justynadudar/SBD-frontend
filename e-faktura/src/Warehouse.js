@@ -22,7 +22,6 @@ function ClientsList() {
     navigate("/magazyn/dodaj");
   }
   function handleDelete(id) {
-    alert(id);
     fetch(`http://localhost:8080/towary/${id}`, { method: 'DELETE' })
         .then(() => console.log('Delete successful'));
   }

@@ -1,6 +1,7 @@
 import "./style/EmployeesList.css";
 import { useNavigate } from "react-router-dom";
 import React, { useState, useEffect } from "react";
+import { AiOutlineClose } from "react-icons/ai";
 
 function EmployeesList({ orders }) {
   let navigate = useNavigate();
@@ -19,6 +20,11 @@ function EmployeesList({ orders }) {
 
   function handleOnClick() {
     navigate("/pracownicy/dodaj");
+  }
+
+  function handleDelete(id) {
+    fetch(`http://localhost:8080/pracownicy/${id}`, { method: 'DELETE' })
+        .then(() => console.log('Delete successful'));
   }
 
   return (
@@ -45,6 +51,12 @@ function EmployeesList({ orders }) {
                 <p>{employee.nazwisko}</p>
                 <p>{employee.stanowisko.nazwa}</p>
                 <p>{employee.telefon}</p>
+                <button
+                    key={Math.random()}
+                    onClick={() => handleDelete(employee.idPracownika)}
+                  >
+                    <AiOutlineClose className="false" />
+                  </button>
               </div>
             );
           })

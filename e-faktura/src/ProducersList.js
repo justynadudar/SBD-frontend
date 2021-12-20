@@ -1,6 +1,7 @@
 import "./style/ProducersList.css";
 import { useNavigate } from "react-router-dom";
 import React, { useState, useEffect } from "react";
+import { AiOutlineClose } from "react-icons/ai";
 
 function ProducersList({ producers }) {
   let navigate = useNavigate();
@@ -19,6 +20,11 @@ function ProducersList({ producers }) {
 
   function handleOnClick() {
     navigate("/producenci/dodaj");
+  }
+  
+  function handleDelete(id) {
+    fetch(`http://localhost:8080/producenci/${id}`, { method: 'DELETE' })
+        .then(() => console.log('Delete successful'));
   }
 
   return (
@@ -39,6 +45,12 @@ function ProducersList({ producers }) {
               <div key={producer.idProducenta} className="row">
                 <p>{producer.idProducenta}</p>
                 <p>{producer.nazwa}</p>
+                <button
+                    key={Math.random()}
+                    onClick={() => handleDelete(producer.idProducenta)}
+                  >
+                    <AiOutlineClose className="false" />
+                  </button>
               </div>
             );
           })

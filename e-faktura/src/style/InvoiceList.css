@@ -1,0 +1,66 @@
+.InvoiceList {
+    display: flex;
+    flex-direction: row;
+  }
+  
+  .InvoiceList aside {
+    display: flex;
+    flex-direction: column;
+    align-content: center;
+    justify-content: flex-start;
+    align-items: center;
+    background-color: black;
+    width: 15%;
+    min-height: 90vh;
+  }
+  
+  .InvoiceList aside button {
+    margin-top: 10%;
+    width: 70%;
+    height: 5%;
+    font-size: 0.6rem;
+    border-radius: 8px;
+    background-color: black;
+    border: 2px solid #7dbaec;
+    text-decoration: none;
+    color: rgb(125, 186, 236);
+    transition-duration: 0.6s;
+    cursor: pointer;
+  }
+  
+  .InvoiceList aside button:hover {
+    background-color: rgb(125, 186, 236);
+    color: black;
+    border: 2px solid rgb(125, 186, 236);
+  }
+  
+  .InvoiceList .TableOfInvoices {
+    margin-left: 2%;
+    width: 80%;
+  }
+  
+  .InvoiceList .TableOfInvoices .row {
+    display: flex;
+    flex-direction: row;
+    text-align: center;
+    border: 2px solid rgb(170, 173, 175);
+    width: 100%;
+  }
+  
+  .InvoiceList .TableOfInvoices .row h4 {
+    width: 100%;
+  }
+  .InvoiceList .TableOfInvoices .row .last {
+    width: 20%;
+  }
+  
+  .InvoiceList .TableOfInvoices .row p {
+    width: 100%;
+  }
+  .InvoiceList .TableOfInvoices .row a {
+    align-self: center;
+    color: black;
+    font-size: 1.2rem;
+    width: 20%;
+  }
+  

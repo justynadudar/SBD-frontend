@@ -1,6 +1,7 @@
 import "./style/PositionsList.css";
 import { useNavigate, useParams } from "react-router-dom";
 import React, { useState, useEffect } from "react";
+import { AiOutlineClose } from "react-icons/ai";
 
 function PositionsList({ positions }) {
   const { id } = useParams();
@@ -20,6 +21,11 @@ function PositionsList({ positions }) {
 
   function handleOnClick() {
     navigate("/zamowienie/" + id);
+  }
+
+  function handleDelete(id) {
+    fetch(`http://localhost:8080/pozycje/${id}`, { method: 'DELETE' })
+        .then(() => console.log('Delete successful'));
   }
 
   return (
@@ -42,6 +48,12 @@ function PositionsList({ positions }) {
                 <p>{position.nrPozycji}</p>
                 <p>{position.towar.idTowaru}</p>
                 <p>{position.ilosc}</p>
+                <button
+                    key={Math.random()}
+                    onClick={() => handleDelete(position.nrPozycji)}
+                  >
+                    <AiOutlineClose className="false" />
+                  </button>
               </div>
             );
           })

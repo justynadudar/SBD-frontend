@@ -2,6 +2,7 @@ import "./style/ClientsList.css";
 import { useNavigate, Link } from "react-router-dom";
 import React, { useState, useEffect } from "react";
 import { MdReadMore } from "react-icons/md";
+import { AiOutlineClose } from "react-icons/ai";
 
 function ClientsList() {
   let navigate = useNavigate();
@@ -22,6 +23,11 @@ function ClientsList() {
     navigate("/klienci/dodaj");
   }
 
+  function handleDelete(id) {
+    fetch(`http://localhost:8080/klienci/${id}`, { method: 'DELETE' })
+        .then(() => console.log('Delete successful'));
+  }
+
   return (
     <div className="ClientsList">
       <aside>
@@ -34,6 +40,7 @@ function ClientsList() {
           <h4>Nazwisko</h4>
           <h4>Telefon</h4>
           <h4>E-mail</h4>
+          <h4>Rabat</h4>
           <h4 className="last"></h4>
         </div>
 
@@ -45,6 +52,7 @@ function ClientsList() {
                 <p key={Math.random()}>{client.nazwisko}</p>
                 <p key={Math.random()}>{client.telefon}</p>
                 <p key={Math.random()}>{client.email}</p>
+                <p key={Math.random()}>{client.rabat.procentRabatu}%</p>
                 <Link
                   to={{
                     pathname: `/klienci/${client.idKlienta}`,
@@ -53,6 +61,12 @@ function ClientsList() {
                 >
                   <MdReadMore />
                 </Link>
+                <button
+                    key={Math.random()}
+                    onClick={() => handleDelete(client.idKlienta)}
+                  >
+                    <AiOutlineClose className="false" />
+                  </button>
               </div>
             );
           })
