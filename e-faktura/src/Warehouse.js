@@ -1,6 +1,7 @@
 import "./style/Warehouse.css";
 import { useNavigate } from "react-router-dom";
 import React, { useState, useEffect } from "react";
+import { AiOutlineClose } from "react-icons/ai";
 
 function ClientsList() {
   let navigate = useNavigate();
@@ -19,6 +20,11 @@ function ClientsList() {
 
   function handleOnClick() {
     navigate("/magazyn/dodaj");
+  }
+  function handleDelete(id) {
+    alert(id);
+    fetch(`http://localhost:8080/towary/${id}`, { method: 'DELETE' })
+        .then(() => console.log('Delete successful'));
   }
 
   function handleIssuingGoodsClick() {
@@ -40,6 +46,7 @@ function ClientsList() {
           <h4>Ilość</h4>
           <h4>Cena netto</h4>
           <h4>Cena brutto</h4>
+          <h4>Usuń</h4>
         </div>
         {loaded ? (
           productsList.map((product) => {
@@ -51,6 +58,12 @@ function ClientsList() {
                 <p key={Math.random()}>{product.ilosc}</p>
                 <p key={Math.random()}>{product.cenaNetto.toFixed(2)}</p>
                 <p key={Math.random()}>{product.cenaBrutto.toFixed(2)}</p>
+                <button
+                    key={Math.random()}
+                    onClick={() => handleDelete(product.idTowaru)}
+                  >
+                    <AiOutlineClose className="false" />
+                  </button>
               </div>
             );
           })

@@ -40,16 +40,18 @@ class AddOrder extends Component {
       clientLoaded: false,
       employeeLoaded: false,
       invoiceLoaded: false,
+      itemsConfirmed: false,
     };
 
     this.changeClient = this.changeClient.bind(this);
     this.changeEmployee = this.changeEmployee.bind(this);
     this.changeInvoice = this.changeInvoice.bind(this);
-    // this.confirmItems = this.confirmItems.bind(this);
+    this.confirmItem = this.confirmItem.bind(this);
     this.deleteItem = this.deleteItem.bind(this);
     this.addOrderToOrdersList = this.addOrderToOrdersList.bind(this);
     this.addInvoiceBeforeAddOrder = this.addInvoiceBeforeAddOrder.bind(this);
     this.refreshInvoice = this.refreshInvoice.bind(this);
+    this.addPositionsToOrder = this.addPositionsToOrder.bind(this);
   }
 
   componentDidMount() {
@@ -169,26 +171,11 @@ class AddOrder extends Component {
       });
   }
 
-  // async addPositionsToOrder() {
-  //   fetch(`http://localhost:8080/zamowienie`, {
-  //     method: "POST", // or 'PUT'
-  //     headers: {
-  //       "content-type": "application/json",
-  //       Accept: "application/json",
-  //     },
-  //     body: JSON.stringify(this.state.thatInvoice),
-  //   })
-  //     .then((response) => {
-  //       this.setState({
-  //         invoiceLoaded: true,
-  //       });
-  //       console.log(this.state.invoiceLoaded);
-  //       return response.json();
-  //     })
-  //     .catch((error) => {
-  //       console.error("Error:", error);
-  //     });
-  // }
+  addPositionsToOrder() {
+    this.setState({
+      itemsConfirmed: true,
+    });
+  }
 
   async addInvoiceBeforeAddOrder() {
     fetch(`http://localhost:8080/faktury`, {
@@ -217,8 +204,6 @@ class AddOrder extends Component {
       klient: this.state.thatClient,
       pracownik: this.state.thatEmployee,
     };
-    console.log(orderObject);
-    console.log(this.state.thatOrder.idZamowienia);
     fetch(
       `http://localhost:8080/zamowienia/${this.state.thatOrder.idZamowienia}`,
       {
@@ -260,6 +245,37 @@ class AddOrder extends Component {
       .catch((error) => {
         console.error("Error:", error);
       });
+    if (this.state.itemsConfirmed) {
+      let itemObject = {};
+      this.state.itemsList.map((item) => {
+        itemObject = {
+          zamowienie: {
+            idZamowienia: this.state.thatOrder.idZamowienia,
+            klient: this.state.thatClient,
+            pracownik: this.state.thatEmployee,
+          },
+          ilosc: item.ilosc,
+          towar: item.towar,
+        };
+        console.log(itemObject);
+        console.log(this.state.thatOrder);
+
+        fetch(`http://localhost:8080/pozycje`, {
+          method: "POST", // or 'PUT'
+          headers: {
+            "content-type": "application/json",
+            Accept: "application/json",
+          },
+          body: JSON.stringify(itemObject),
+        })
+          .then((response) => {
+            return response.json();
+          })
+          .catch((error) => {
+            console.error("Error:", error);
+          });
+      });
+    }
   }
 
   render() {
@@ -411,7 +427,7 @@ class AddOrder extends Component {
           />
           <button
             className="confirmPositions"
-            onClick={this.addOrderToOrdersList}
+            onClick={this.addPositionsToOrder}
           >
             Potwierdź pozycje
           </button>
