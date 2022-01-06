@@ -3,6 +3,7 @@ import { useNavigate, Link } from "react-router-dom";
 import React, { useState, useEffect } from "react";
 import { MdReadMore } from "react-icons/md";
 import { AiOutlineClose } from "react-icons/ai";
+import { Table } from "react-bootstrap";
 
 function ClientsList() {
   let navigate = useNavigate();
@@ -24,8 +25,9 @@ function ClientsList() {
   }
 
   function handleDelete(id) {
-    fetch(`http://localhost:8080/klienci/${id}`, { method: 'DELETE' })
-        .then(() => console.log('Delete successful'));
+    fetch(`http://localhost:8080/klienci/${id}`, { method: "DELETE" }).then(
+      () => console.log("Delete successful")
+    );
   }
 
   return (
@@ -33,47 +35,59 @@ function ClientsList() {
       <aside>
         <button onClick={handleOnClick}>Nowy klient</button>
       </aside>
-      <div className="TableOfClients">
-        <h2>Klienci</h2>
-        <div className="row">
-          <h4>Imie</h4>
-          <h4>Nazwisko</h4>
-          <h4>Telefon</h4>
-          <h4>E-mail</h4>
-          <h4>Rabat</h4>
-          <h4 className="last"></h4>
-        </div>
+      <Table striped bordered hover size="sm">
+        <thead>
+          <tr>
+            <th>Imię</th>
+            <th>Nazwisko</th>
+            <th>Telefon</th>
+            <th>E-mail</th>
+            <th>Rabat</th>
+            <th>Szczegóły</th>
+            <th>Usuń</th>
+          </tr>
+        </thead>
+        <tbody>
+          {loaded ? (
+            clientsList.map((client) => {
+              return (
+                <tr>
+                  <td>{client.imie}</td>
+                  <td>{client.nazwisko}</td>
+                  <td>{client.telefon}</td>
+                  <td>{client.email}</td>
 
-        {loaded ? (
-          clientsList.map((client) => {
-            return (
-              <div key={Math.random()} className="row">
-                <p key={Math.random()}>{client.imie}</p>
-                <p key={Math.random()}>{client.nazwisko}</p>
-                <p key={Math.random()}>{client.telefon}</p>
-                <p key={Math.random()}>{client.email}</p>
-                <p key={Math.random()}>{client.rabat.procentRabatu}%</p>
-                <Link
-                  to={{
-                    pathname: `/klienci/${client.idKlienta}`,
-                    state: { modal: true },
-                  }}
-                >
-                  <MdReadMore />
-                </Link>
-                <button
-                    key={Math.random()}
-                    onClick={() => handleDelete(client.idKlienta)}
-                  >
-                    <AiOutlineClose className="false" />
-                  </button>
-              </div>
-            );
-          })
-        ) : (
-          <h2>Loading...</h2>
-        )}
-      </div>
+                  {client?.rabat?.procentRabatu === undefined ? (
+                    <td>0%</td>
+                  ) : (
+                    <td>{client.rabat.procentRabatu}%</td>
+                  )}
+                  <td>
+                    <Link
+                      to={{
+                        pathname: `/klienci/${client.idKlienta}`,
+                        state: { modal: true },
+                      }}
+                    >
+                      <MdReadMore />
+                    </Link>
+                  </td>
+                  <td>
+                    <button
+                      key={Math.random()}
+                      onClick={() => handleDelete(client.idKlienta)}
+                    >
+                      <AiOutlineClose className="false" />
+                    </button>
+                  </td>
+                </tr>
+              );
+            })
+          ) : (
+            <h2>Loading...</h2>
+          )}
+        </tbody>
+      </Table>
     </div>
   );
 }

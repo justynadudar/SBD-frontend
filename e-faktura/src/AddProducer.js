@@ -1,6 +1,9 @@
 import "./style/ProducersList.css";
 import "./style/AddProducer.css";
 import React, { Component } from "react";
+import { Navigate } from "react-router-dom";
+import { Modal, Button } from "react-bootstrap";
+import Error from "./Error";
 
 class AddProducer extends Component {
   constructor(props) {
@@ -8,9 +11,14 @@ class AddProducer extends Component {
     this.state = {
       nameInput: "",
       producers: [],
+
+      emptyNameField: false,
+      producerAdded: false,
+      show: false,
     };
     this.changeName = this.changeName.bind(this);
-    this.addProducerToProducersList = this.addProducerToProducersList.bind(this);
+    this.addProducerToProducersList =
+      this.addProducerToProducersList.bind(this);
   }
 
   componentDidMount() {
@@ -25,36 +33,55 @@ class AddProducer extends Component {
   }
 
   changeName(e) {
+    if (this.state.emptyNameField) {
+      this.setState({
+        emptyNameField: false,
+      });
+    }
     this.setState({
       nameInput: e.target.value,
     });
   }
+  handleClose = () => {
+    this.setState({
+      show: false,
+    });
+  };
 
   async addProducerToProducersList() {
-    const producerObject = {
-      nazwa: this.state.nameInput,
-    };
-
-    fetch(`http://localhost:8080/producenci`, {
-      method: "POST", // or 'PUT'
-      headers: {
-        "content-type": "application/json",
-        Accept: "application/json",
-      },
-      body: JSON.stringify(producerObject),
-    })
-      .then((response) => {
-        return response.json();
-      })
-      .catch((error) => {
-        console.error("Error:", error);
+    if (this.state.nameInput.length === 0) {
+      this.setState({
+        emptyNameField: true,
       });
+    } else {
+      const producerObject = {
+        nazwa: this.state.nameInput,
+      };
+
+      await fetch(`http://localhost:8080/producenci`, {
+        method: "POST", // or 'PUT'
+        headers: {
+          "content-type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify(producerObject),
+      })
+        .then((response) => {
+          return response.json();
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+        });
+
+      this.setState({
+        producerAdded: true,
+        show: true,
+      });
+    }
   }
 
   render() {
-    const {
-      nameInput,
-    } = this.state;
+    const { nameInput, emptyNameField, producerAdded, show } = this.state;
     return (
       <div className="ProducersList">
         <aside>
@@ -71,9 +98,29 @@ class AddProducer extends Component {
                 value={nameInput}
                 onChange={this.changeName}
               />
+              <Error
+                error={emptyNameField}
+                info="Pole nazwa nie może być puste!"
+              />
             </div>
           </div>
-          <button onClick={this.addProducerToProducersList}>Dodaj Producenta</button>
+          <button onClick={this.addProducerToProducersList}>
+            Dodaj Producenta
+          </button>
+          {producerAdded ? (
+            <Modal show={show} onHide={this.handleClose}>
+              <Modal.Header closeButton></Modal.Header>
+              <Modal.Body>
+                Producent o nazwie {nameInput} został dodany
+              </Modal.Body>
+              <Modal.Footer>
+                <Button variant="secondary" onClick={this.handleClose}>
+                  OK
+                  {show ? null : <Navigate to="/producenci" />}
+                </Button>
+              </Modal.Footer>
+            </Modal>
+          ) : null}
         </div>
       </div>
     );

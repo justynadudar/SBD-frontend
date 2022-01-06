@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import React, { useState, useEffect } from "react";
 import { NavLink as Link } from "react-router-dom";
 import { AiOutlineClose } from "react-icons/ai";
+import { Table } from "react-bootstrap";
 
 function OrdersList({ orders }) {
   let navigate = useNavigate();
@@ -21,26 +22,27 @@ function OrdersList({ orders }) {
 
   function handleOnClick() {
     const orderObject = {};
-    fetch(`http://localhost:8080/zamowienia`, {
-      method: "POST", // or 'PUT'
-      headers: {
-        "content-type": "application/json",
-        Accept: "application/json",
-      },
-      body: JSON.stringify(orderObject),
-    })
-      .then((response) => {
-        return response.json();
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-      });
+    // fetch(`http://localhost:8080/zamowienia`, {
+    //   method: "POST", // or 'PUT'
+    //   headers: {
+    //     "content-type": "application/json",
+    //     Accept: "application/json",
+    //   },
+    //   body: JSON.stringify(orderObject),
+    // })
+    //   .then((response) => {
+    //     return response.json();
+    //   })
+    //   .catch((error) => {
+    //     console.error("Error:", error);
+    //   });
     navigate("/zamowienia/dodaj");
   }
 
   function handleDelete(id) {
-    fetch(`http://localhost:8080/zamowienia/${id}`, { method: 'DELETE' })
-        .then(() => console.log('Delete successful'));
+    fetch(`http://localhost:8080/zamowienia/${id}`, { method: "DELETE" }).then(
+      () => console.log("Delete successful")
+    );
   }
 
   return (
@@ -48,47 +50,52 @@ function OrdersList({ orders }) {
       <aside>
         <button onClick={handleOnClick}>Nowe zamówienie</button>
       </aside>
-      <div className="TableOfOrders">
-        <h2>Zamówienia</h2>
-        <div className="row">
-          <h4>Id</h4>
-          <h4>Id klienta</h4>
-          <h4>Id pracownika</h4>
-          <h4>Stan zamówienia</h4>
-          <h4>Pozycje</h4>
-        </div>
-
-        {loaded ? (
-          ordersList.map((order) => {
-            return (
-              <div key={order.idZamowienia} className="row">
-                <p>{order.idZamowienia}</p>
-                <p>{order.klient.idKlienta}</p>
-                <p>{order.pracownik.idPracownika}</p>
-                <p>{order.stanZamowienia}</p>
-                <p>
-                  <Link
-                    to={{
-                      pathname: `/pozycje/zamowienie/${order.idZamowienia}`,
-                      state: { modal: true },
-                    }}
-                  >
-                    Szczegóły
-                  </Link>
-                </p>
-                <button
-                    key={Math.random()}
-                    onClick={() => handleDelete(order.idZamowienia)}
-                  >
-                    <AiOutlineClose className="false" />
-                  </button>
-              </div>
-            );
-          })
-        ) : (
-          <h2>Loading...</h2>
-        )}
-      </div>
+      <Table striped bordered hover size="sm">
+        <thead>
+          <tr>
+            <th>Id</th>
+            <th>Id klienta</th>
+            <th>Id pracownika</th>
+            <th>Stan zamówienia</th>
+            <th>Szczegóły</th>
+            <th>Usuń</th>
+          </tr>
+        </thead>
+        <tbody>
+          {loaded ? (
+            ordersList.map((order) => {
+              return (
+                <tr>
+                  <td>{order.idZamowienia}</td>
+                  <td>{order.klient.idKlienta}</td>
+                  <td>{order.pracownik.idPracownika}</td>
+                  <td>{order.stanZamowienia}</td>
+                  <td>
+                    <Link
+                      to={{
+                        pathname: `/pozycje/zamowienie/${order.idZamowienia}`,
+                        state: { modal: true },
+                      }}
+                    >
+                      Szczegóły
+                    </Link>
+                  </td>
+                  <td>
+                    <button
+                      key={Math.random()}
+                      onClick={() => handleDelete(order.idZamowienia)}
+                    >
+                      <AiOutlineClose className="false" />
+                    </button>
+                  </td>
+                </tr>
+              );
+            })
+          ) : (
+            <h2>Loading...</h2>
+          )}
+        </tbody>
+      </Table>
     </div>
   );
 }

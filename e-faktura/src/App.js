@@ -4,7 +4,7 @@ import "./style/App.css";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import ClientsList from "./ClientsList";
 import AddClient from "./AddClient";
-import Warehouse from "./Warehouse";
+import ProductsList from "./ProductsList";
 import AddProduct from "./AddProduct";
 import OrdersList from "./OrdersList";
 import AddOrder from "./AddOrder";
@@ -34,7 +34,7 @@ function App() {
           <Route path="/pozycje/zamowienie/:id" element={<PositionsList />} />
           <Route path="/zamowienia/dodaj" element={<AddOrder />} />
 
-          <Route path="/magazyn" element={<Warehouse />} />
+          <Route path="/magazyn" element={<ProductsList />} />
           <Route path="/magazyn/dodaj" element={<AddProduct />} />
           <Route path="/magazyn/edytuj" element={<EditProduct />} />
 

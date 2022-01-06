@@ -70,7 +70,7 @@ class AddOrder extends Component {
           employees: data2,
           invoices: data3,
           orders: data4,
-          thatOrder: data4[0],
+          thatOrder: null,
           loaded: true,
         })
       );
@@ -172,11 +172,13 @@ class AddOrder extends Component {
   }
 
   addPositionsToOrder() {
+    console.log(this.state.itemsList);
     this.setState({
       itemsConfirmed: true,
     });
   }
 
+  //tworzymy fakture, gdy uzytkownik wybierze "Nowa faktura"
   async addInvoiceBeforeAddOrder() {
     fetch(`http://localhost:8080/faktury`, {
       method: "POST", // or 'PUT'
@@ -199,52 +201,56 @@ class AddOrder extends Component {
     this.componentDidMount();
   }
 
-  async addOrderToOrdersList() {
-    const orderObject = {
-      klient: this.state.thatClient,
-      pracownik: this.state.thatEmployee,
-    };
-    fetch(
-      `http://localhost:8080/zamowienia/${this.state.thatOrder.idZamowienia}`,
-      {
-        method: "PUT", // or 'PUT'
+  async createOrder() {
+    if (this.state.invoiceLoaded) {
+      const orderObject = {
+        klient: this.state.thatClient,
+        pracownik: this.state.thatEmployee,
+        faktura: this.state.thatInvoice,
+      };
+      console.log(orderObject);
+      const response = await fetch(`http://localhost:8080/zamowienia`, {
+        method: "POST",
         headers: {
           "content-type": "application/json",
           Accept: "application/json",
         },
         body: JSON.stringify(orderObject),
-      }
-    )
-      .then((response) => {
-        return response.json();
-      })
-      .catch((error) => {
-        console.error("Error:", error);
       });
+      const data = response.json();
+      console.log(data.body);
+      return data;
+    }
+  }
+
+  //przypisywanie faktury do zamówienia
+  async addOrderToOrdersList() {
+    await this.createOrder().then((movies) => {
+      console.log(movies); // fetched movies
+    });
 
     const orderToInvoice = {
       id: this.state.thatOrder.idZamowienia,
       faktura: this.state.thatInvoice,
     };
     console.log(orderToInvoice);
-
-    fetch(
-      `http://localhost:8080/zamowienia/faktura/${this.state.thatOrder.idZamowienia}`,
-      {
-        method: "PUT", // or 'PUT'
-        headers: {
-          "content-type": "application/json",
-          Accept: "application/json",
-        },
-        body: JSON.stringify(this.state.thatInvoice),
-      }
-    )
-      .then((response) => {
-        return response.json();
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-      });
+    // fetch(
+    //   `http://localhost:8080/zamowienia/faktura/${this.state.thatOrder.idZamowienia}`,
+    //   {
+    //     method: "PUT", // or 'PUT'
+    //     headers: {
+    //       "content-type": "application/json",
+    //       Accept: "application/json",
+    //     },
+    //     body: JSON.stringify(this.state.thatInvoice),
+    //   }
+    // )
+    //   .then((response) => {
+    //     return response.json();
+    //   })
+    //   .catch((error) => {
+    //     console.error("Error:", error);
+    //   });
     if (this.state.itemsConfirmed) {
       let itemObject = {};
       this.state.itemsList.map((item) => {
@@ -260,20 +266,20 @@ class AddOrder extends Component {
         console.log(itemObject);
         console.log(this.state.thatOrder);
 
-        fetch(`http://localhost:8080/pozycje`, {
-          method: "POST", // or 'PUT'
-          headers: {
-            "content-type": "application/json",
-            Accept: "application/json",
-          },
-          body: JSON.stringify(itemObject),
-        })
-          .then((response) => {
-            return response.json();
-          })
-          .catch((error) => {
-            console.error("Error:", error);
-          });
+        //   fetch(`http://localhost:8080/pozycje`, {
+        //     method: "POST", // or 'PUT'
+        //     headers: {
+        //       "content-type": "application/json",
+        //       Accept: "application/json",
+        //     },
+        //     body: JSON.stringify(itemObject),
+        //   })
+        //     .then((response) => {
+        //       return response.json();
+        //     })
+        //     .catch((error) => {
+        //       console.error("Error:", error);
+        //     });
       });
     }
   }

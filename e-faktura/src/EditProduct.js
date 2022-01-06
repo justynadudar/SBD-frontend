@@ -1,4 +1,4 @@
-import "./style/Warehouse.css";
+import "./style/ProductsList.css";
 import { useNavigate } from "react-router-dom";
 import React, { useState, useEffect } from "react";
 

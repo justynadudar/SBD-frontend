@@ -2,6 +2,7 @@ import "./style/InvoiceList.css";
 import { useNavigate } from "react-router-dom";
 import React, { useState, useEffect } from "react";
 import { AiOutlineClose } from "react-icons/ai";
+import { Table } from "react-bootstrap";
 
 function InvoiceList() {
   let navigate = useNavigate();
@@ -23,8 +24,9 @@ function InvoiceList() {
   }
 
   function handleDelete(id) {
-    fetch(`http://localhost:8080/faktury/${id}`, { method: 'DELETE' })
-        .then(() => console.log('Delete successful'));
+    fetch(`http://localhost:8080/faktury/${id}`, { method: "DELETE" }).then(
+      () => console.log("Delete successful")
+    );
   }
 
   return (
@@ -32,34 +34,44 @@ function InvoiceList() {
       <aside>
         <button onClick={handleOnClick}>Nowa faktura</button>
       </aside>
-      <div className="TableOfInvoices">
-        <h2>Wystawione faktury</h2>
-        <div className="row">
-          <h4>Id faktury</h4>
-          {/* <h4>Id pracownika</h4>
-          <h4>Data wystawienia</h4>
-          <h4>Suma brutto</h4>
-          <h4>Nabywca</h4> */}
-        </div>
-
-        {loaded ? (
-          invoiceList.map((invoice) => {
-            return (
-              <div key={Math.random()} className="row">
-                <p key={Math.random()}>{invoice.idFaktury}</p>
-                <button
-                    key={Math.random()}
-                    onClick={() => handleDelete(invoice.idFaktury)}
-                  >
-                    <AiOutlineClose className="false" />
-                  </button>
-              </div>
-            );
-          })
-        ) : (
-          <h2>Loading...</h2>
-        )}
-      </div>
+      <Table striped bordered hover size="sm">
+        <thead>
+          <tr>
+            <th>Id faktury</th>
+            <th>Id pracownika</th>
+            <th>Data wystawienia</th>
+            <th>Suma brutto</th>
+            <th>Nabywca</th>
+            <th>Usuń</th>
+          </tr>
+        </thead>
+        <tbody>
+          {loaded ? (
+            invoiceList.map((invoice) => {
+              return (
+                <tr>
+                  <td key={Math.random()}>{invoice.idFaktury}</td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td>
+                    {" "}
+                    <button
+                      key={Math.random()}
+                      onClick={() => handleDelete(invoice.idFaktury)}
+                    >
+                      <AiOutlineClose className="false" />
+                    </button>
+                  </td>
+                </tr>
+              );
+            })
+          ) : (
+            <h2>Loading...</h2>
+          )}
+        </tbody>
+      </Table>
     </div>
   );
 }

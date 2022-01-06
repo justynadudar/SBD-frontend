@@ -18,7 +18,7 @@
   margin-top: 10%;
   width: 70%;
   height: 5%;
-  font-size: 0.6rem;
+  font-size: 50%;
   border-radius: 8px;
   background-color: black;
   border: 2px solid #7dbaec;
@@ -33,7 +33,7 @@
   color: black;
   border: 2px solid rgb(125, 186, 236);
 }
-
+/* 
 .ClientsList .TableOfClients {
   margin-left: 2%;
   width: 80%;
@@ -62,4 +62,9 @@
   color: black;
   font-size: 1.2rem;
   width: 20%;
+} */
+#bootstrap-overrides td a {
+  margin-top: 0;
+  color: black;
+  font-size: 120%;
 }

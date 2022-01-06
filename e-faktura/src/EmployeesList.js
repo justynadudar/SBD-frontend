@@ -2,6 +2,7 @@ import "./style/EmployeesList.css";
 import { useNavigate } from "react-router-dom";
 import React, { useState, useEffect } from "react";
 import { AiOutlineClose } from "react-icons/ai";
+import { Table } from "react-bootstrap";
 
 function EmployeesList({ orders }) {
   let navigate = useNavigate();
@@ -23,8 +24,9 @@ function EmployeesList({ orders }) {
   }
 
   function handleDelete(id) {
-    fetch(`http://localhost:8080/pracownicy/${id}`, { method: 'DELETE' })
-        .then(() => console.log('Delete successful'));
+    fetch(`http://localhost:8080/pracownicy/${id}`, { method: "DELETE" }).then(
+      () => console.log("Delete successful")
+    );
   }
 
   return (
@@ -32,38 +34,43 @@ function EmployeesList({ orders }) {
       <aside>
         <button onClick={handleOnClick}>Nowy pracownik</button>
       </aside>
-      <div className="TableOfEmployees">
-        <h2>Pracownicy</h2>
-        <div className="row">
-          <h4>Id</h4>
-          <h4>Imię</h4>
-          <h4>Nazwisko</h4>
-          <h4>Stanowisko</h4>
-          <h4>Telefon</h4>
-        </div>
-
-        {loaded ? (
-          employeesList.map((employee) => {
-            return (
-              <div key={employee.idPracownika} className="row">
-                <p>{employee.idPracownika}</p>
-                <p>{employee.imie}</p>
-                <p>{employee.nazwisko}</p>
-                <p>{employee.stanowisko.nazwa}</p>
-                <p>{employee.telefon}</p>
-                <button
-                    key={Math.random()}
-                    onClick={() => handleDelete(employee.idPracownika)}
-                  >
-                    <AiOutlineClose className="false" />
-                  </button>
-              </div>
-            );
-          })
-        ) : (
-          <h2>Loading...</h2>
-        )}
-      </div>
+      <Table striped bordered hover size="sm">
+        <thead>
+          <tr>
+            <th>Id</th>
+            <th>Imię</th>
+            <th>Nazwisko</th>
+            <th>Stanowisko</th>
+            <th>Telefon</th>
+            <th>Usuń</th>
+          </tr>
+        </thead>
+        <tbody>
+          {loaded ? (
+            employeesList.map((employee) => {
+              return (
+                <tr>
+                  <td>{employee.idPracownika}</td>
+                  <td>{employee.imie}</td>
+                  <td>{employee.nazwisko}</td>
+                  <td>{employee.stanowisko.nazwa}</td>
+                  <td>{employee.telefon}</td>
+                  <td>
+                    <button
+                      key={Math.random()}
+                      onClick={() => handleDelete(employee.idPracownika)}
+                    >
+                      <AiOutlineClose className="false" />
+                    </button>
+                  </td>
+                </tr>
+              );
+            })
+          ) : (
+            <h2>Loading...</h2>
+          )}
+        </tbody>
+      </Table>
     </div>
   );
 }
