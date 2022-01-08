@@ -16,6 +16,7 @@ import ProducersList from "./ProducersList";
 import AddProducer from "./AddProducer";
 import PositionsList from "./PositionsList";
 import EditProduct from "./EditProduct";
+import InvoiceOrderList from "./InvoiceOrderList";
 
 function App() {
   return (
@@ -39,6 +40,7 @@ function App() {
           <Route path="/magazyn/edytuj" element={<EditProduct />} />
 
           <Route path="/faktury" element={<InvoiceList />} />
+          <Route path="/faktury/zamowienia/:id" element={<InvoiceOrderList />} />
 
           <Route path="/producenci" element={<ProducersList />} />
           <Route path="/producenci/dodaj" element={<AddProducer />} />

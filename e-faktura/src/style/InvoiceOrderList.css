@@ -1,0 +1,67 @@
+.InvoiceOrderList {
+    display: flex;
+    flex-direction: row;
+  }
+  
+  .InvoiceOrderList aside {
+    display: flex;
+    flex-direction: column;
+    align-content: center;
+    justify-content: flex-start;
+    align-items: center;
+    background-color: black;
+    width: 15%;
+    min-height: 90vh;
+  }
+  
+  .InvoiceOrderList aside button {
+    margin-top: 10%;
+    width: 70%;
+    height: 5%;
+    font-size: 50%;
+    border-radius: 8px;
+    background-color: black;
+    border: 2px solid #7dbaec;
+    text-decoration: none;
+    color: rgb(125, 186, 236);
+    transition-duration: 0.6s;
+    cursor: pointer;
+  }
+  
+  .InvoiceOrderList aside button:hover {
+    background-color: rgb(125, 186, 236);
+    color: black;
+    border: 2px solid rgb(125, 186, 236);
+  }
+  
+  .InvoiceOrderList .TableOfOrders {
+    margin-left: 2%;
+    width: 80%;
+  }
+  
+  .InvoiceOrderList .TableOfOrders .row {
+    display: flex;
+    flex-direction: row;
+    text-align: center;
+    border: 2px solid rgb(170, 173, 175);
+    width: 100%;
+  }
+  
+  .InvoiceOrderList .TableOfOrders .row h4 {
+    width: 100%;
+  }
+  
+  .InvoiceOrderList .TableOfOrders .row .last {
+    width: 20%;
+  }
+  
+  .InvoiceOrderList .TableOfOrders .row p {
+    width: 100%;
+  }
+  .InvoiceOrderList .TableOfOrders .row a {
+    align-self: center;
+    color: black;
+    font-size: 1.2rem;
+    width: 20%;
+  }
+  

@@ -1,6 +1,7 @@
 import "./style/InvoiceList.css";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link  } from "react-router-dom";
 import React, { useState, useEffect } from "react";
+import { MdReadMore } from "react-icons/md";
 import { AiOutlineClose } from "react-icons/ai";
 import { Table } from "react-bootstrap";
 import { AiOutlineCheck } from "react-icons/ai";
@@ -20,10 +21,6 @@ function InvoiceList() {
     fetchData();
   }, []);
 
-  function handleOnClick() {
-    navigate("/faktury/dodaj");
-  }
-
   function handleDelete(id) {
     fetch(`http://localhost:8080/faktury/${id}`, { method: "DELETE" }).then(
       () => console.log("Delete successful")
@@ -39,19 +36,19 @@ function InvoiceList() {
   return (
     <div className="InvoiceList">
       <aside>
-        <button onClick={handleOnClick}>Nowa faktura</button>
       </aside>
       <Table striped bordered hover size="sm">
         <thead>
           <tr>
             <th>Id faktury</th>
             <th>Id pracownika</th>
-            <th>Rzeczywisty termin zapłaty</th>
+            <th>Nabywca</th>
             <th>Ostateczny termin zapłaty</th>
+            <th>Data realizacji</th>
             <th>Suma brutto</th>
             <th>Suma netto</th>
-            <th>Nabywca</th>
 
+            <th>Zamówienia</th>
             <th>Zatwierdź wpłatę</th>
             <th>Usuń</th>
           </tr>
@@ -63,11 +60,26 @@ function InvoiceList() {
                 <tr>
                   <td key={Math.random()}>{invoice.idFaktury}</td>
                   <td></td>
-                  <td key={Math.random()}></td>
+                  <td></td>
                   <td key={Math.random()}>{invoice.maxDataRealizacji}</td>
+                  {invoice?.dataRealizacji === null ? (
+                    <td>NIEOPLACONA</td>
+                  ) : (
+                    <td>{invoice.dataRealizacji}</td>
+                  )}
                   <td key={Math.random()}>{invoice.kwotaBrutto.toFixed(2)}</td>
                   <td key={Math.random()}>{invoice.kwotaNetto.toFixed(2)}</td>
-                  <td></td>
+
+                  <td>
+                      <Link
+                      to={{
+                        pathname: `/faktury/zamowienia/${invoice.idFaktury}`,
+                        state: { modal: true },
+                      }}
+                    >
+                      <MdReadMore />
+                      </Link>
+                  </td>
                   <td>
                     {" "}
                     <button

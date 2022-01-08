@@ -28,15 +28,10 @@ function ClientsList() {
     );
   }
 
-  function handleIssuingGoodsClick() {
-    navigate("/magazyn/edytuj");
-  }
-
   return (
     <div className="Warehouse">
       <aside>
         <button onClick={handleOnClick}>Nowy produkt</button>
-        {/* <button onClick={handleIssuingGoodsClick}>Wydaj towar</button> */}
       </aside>
       <Table striped bordered hover size="sm">
         <thead>
