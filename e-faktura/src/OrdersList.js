@@ -1,8 +1,9 @@
 import "./style/OrdersList.css";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import React, { useState, useEffect } from "react";
-import { NavLink as Link } from "react-router-dom";
+import { MdReadMore } from "react-icons/md";
 import { AiOutlineClose } from "react-icons/ai";
+import { AiOutlineCheck } from "react-icons/ai";
 import { Table } from "react-bootstrap";
 
 function OrdersList({ orders }) {
@@ -45,6 +46,12 @@ function OrdersList({ orders }) {
     );
   }
 
+  function handleFinalize(id) {
+    fetch(`http://localhost:8080/zamowienia/realizuj/${id}`, { method: "DELETE" }).then(
+      () => console.log("Finalize successful")
+    );
+  }
+
   return (
     <div className="OrdersList">
       <aside>
@@ -54,10 +61,11 @@ function OrdersList({ orders }) {
         <thead>
           <tr>
             <th>Id</th>
-            <th>Id klienta</th>
-            <th>Id pracownika</th>
+            <th>Klient</th>
+            <th>Pracownik</th>
             <th>Stan zamówienia</th>
             <th>Szczegóły</th>
+            <th>Zrealizuj</th>
             <th>Usuń</th>
           </tr>
         </thead>
@@ -67,18 +75,27 @@ function OrdersList({ orders }) {
               return (
                 <tr>
                   <td>{order.idZamowienia}</td>
-                  <td>{order.klient.idKlienta}</td>
-                  <td>{order.pracownik.idPracownika}</td>
+                  <td>{order.klient.idKlienta} {order.klient.imie} {order.klient.nazwisko}</td>
+                  <td>{order.pracownik.idPracownika} {order.pracownik.imie} {order.pracownik.nazwisko}</td>
                   <td>{order.stanZamowienia}</td>
-                  <td>
-                    <Link
+                  <td if="{order.stanZamowienia} == 'W_REALIZACJI'">
+                      <Link
                       to={{
                         pathname: `/pozycje/zamowienie/${order.idZamowienia}`,
                         state: { modal: true },
                       }}
                     >
-                      Szczegóły
-                    </Link>
+                      <MdReadMore />
+                      </Link>
+                  </td>
+                  <td>
+                    
+                    <button
+                      key={Math.random()}
+                      onClick={() => handleFinalize(order.idZamowienia)}
+                    >
+                      <AiOutlineCheck className="false" />
+                    </button>
                   </td>
                   <td>
                     <button
