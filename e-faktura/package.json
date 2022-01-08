@@ -12,6 +12,7 @@
     "cors": "^2.8.5",
     "react": "^17.0.2",
     "react-bootstrap": "^2.1.0",
+    "react-bootstrap-counter": "^1.0.1",
     "react-dom": "^17.0.2",
     "react-icons": "^4.3.1",
     "react-phone-input-2": "^2.14.0",

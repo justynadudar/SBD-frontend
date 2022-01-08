@@ -1,6 +1,7 @@
 import "./style/OrderItem.css";
 import React, { Component } from "react";
 import { AiOutlineClose, AiOutlineCheck } from "react-icons/ai";
+import { ListGroup } from "react-bootstrap";
 
 //tutaj powinno byc add order item
 class OrderItems extends Component {
@@ -96,6 +97,7 @@ class OrderItems extends Component {
   }
 
   async addItemToOrdersList() {
+    console.log("jestem w addItemTo.. w OrderItem");
     const findedCategory = this.state.categories.find(
       (el) => el.nazwa === this.state.categoryInput
     );
@@ -138,6 +140,7 @@ class OrderItems extends Component {
       loaded,
       products,
       items,
+      amountInput,
     } = this.state;
 
     return (
@@ -145,37 +148,62 @@ class OrderItems extends Component {
         {itemsLoaded
           ? items.map((item) => {
               return (
-                <ul key={Math.random()} className="productInfo">
-                  <li key={Math.random()}>{item.towar.nazwa}</li>
-                  <li key={Math.random()}>{item.towar.kategoria.nazwa}</li>
-                  <li key={Math.random()}>{item.towar.producent.nazwa}</li>
-                  <li key={Math.random()}>{item.towar.cenaNetto}</li>
-                  <li key={Math.random()}>{item.towar.kategoria.stawkaVat}</li>
-                  <li key={Math.random()}>{item.towar.cenaBrutto}</li>
-                  <li key={Math.random()}>{item.ilosc}</li>
-                  <button
+                <div className="productLoaded">
+                  <ListGroup
+                    horizontal
                     key={Math.random()}
-                    onClick={() => this.handleDelete(item.id)}
+                    className="productInfoAccept"
                   >
-                    <AiOutlineClose className="false" />
-                  </button>
-                </ul>
+                    <ListGroup.Item>{item.towar.nazwa}</ListGroup.Item>
+                    <ListGroup.Item>
+                      {item.towar.kategoria.nazwa}
+                    </ListGroup.Item>
+                    <ListGroup.Item>
+                      {item.towar.producent.nazwa}
+                    </ListGroup.Item>
+                    <ListGroup.Item>{item.towar.cenaNetto}</ListGroup.Item>
+                    <ListGroup.Item>
+                      {item.towar.kategoria.stawkaVat}
+                    </ListGroup.Item>
+                    <ListGroup.Item>{item.towar.cenaBrutto}</ListGroup.Item>
+                    <ListGroup.Item>{item.ilosc}</ListGroup.Item>
+                    <div className="productLoaded2">
+                      <button
+                        key={Math.random()}
+                        onClick={() => this.handleDelete(item.id)}
+                      >
+                        <AiOutlineClose className="false" />
+                      </button>
+                    </div>
+                  </ListGroup>
+                </div>
               );
             })
           : null}
         {productLoaded ? (
-          <ul className="productInfo">
-            <li>{thatProduct.nazwa}</li>
-            <li>{thatProduct.kategoria.nazwa}</li>
-            <li>{thatProduct.producent.nazwa}</li>
-            <li>{thatProduct.cenaNetto}</li>
-            <li>{thatProduct.kategoria.stawkaVat}</li>
-            <li>{thatProduct.cenaBrutto}</li>
-            <input onChange={this.changeAmount} type="number" />
-            <button onClick={() => this.handleConfirm()}>
-              <AiOutlineCheck className="true" />
-            </button>
-          </ul>
+          <div className="productLoaded">
+            <ListGroup horizontal key={Math.random()} className="productInfo">
+              <ListGroup.Item>{thatProduct.nazwa}</ListGroup.Item>
+              <ListGroup.Item>{thatProduct.kategoria.nazwa}</ListGroup.Item>
+              <ListGroup.Item>{thatProduct.producent.nazwa}</ListGroup.Item>
+              <ListGroup.Item>{thatProduct.cenaNetto}</ListGroup.Item>
+              <ListGroup.Item>{thatProduct.kategoria.stawkaVat}</ListGroup.Item>
+              <ListGroup.Item>{thatProduct.cenaBrutto}</ListGroup.Item>
+            </ListGroup>
+            <div className="productLoaded2">
+              <input
+                onChange={this.changeAmount}
+                type="number"
+                value={amountInput}
+                className="countInput form-control"
+                min={0}
+                max={thatProduct.ilosc}
+              />
+              <button onClick={() => this.handleConfirm()}>
+                <AiOutlineCheck className="true" />
+              </button>
+            </div>
+          </div>
         ) : (
           <ul className="productInfo">
             <li>{""}</li>

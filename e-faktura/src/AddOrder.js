@@ -51,7 +51,6 @@ class AddOrder extends Component {
     this.deleteItem = this.deleteItem.bind(this);
     this.addOrderToOrdersList = this.addOrderToOrdersList.bind(this);
     this.addInvoiceBeforeAddOrder = this.addInvoiceBeforeAddOrder.bind(this);
-    this.refreshInvoice = this.refreshInvoice.bind(this);
     this.addPositionsToOrder = this.addPositionsToOrder.bind(this);
   }
 
@@ -77,19 +76,19 @@ class AddOrder extends Component {
       );
   }
 
-  changeInvoice(e) {
+  async changeInvoice(e) {
     if (e.target.value === "") {
       this.setState({
         invoiceNameInput: e.target.value,
         invoiceLoaded: false,
       });
     } else if (e.target.value == -1) {
-      this.addInvoiceBeforeAddOrder();
+      await this.addInvoiceBeforeAddOrder();
       this.setState({
-        invoiceNameInput: e.target.value,
+        invoiceNameInput: "Nowa Faktura",
         invoiceLoaded: true,
       });
-      this.refreshInvoice();
+      console.log(this.state.invoiceNameInput);
     } else {
       const finded = this.state.invoices.find(
         (invoice) => invoice.idFaktury == e.target.value
@@ -105,6 +104,7 @@ class AddOrder extends Component {
         employeeLoaded: true,
       });
     }
+    console.log(this.state.invoiceNameInput);
   }
 
   changeClient(e) {
@@ -156,40 +156,42 @@ class AddOrder extends Component {
     });
   }
 
-  async refreshInvoice() {
-    fetch("/faktury", {
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-      },
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        this.setState({
-          thatInvoice: data[data.length - 1],
-          invoiceLoaded: true,
-        });
-      });
-  }
-
   addPositionsToOrder() {
-    console.log(this.state.itemsList);
-    this.setState({
-      itemsConfirmed: true,
+    let itemObject = {};
+    this.state.itemsList.map((item) => {
+      itemObject = {
+        ilosc: item.ilosc,
+        towar: item.towar,
+      };
+      console.log(itemObject);
+
+      fetch(`http://localhost:8080/pozycje`, {
+        method: "POST", // or 'PUT'
+        headers: {
+          "content-type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify(itemObject),
+      });
     });
   }
 
   //tworzymy fakture, gdy uzytkownik wybierze "Nowa faktura"
   async addInvoiceBeforeAddOrder() {
-    const response = await fetch(`http://localhost:8080/faktury`, {
+    await fetch(`http://localhost:8080/faktury`, {
       method: "POST", // or 'PUT'
       headers: {
-        Accept: "application/json, text/plain, */*",
-        "content-Type": "application/json",
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*",
       },
       body: JSON.stringify(this.state.thatInvoice),
-    }).then((resp) => resp.json());
-
+    })
+      .then((resp) => resp.json())
+      .then((data) => {
+        this.setState({
+          thatInvoice: data,
+        });
+      });
     this.componentDidMount();
   }
 
@@ -221,60 +223,19 @@ class AddOrder extends Component {
   //przypisywanie faktury do zamówienia
   async addOrderToOrdersList() {
     await this.createOrder();
-
-    const orderToInvoice = {
-      id: this.state.thatOrder.idZamowienia,
-      faktura: this.state.thatInvoice,
-    };
-    console.log(orderToInvoice);
-    // fetch(
-    //   `http://localhost:8080/zamowienia/faktura/${this.state.thatOrder.idZamowienia}`,
-    //   {
-    //     method: "PUT", // or 'PUT'
-    //     headers: {
-    //       "content-type": "application/json",
-    //       Accept: "application/json",
-    //     },
-    //     body: JSON.stringify(this.state.thatInvoice),
-    //   }
-    // )
-    //   .then((response) => {
-    //     return response.json();
-    //   })
-    //   .catch((error) => {
-    //     console.error("Error:", error);
-    //   });
-    if (this.state.itemsConfirmed) {
-      let itemObject = {};
-      this.state.itemsList.map((item) => {
-        itemObject = {
-          zamowienie: {
-            idZamowienia: this.state.thatOrder.idZamowienia,
-            klient: this.state.thatClient,
-            pracownik: this.state.thatEmployee,
-          },
-          ilosc: item.ilosc,
-          towar: item.towar,
-        };
-        console.log(itemObject);
-        console.log(this.state.thatOrder);
-
-        //   fetch(`http://localhost:8080/pozycje`, {
-        //     method: "POST", // or 'PUT'
-        //     headers: {
-        //       "content-type": "application/json",
-        //       Accept: "application/json",
-        //     },
-        //     body: JSON.stringify(itemObject),
-        //   })
-        //     .then((response) => {
-        //       return response.json();
-        //     })
-        //     .catch((error) => {
-        //       console.error("Error:", error);
-        //     });
-      });
-    }
+    console.log(this.state.thatInvoice);
+    fetch(
+      `http://localhost:8080/zamowienia/faktura/${this.state.thatOrder.idZamowienia}`,
+      {
+        method: "PUT", // or 'PUT'
+        headers: {
+          "content-type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify(this.state.thatInvoice),
+      }
+    );
+    //pozycje połączyć z zamówieniem
   }
 
   render() {
@@ -299,153 +260,167 @@ class AddOrder extends Component {
         <aside>
           <button>Dodaj zamówienie</button>
         </aside>
-        <Form className="m-3">
-          <Form.Group as={Row} className="mb-3" controlId="formHorizontalEmail">
-            <Form.Label column>Faktura</Form.Label>
-            <Col className="allSelect">
-              <Form.Select
-                aria-label="Faktura"
-                value={invoiceNameInput}
-                onChange={this.changeInvoice}
-              >
-                <option key={Math.random()} value={""}>
-                  {""}
-                </option>
-                <option key={Math.random()} value={-1}>
-                  Nowa faktura
-                </option>
-                {loaded
-                  ? invoices.map((invoice, index) => (
-                      <option key={Math.random()} value={invoice.idFaktury}>
-                        {"Nr: " +
-                          invoice.idFaktury +
-                          // "Klient: " +
-                          //   invoice.zamowienia[0].klient.nazwaFirmy +
-                          //   " Pracownik: " +
-                          //   invoice.zamowienia[0].pracownik.imie +
-                          //   " (" +
-                          //   invoice.zamowienia[0].pracownik.nazwisko +
-                          ") "}
-                      </option>
-                    ))
-                  : null}
-              </Form.Select>
-            </Col>
-          </Form.Group>
-          <Form.Group as={Row} className="mb-3">
-            <Form.Label column>Klient</Form.Label>
-            <Col className="allSelect">
-              <Form.Select
-                aria-label="Klient"
-                value={clientNameInput}
-                onChange={this.changeClient}
-              >
-                <option key={Math.random()} value={""}>
-                  {""}
-                </option>
-                {loaded
-                  ? clients.map((client) => (
-                      <option key={Math.random()} value={client.idKlienta}>
-                        {client.nazwaFirmy}
-                      </option>
-                    ))
-                  : null}
-              </Form.Select>
-            </Col>
-          </Form.Group>
+        <div className="forForm">
+          <Form className="m-3">
+            <Form.Group
+              as={Row}
+              className="mb-3"
+              controlId="formHorizontalEmail"
+            >
+              <Form.Label column>Faktura</Form.Label>
+              <Col className="allSelect">
+                <Form.Select
+                  aria-label="Faktura"
+                  value={invoiceNameInput}
+                  onChange={this.changeInvoice}
+                >
+                  <option key={Math.random()} value={""}>
+                    {""}
+                  </option>
+                  {this.state.invoiceLoaded ? (
+                    <option key={Math.random()} value={"Nowa Faktura"}>
+                      Nowa faktura
+                    </option>
+                  ) : (
+                    <option key={Math.random()} value={-1}>
+                      Nowa faktura
+                    </option>
+                  )}
 
-          {clientLoaded ? (
-            <ListGroup horizontal>
-              <ListGroup.Item sm={3}>{thatClient.imie}</ListGroup.Item>
+                  {loaded
+                    ? invoices.map((invoice, index) => (
+                        <option key={Math.random()} value={invoice.idFaktury}>
+                          {"Nr: " +
+                            invoice.idFaktury +
+                            // "Klient: " +
+                            //   invoice.zamowienia[0].klient.nazwaFirmy +
+                            //   " Pracownik: " +
+                            //   invoice.zamowienia[0].pracownik.imie +
+                            //   " (" +
+                            //   invoice.zamowienia[0].pracownik.nazwisko +
+                            ") "}
+                        </option>
+                      ))
+                    : null}
+                </Form.Select>
+              </Col>
+            </Form.Group>
+            <Form.Group as={Row} className="mb-3">
+              <Form.Label column>Klient</Form.Label>
+              <Col className="allSelect">
+                <Form.Select
+                  aria-label="Klient"
+                  value={clientNameInput}
+                  onChange={this.changeClient}
+                >
+                  <option key={Math.random()} value={""}>
+                    {""}
+                  </option>
+                  {loaded
+                    ? clients.map((client) => (
+                        <option key={Math.random()} value={client.idKlienta}>
+                          {client.nazwaFirmy}
+                        </option>
+                      ))
+                    : null}
+                </Form.Select>
+              </Col>
+            </Form.Group>
 
-              <ListGroup.Item>{thatClient.nazwisko}</ListGroup.Item>
+            {clientLoaded ? (
+              <ListGroup horizontal>
+                <ListGroup.Item>{thatClient.imie}</ListGroup.Item>
 
-              <ListGroup.Item>{thatClient.telefon}</ListGroup.Item>
+                <ListGroup.Item>{thatClient.nazwisko}</ListGroup.Item>
 
-              <ListGroup.Item>{thatClient.email}</ListGroup.Item>
-            </ListGroup>
-          ) : (
-            <ListGroup horizontal>
-              <ListGroup.Item sm={7}>{defaultClient.imie}</ListGroup.Item>
-              <ListGroup.Item sm={3}>{defaultClient.nazwisko}</ListGroup.Item>
-              <ListGroup.Item sm={3}>{defaultClient.telefon}</ListGroup.Item>
-              <ListGroup.Item sm={3}>{defaultClient.email}</ListGroup.Item>
-            </ListGroup>
-          )}
+                <ListGroup.Item>{thatClient.telefon}</ListGroup.Item>
 
-          <Form.Group as={Row} className="mb-3 mt-3">
-            <Form.Label column>Pracownik</Form.Label>
-            <Col className="allSelect">
-              <Form.Select
-                aria-label="Pracownik"
-                value={employeeNameInput}
-                onChange={this.changeEmployee}
-              >
-                <option key={Math.random()} value={""}>
-                  {""}
-                </option>
-                {loaded
-                  ? employees.map((employee) => (
-                      <option key={Math.random()} value={employee.idPracownika}>
-                        {employee.imie +
-                          " " +
-                          employee.nazwisko +
-                          " (" +
-                          employee.stanowisko.nazwa +
-                          ") "}
-                      </option>
-                    ))
-                  : null}
-              </Form.Select>
-            </Col>
-          </Form.Group>
-          {employeeLoaded ? (
-            <ListGroup horizontal>
-              <ListGroup.Item>{thatEmployee.imie}</ListGroup.Item>
-
-              <ListGroup.Item>{thatEmployee.nazwisko}</ListGroup.Item>
-
-              <ListGroup.Item>{thatEmployee.telefon}</ListGroup.Item>
-
-              <ListGroup.Item>{thatEmployee.stanowisko}</ListGroup.Item>
-            </ListGroup>
-          ) : (
-            <ListGroup horizontal>
-              <ListGroup.Item>Imię</ListGroup.Item>
-              <ListGroup.Item>Nazwisko</ListGroup.Item>
-              <ListGroup.Item>Telefon</ListGroup.Item>
-              <ListGroup.Item>Stanowisko</ListGroup.Item>
-            </ListGroup>
-          )}
-          <Form.Label column>Pozycje</Form.Label>
-          <Form.Group as={Row} className="mb-3 mt-3">
-            <Col>
-              <ListGroup horizontal className="productInfo">
-                <ListGroup.Item>Nazwa</ListGroup.Item>
-                <ListGroup.Item>Kategoria</ListGroup.Item>
-                <ListGroup.Item>Producent</ListGroup.Item>
-                <ListGroup.Item>Cena netto</ListGroup.Item>
-                <ListGroup.Item>Stawka VAT</ListGroup.Item>
-                <ListGroup.Item>Cena brutto</ListGroup.Item>
-                <ListGroup.Item>Ilość</ListGroup.Item>
+                <ListGroup.Item>{thatClient.email}</ListGroup.Item>
               </ListGroup>
-              <OrderItems
-                confirmItem={this.confirmItem}
-                deleteItem={this.deleteItem}
-              />
-              <button
-                className="confirmPositions"
-                onClick={this.addPositionsToOrder}
-              >
-                Potwierdź pozycje
-              </button>
-            </Col>
-          </Form.Group>
+            ) : (
+              <ListGroup horizontal>
+                <ListGroup.Item>{defaultClient.imie}</ListGroup.Item>
+                <ListGroup.Item>{defaultClient.nazwisko}</ListGroup.Item>
+                <ListGroup.Item>{defaultClient.telefon}</ListGroup.Item>
+                <ListGroup.Item>{defaultClient.email}</ListGroup.Item>
+              </ListGroup>
+            )}
 
-          <button className="submit" onClick={this.addOrderToOrdersList}>
-            Dodaj zamówienie
-          </button>
-        </Form>
+            <Form.Group as={Row} className="mb-3 mt-3">
+              <Form.Label column>Pracownik</Form.Label>
+              <Col className="allSelect">
+                <Form.Select
+                  aria-label="Pracownik"
+                  value={employeeNameInput}
+                  onChange={this.changeEmployee}
+                >
+                  <option key={Math.random()} value={""}>
+                    {""}
+                  </option>
+                  {loaded
+                    ? employees.map((employee) => (
+                        <option
+                          key={Math.random()}
+                          value={employee.idPracownika}
+                        >
+                          {employee.imie +
+                            " " +
+                            employee.nazwisko +
+                            " (" +
+                            employee.stanowisko.nazwa +
+                            ") "}
+                        </option>
+                      ))
+                    : null}
+                </Form.Select>
+              </Col>
+            </Form.Group>
+            {employeeLoaded ? (
+              <ListGroup horizontal>
+                <ListGroup.Item>{thatEmployee.imie}</ListGroup.Item>
+
+                <ListGroup.Item>{thatEmployee.nazwisko}</ListGroup.Item>
+
+                <ListGroup.Item>{thatEmployee.telefon}</ListGroup.Item>
+
+                <ListGroup.Item>{thatEmployee.stanowisko.nazwa}</ListGroup.Item>
+              </ListGroup>
+            ) : (
+              <ListGroup horizontal>
+                <ListGroup.Item>Imię</ListGroup.Item>
+                <ListGroup.Item>Nazwisko</ListGroup.Item>
+                <ListGroup.Item>Telefon</ListGroup.Item>
+                <ListGroup.Item>Stanowisko</ListGroup.Item>
+              </ListGroup>
+            )}
+            <Form.Label column>Pozycje</Form.Label>
+            <Form.Group as={Row} className="mb-3 mt-3">
+              <Col>
+                <ListGroup horizontal className="productInfo">
+                  <ListGroup.Item>Nazwa</ListGroup.Item>
+                  <ListGroup.Item>Kategoria</ListGroup.Item>
+                  <ListGroup.Item>Producent</ListGroup.Item>
+                  <ListGroup.Item>Cena netto</ListGroup.Item>
+                  <ListGroup.Item>Stawka VAT</ListGroup.Item>
+                  <ListGroup.Item>Cena brutto</ListGroup.Item>
+                  <ListGroup.Item>Ilość</ListGroup.Item>
+                </ListGroup>
+                <OrderItems
+                  confirmItem={this.confirmItem}
+                  deleteItem={this.deleteItem}
+                />
+              </Col>
+            </Form.Group>
+          </Form>
+          <div>
+            <button onClick={this.addPositionsToOrder}>
+              Potwierdź pozycje
+            </button>
+            <button onClick={this.addOrderToOrdersList}>
+              Dodaj zamówienie
+            </button>
+          </div>
+        </div>
       </div>
     );
   }

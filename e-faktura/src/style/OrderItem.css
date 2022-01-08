@@ -1,3 +1,53 @@
+#bootstrap-overrides .AddItemForm .productInfo .list-group-item {
+  width: 17%;
+  padding: 0.5rem 0.5rem;
+}
+#bootstrap-overrides .productInfo .list-group-item {
+  width: 13%;
+  padding: 0.5rem 0.5rem;
+}
+#bootstrap-overrides .AddItemForm .productLoaded {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+}
+#bootstrap-overrides .AddItemForm .productLoaded2 {
+  margin-top: 2%;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: center;
+  width: 20%;
+}
+#bootstrap-overrides .AddItemForm .productLoaded .countInput {
+  font-size: 80%;
+  padding-left: 0.25rem;
+  width: 65%;
+}
+
+#bootstrap-overrides .AddItemForm .productInfoAccept {
+  margin-top: 2%;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: center;
+  width: 100%;
+}
+
+#bootstrap-overrides .AddItemForm .productInfoAccept .list-group-item {
+  width: 13%;
+  padding: 0.5rem 0.5rem;
+}
+
+#bootstrap-overrides .AddItemForm .productInfoAccept .productLoaded2 {
+  margin-top: 0%;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: center;
+  width: 7%;
+}
+
 .AddItemForm {
   display: flex;
   flex-direction: column;
@@ -23,6 +73,8 @@
   display: flex;
   flex-direction: row;
   height: 20%;
+  align-items: center;
+  width: 78%;
 }
 
 .OrdersList .AddItemForm select {
@@ -36,11 +88,6 @@
   font-size: 80%;
   margin-right: 2%;
   width: 10%;
-}
-
-.OrdersList .AddItemForm .productInfo input {
-  font-size: 10px;
-  width: 4%;
 }
 
 .OrdersList .AddItemForm .productInfo svg {

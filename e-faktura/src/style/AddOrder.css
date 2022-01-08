@@ -5,7 +5,7 @@
 #bootstrap-overrides .list-group-horizontal {
   flex-wrap: nowrap;
 }
-#bootstrap-overrides .OrdersList form {
+#bootstrap-overrides .OrdersList .forForm {
   width: 85%;
 }
 #bootstrap-overrides .OrdersList .allSelect {
@@ -13,7 +13,8 @@
   margin-left: calc(var(--bs-gutter-x) * -6);
 }
 #bootstrap-overrides .productInfo .list-group-item {
-  width: 10%;
+  width: 13%;
+  padding: 0.5rem 0.5rem;
 }
 
 /* .OrdersList .AddOrderForm {
