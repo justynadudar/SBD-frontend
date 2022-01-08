@@ -318,14 +318,14 @@ class AddOrder extends Component {
                   ? invoices.map((invoice, index) => (
                       <option key={Math.random()} value={invoice.idFaktury}>
                         {"Nr: " +
-                          invoice.idFaktury +
+                          invoice.idFaktury
                           // "Klient: " +
                           //   invoice.zamowienia[0].klient.nazwaFirmy +
                           //   " Pracownik: " +
                           //   invoice.zamowienia[0].pracownik.imie +
                           //   " (" +
                           //   invoice.zamowienia[0].pracownik.nazwisko +
-                          ") "}
+                          }
                       </option>
                     ))
                   : null}
