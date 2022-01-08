@@ -36,6 +36,7 @@ class AddOrder extends Component {
       employees: [],
       invoices: [],
       itemsList: [],
+      helpList: [],
       orders: [],
       loaded: false,
       clientLoaded: false,
@@ -52,6 +53,7 @@ class AddOrder extends Component {
     this.addOrderToOrdersList = this.addOrderToOrdersList.bind(this);
     this.addInvoiceBeforeAddOrder = this.addInvoiceBeforeAddOrder.bind(this);
     this.addPositionsToOrder = this.addPositionsToOrder.bind(this);
+    this.postPosition = this.postPosition.bind(this);
   }
 
   componentDidMount() {
@@ -88,23 +90,21 @@ class AddOrder extends Component {
         invoiceNameInput: "Nowa Faktura",
         invoiceLoaded: true,
       });
-      console.log(this.state.invoiceNameInput);
-    } else {
-      const finded = this.state.invoices.find(
-        (invoice) => invoice.idFaktury == e.target.value
-      );
-      console.log(finded);
-      this.setState({
-        invoiceNameInput: finded.imie,
-        thatInvoice: finded,
-        thatClient: finded.zamowienia[0].klient,
-        thatEmployee: finded.zamowienia[0].pracownik,
-        invoiceLoaded: true,
-        clientLoaded: true,
-        employeeLoaded: true,
-      });
+      // } else {
+      //   const finded = this.state.invoices.find(
+      //     (invoice) => invoice.idFaktury == e.target.value
+      //   );
+      //   console.log(finded);
+      //   this.setState({
+      //     invoiceNameInput: finded.imie,
+      //     thatInvoice: finded,
+      //     thatClient: finded.zamowienia[0].klient,
+      //     thatEmployee: finded.zamowienia[0].pracownik,
+      //     invoiceLoaded: true,
+      //     clientLoaded: true,
+      //     employeeLoaded: true,
+      //   });
     }
-    console.log(this.state.invoiceNameInput);
   }
 
   changeClient(e) {
@@ -156,23 +156,32 @@ class AddOrder extends Component {
     });
   }
 
-  addPositionsToOrder() {
+  async postPosition(object) {
+    await fetch(`http://localhost:8080/pozycje`, {
+      method: "POST", // or 'PUT'
+      headers: {
+        "content-type": "application/json",
+        Accept: "application/json",
+      },
+      body: JSON.stringify(object),
+    })
+      .then((resp) => resp.json())
+      .then((data) => {
+        console.log(data);
+        this.setState({
+          helpList: [...this.state.helpList, data],
+        });
+      });
+  }
+
+  async addPositionsToOrder() {
     let itemObject = {};
-    this.state.itemsList.map((item) => {
+    this.state.itemsList.map(async (item) => {
       itemObject = {
         ilosc: item.ilosc,
         towar: item.towar,
       };
-      console.log(itemObject);
-
-      fetch(`http://localhost:8080/pozycje`, {
-        method: "POST", // or 'PUT'
-        headers: {
-          "content-type": "application/json",
-          Accept: "application/json",
-        },
-        body: JSON.stringify(itemObject),
-      });
+      await this.postPosition(itemObject);
     });
   }
 
@@ -203,6 +212,7 @@ class AddOrder extends Component {
         faktura: this.state.thatInvoice,
       };
 
+      console.log("tworze zamówienie");
       await fetch(`http://localhost:8080/zamowienia`, {
         method: "POST",
         headers: {
@@ -223,7 +233,21 @@ class AddOrder extends Component {
   //przypisywanie faktury do zamówienia
   async addOrderToOrdersList() {
     await this.createOrder();
-    console.log(this.state.thatInvoice);
+
+    //pozycje połączone z zamówieniem
+    this.state.helpList.map((item) => {
+      console.log(item.nrPozycji);
+
+      fetch(`http://localhost:8080/pozycje/zamowienie/${item.nrPozycji}`, {
+        method: "PUT", // or 'PUT'
+        headers: {
+          "content-type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify(this.state.thatOrder),
+      });
+    });
+
     fetch(
       `http://localhost:8080/zamowienia/faktura/${this.state.thatOrder.idZamowienia}`,
       {
@@ -235,7 +259,6 @@ class AddOrder extends Component {
         body: JSON.stringify(this.state.thatInvoice),
       }
     );
-    //pozycje połączyć z zamówieniem
   }
 
   render() {

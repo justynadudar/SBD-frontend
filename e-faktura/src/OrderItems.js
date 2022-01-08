@@ -97,7 +97,6 @@ class OrderItems extends Component {
   }
 
   async addItemToOrdersList() {
-    console.log("jestem w addItemTo.. w OrderItem");
     const findedCategory = this.state.categories.find(
       (el) => el.nazwa === this.state.categoryInput
     );
@@ -154,7 +153,9 @@ class OrderItems extends Component {
                     key={Math.random()}
                     className="productInfoAccept"
                   >
-                    <ListGroup.Item>{item.towar.nazwa}</ListGroup.Item>
+                    <ListGroup.Item title={item.towar.nazwa}>
+                      {item.towar.nazwa.slice(0, 12)}
+                    </ListGroup.Item>
                     <ListGroup.Item>
                       {item.towar.kategoria.nazwa}
                     </ListGroup.Item>
