@@ -1,4 +1,22 @@
-.OrdersList .AddOrderForm {
+#bootstrap-overrides .row {
+  flex-wrap: nowrap;
+}
+
+#bootstrap-overrides .list-group-horizontal {
+  flex-wrap: nowrap;
+}
+#bootstrap-overrides .OrdersList form {
+  width: 85%;
+}
+#bootstrap-overrides .OrdersList .allSelect {
+  margin-right: calc(var(--bs-gutter-x) * 10);
+  margin-left: calc(var(--bs-gutter-x) * -6);
+}
+#bootstrap-overrides .productInfo .list-group-item {
+  width: 10%;
+}
+
+/* .OrdersList .AddOrderForm {
   display: flex;
   flex-direction: column;
   flex-wrap: nowrap;
@@ -52,4 +70,4 @@
   padding-right: 5%;
   display: block;
   width: 10%;
-}
+} */

@@ -1,6 +1,7 @@
 import "./style/AddOrder.css";
 import React, { Component } from "react";
 import OrderItems from "./OrderItems";
+import { Form, Row, Col, ListGroup } from "react-bootstrap";
 
 class AddOrder extends Component {
   constructor(props) {
@@ -180,24 +181,15 @@ class AddOrder extends Component {
 
   //tworzymy fakture, gdy uzytkownik wybierze "Nowa faktura"
   async addInvoiceBeforeAddOrder() {
-    fetch(`http://localhost:8080/faktury`, {
+    const response = await fetch(`http://localhost:8080/faktury`, {
       method: "POST", // or 'PUT'
       headers: {
-        "content-type": "application/json",
-        Accept: "application/json",
+        Accept: "application/json, text/plain, */*",
+        "content-Type": "application/json",
       },
       body: JSON.stringify(this.state.thatInvoice),
-    })
-      .then((response) => {
-        this.setState({
-          invoiceLoaded: true,
-        });
-        console.log(this.state.invoiceLoaded);
-        return response.json();
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-      });
+    }).then((resp) => resp.json());
+
     this.componentDidMount();
   }
 
@@ -208,26 +200,27 @@ class AddOrder extends Component {
         pracownik: this.state.thatEmployee,
         faktura: this.state.thatInvoice,
       };
-      console.log(orderObject);
-      const response = await fetch(`http://localhost:8080/zamowienia`, {
+
+      await fetch(`http://localhost:8080/zamowienia`, {
         method: "POST",
         headers: {
-          "content-type": "application/json",
-          Accept: "application/json",
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Origin": "*",
         },
         body: JSON.stringify(orderObject),
-      });
-      const data = response.json();
-      console.log(data.body);
-      return data;
+      })
+        .then((resp) => resp.json())
+        .then((data) => {
+          this.setState({
+            thatOrder: data,
+          });
+        });
     }
   }
 
   //przypisywanie faktury do zamówienia
   async addOrderToOrdersList() {
-    await this.createOrder().then((movies) => {
-      console.log(movies); // fetched movies
-    });
+    await this.createOrder();
 
     const orderToInvoice = {
       id: this.state.thatOrder.idZamowienia,
@@ -306,13 +299,12 @@ class AddOrder extends Component {
         <aside>
           <button>Dodaj zamówienie</button>
         </aside>
-        <div className="AddOrderForm">
-          <h2>Nowe zamówienie</h2>
-          <div className="nextLineToAdd">
-            <div className="inputContainer">
-              <p>Faktura</p>
-              <select
-                name="invoice"
+        <Form className="m-3">
+          <Form.Group as={Row} className="mb-3" controlId="formHorizontalEmail">
+            <Form.Label column>Faktura</Form.Label>
+            <Col className="allSelect">
+              <Form.Select
+                aria-label="Faktura"
                 value={invoiceNameInput}
                 onChange={this.changeInvoice}
               >
@@ -337,14 +329,14 @@ class AddOrder extends Component {
                       </option>
                     ))
                   : null}
-              </select>
-            </div>
-          </div>
-          <div className="nextLineToAdd">
-            <div className="inputContainer">
-              <p>Klient</p>
-              <select
-                name="name"
+              </Form.Select>
+            </Col>
+          </Form.Group>
+          <Form.Group as={Row} className="mb-3">
+            <Form.Label column>Klient</Form.Label>
+            <Col className="allSelect">
+              <Form.Select
+                aria-label="Klient"
                 value={clientNameInput}
                 onChange={this.changeClient}
               >
@@ -358,29 +350,34 @@ class AddOrder extends Component {
                       </option>
                     ))
                   : null}
-              </select>
-            </div>
-          </div>
+              </Form.Select>
+            </Col>
+          </Form.Group>
+
           {clientLoaded ? (
-            <div className="clientInfo">
-              <p>{thatClient.imie}</p>
-              <p>{thatClient.nazwisko}</p>
-              <p>{thatClient.telefon}</p>
-              <p>{thatClient.email}</p>
-            </div>
+            <ListGroup horizontal>
+              <ListGroup.Item sm={3}>{thatClient.imie}</ListGroup.Item>
+
+              <ListGroup.Item>{thatClient.nazwisko}</ListGroup.Item>
+
+              <ListGroup.Item>{thatClient.telefon}</ListGroup.Item>
+
+              <ListGroup.Item>{thatClient.email}</ListGroup.Item>
+            </ListGroup>
           ) : (
-            <div className="clientInfo">
-              <p>{defaultClient.imie}</p>
-              <p>{defaultClient.nazwisko}</p>
-              <p>{defaultClient.telefon}</p>
-              <p>{defaultClient.email}</p>
-            </div>
+            <ListGroup horizontal>
+              <ListGroup.Item sm={7}>{defaultClient.imie}</ListGroup.Item>
+              <ListGroup.Item sm={3}>{defaultClient.nazwisko}</ListGroup.Item>
+              <ListGroup.Item sm={3}>{defaultClient.telefon}</ListGroup.Item>
+              <ListGroup.Item sm={3}>{defaultClient.email}</ListGroup.Item>
+            </ListGroup>
           )}
-          <div className="nextLineToAdd">
-            <div className="inputContainer">
-              <p>Pracownik</p>
-              <select
-                name="employee"
+
+          <Form.Group as={Row} className="mb-3 mt-3">
+            <Form.Label column>Pracownik</Form.Label>
+            <Col className="allSelect">
+              <Form.Select
+                aria-label="Pracownik"
                 value={employeeNameInput}
                 onChange={this.changeEmployee}
               >
@@ -399,48 +396,56 @@ class AddOrder extends Component {
                       </option>
                     ))
                   : null}
-              </select>
-            </div>
-          </div>
+              </Form.Select>
+            </Col>
+          </Form.Group>
           {employeeLoaded ? (
-            <div className="clientInfo">
-              <p>{thatEmployee.imie}</p>
-              <p>{thatEmployee.nazwisko}</p>
-              <p>{thatEmployee.telefon}</p>
-              <p>{thatEmployee.stanowisko.nazwa}</p>
-            </div>
+            <ListGroup horizontal>
+              <ListGroup.Item>{thatEmployee.imie}</ListGroup.Item>
+
+              <ListGroup.Item>{thatEmployee.nazwisko}</ListGroup.Item>
+
+              <ListGroup.Item>{thatEmployee.telefon}</ListGroup.Item>
+
+              <ListGroup.Item>{thatEmployee.stanowisko}</ListGroup.Item>
+            </ListGroup>
           ) : (
-            <div className="clientInfo">
-              <p>{defaultEmployee.imie}</p>
-              <p>{defaultEmployee.nazwisko}</p>
-              <p>{defaultEmployee.telefon}</p>
-              <p>{defaultEmployee.stanowisko}</p>
-            </div>
+            <ListGroup horizontal>
+              <ListGroup.Item>Imię</ListGroup.Item>
+              <ListGroup.Item>Nazwisko</ListGroup.Item>
+              <ListGroup.Item>Telefon</ListGroup.Item>
+              <ListGroup.Item>Stanowisko</ListGroup.Item>
+            </ListGroup>
           )}
-          <h4>Pozycje: </h4>
-          <ul className="productInfo">
-            <li>Nazwa</li>
-            <li>Kategoria</li>
-            <li>Producent</li>
-            <li>Cena netto</li>
-            <li>Stawka VAT</li>
-            <li>Cena brutto</li>
-            <li>Ilość</li>
-          </ul>
-          <OrderItems
-            confirmItem={this.confirmItem}
-            deleteItem={this.deleteItem}
-          />
-          <button
-            className="confirmPositions"
-            onClick={this.addPositionsToOrder}
-          >
-            Potwierdź pozycje
-          </button>
+          <Form.Label column>Pozycje</Form.Label>
+          <Form.Group as={Row} className="mb-3 mt-3">
+            <Col>
+              <ListGroup horizontal className="productInfo">
+                <ListGroup.Item>Nazwa</ListGroup.Item>
+                <ListGroup.Item>Kategoria</ListGroup.Item>
+                <ListGroup.Item>Producent</ListGroup.Item>
+                <ListGroup.Item>Cena netto</ListGroup.Item>
+                <ListGroup.Item>Stawka VAT</ListGroup.Item>
+                <ListGroup.Item>Cena brutto</ListGroup.Item>
+                <ListGroup.Item>Ilość</ListGroup.Item>
+              </ListGroup>
+              <OrderItems
+                confirmItem={this.confirmItem}
+                deleteItem={this.deleteItem}
+              />
+              <button
+                className="confirmPositions"
+                onClick={this.addPositionsToOrder}
+              >
+                Potwierdź pozycje
+              </button>
+            </Col>
+          </Form.Group>
+
           <button className="submit" onClick={this.addOrderToOrdersList}>
             Dodaj zamówienie
           </button>
-        </div>
+        </Form>
       </div>
     );
   }
