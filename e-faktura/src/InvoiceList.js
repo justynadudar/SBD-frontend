@@ -53,7 +53,7 @@ function InvoiceList() {
                   <td key={Math.random()}>{invoice.idFaktury}</td>
                   <td></td>
                   <td></td>
-                  <td></td>
+                  <td key={Math.random()}>{invoice.kwotaBrutto} zł</td>
                   <td></td>
                   <td>
                     {" "}
