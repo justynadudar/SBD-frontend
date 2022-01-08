@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import React, { useState, useEffect } from "react";
 import { NavLink as Link } from "react-router-dom";
 import { AiOutlineClose } from "react-icons/ai";
+import { AiOutlineCheck } from "react-icons/ai";
 import { Table } from "react-bootstrap";
 
 function OrdersList({ orders }) {
@@ -45,6 +46,12 @@ function OrdersList({ orders }) {
     );
   }
 
+  function handleFinalize(id) {
+    fetch(`http://localhost:8080/zamowienia/realizuj/${id}`, { method: "DELETE" }).then(
+      () => console.log("Finalize successful")
+    );
+  }
+
   return (
     <div className="OrdersList">
       <aside>
@@ -58,6 +65,7 @@ function OrdersList({ orders }) {
             <th>Id pracownika</th>
             <th>Stan zamówienia</th>
             <th>Szczegóły</th>
+            <th>Zrealizuj</th>
             <th>Usuń</th>
           </tr>
         </thead>
@@ -79,6 +87,14 @@ function OrdersList({ orders }) {
                     >
                       Szczegóły
                     </Link>
+                  </td>
+                  <td>
+                    <button
+                      key={Math.random()}
+                      onClick={() => handleFinalize(order.idZamowienia)}
+                    >
+                      <AiOutlineCheck className="false" />
+                    </button>
                   </td>
                   <td>
                     <button
