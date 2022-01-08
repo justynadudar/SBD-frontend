@@ -41,6 +41,7 @@ function InvoiceList() {
             <th>Id pracownika</th>
             <th>Data wystawienia</th>
             <th>Suma brutto</th>
+            <th>Suma netto</th>
             <th>Nabywca</th>
             <th>Usuń</th>
           </tr>
@@ -53,7 +54,8 @@ function InvoiceList() {
                   <td key={Math.random()}>{invoice.idFaktury}</td>
                   <td></td>
                   <td></td>
-                  <td key={Math.random()}>{invoice.kwotaBrutto}</td>
+                  <td key={Math.random()}>{invoice.kwotaBrutto.toFixed(2)}</td>
+                  <td key={Math.random()}>{invoice.kwotaNetto.toFixed(2)}</td>
                   <td></td>
                   <td>
                     {" "}

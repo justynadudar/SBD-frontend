@@ -2,6 +2,7 @@ import "./style/PositionsList.css";
 import { useNavigate, useParams } from "react-router-dom";
 import React, { useState, useEffect } from "react";
 import { AiOutlineClose } from "react-icons/ai";
+import { Table } from "react-bootstrap";
 
 function PositionsList({ positions }) {
   const { id } = useParams();
@@ -33,34 +34,44 @@ function PositionsList({ positions }) {
       <aside>
         <button onClick={handleOnClick}>Powrót</button>
       </aside>
-      <div className="TableOfPositions">
-        <h2>Pozycje zamówienia</h2>
-        <div className="row">
-          <h4>Id pozycji</h4>
-          <h4>Towar</h4>
-          <h4>Ilość</h4>
-        </div>
+      <Table striped bordered hover size="sm">
+        <thead>
+          <tr>
+            <th>Id</th>
+            <th>Nazwa towaru</th>
+            <th>Ilość</th>
+            <th>Cena brutto</th>
+            <th>Cena netto</th>
 
-        {loaded ? (
-          positionsList.map((position) => {
-            return (
-              <div key={position.nrPozycji} className="row">
-                <p>{position.nrPozycji}</p>
-                <p>{position.towar.idTowaru}</p>
-                <p>{position.ilosc}</p>
-                <button
-                    key={Math.random()}
-                    onClick={() => handleDelete(position.nrPozycji)}
-                  >
-                    <AiOutlineClose className="false" />
-                  </button>
-              </div>
-            );
-          })
-        ) : (
-          <h2>Loading...</h2>
-        )}
-      </div>
+            <th>Usuń</th>
+          </tr>
+        </thead>
+        <tbody>
+          {loaded ? (
+            positionsList.map((position) => {
+              return (
+                <tr>
+                  <td key={Math.random()}>{position.nrPozycji}</td>
+                  <td key={Math.random()}>{position.towar.nazwa}</td>
+                  <td key={Math.random()}>{position.ilosc}</td>
+                  <td key={Math.random()}>{(position.towar.cenaBrutto*position.ilosc).toFixed(2)}</td>
+                  <td key={Math.random()}>{(position.towar.cenaNetto*position.ilosc).toFixed(2)}</td>
+                  <td>
+                    <button
+                      key={Math.random()}
+                      onClick={() => handleDelete(position.nrPozycji)}
+                    >
+                      <AiOutlineClose className="false" />
+                    </button>
+                  </td>
+                </tr>
+              );
+            })
+          ) : (
+            <h2>Loading...</h2>
+          )}
+        </tbody>
+      </Table>
     </div>
   );
 }
