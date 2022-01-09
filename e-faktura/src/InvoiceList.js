@@ -28,7 +28,7 @@ function InvoiceList() {
   }
 
   function handlePayment(id) {
-    fetch(`http://localhost:8080/faktury/mark-paid/${id}`, { method: "PUT" }).then(
+    fetch(`http://localhost:8080/faktury/oplacona/${id}`, { method: "PUT" }).then(
       () => console.log("State changed successful")
     );
   }
@@ -43,10 +43,10 @@ function InvoiceList() {
             <th>Id faktury</th>
             <th>Id pracownika</th>
             <th>Nabywca</th>
-            <th>Ostateczny termin zapłaty</th>
-            <th>Data realizacji</th>
             <th>Suma brutto</th>
             <th>Suma netto</th>
+            <th>Maksymalny termin zapłaty</th>
+            <th>Data zarejestrowania zapłaty</th>
 
             <th>Zamówienia</th>
             <th>Zatwierdź wpłatę</th>
@@ -61,14 +61,14 @@ function InvoiceList() {
                   <td key={Math.random()}>{invoice.idFaktury}</td>
                   <td></td>
                   <td></td>
+                  <td key={Math.random()}>{invoice.kwotaBrutto.toFixed(2)}</td>
+                  <td key={Math.random()}>{invoice.kwotaNetto.toFixed(2)}</td>
                   <td key={Math.random()}>{invoice.maxDataRealizacji}</td>
                   {invoice?.dataRealizacji === null ? (
                     <td>NIEOPLACONA</td>
                   ) : (
                     <td>{invoice.dataRealizacji}</td>
                   )}
-                  <td key={Math.random()}>{invoice.kwotaBrutto.toFixed(2)}</td>
-                  <td key={Math.random()}>{invoice.kwotaNetto.toFixed(2)}</td>
 
                   <td>
                       <Link
@@ -80,7 +80,18 @@ function InvoiceList() {
                       <MdReadMore />
                       </Link>
                   </td>
-                  <td>
+                  {invoice?.czyWszystkieZamowieniaZrealizowane === false ? (
+                    <td>CZEKA NA REALIZACJĘ ZAMÓWIEŃ</td>
+                  ) : (
+                    <td>{" "}
+                    <button
+                      key={Math.random()}
+                      onClick={() => handlePayment(invoice.idFaktury)}
+                    >
+                      <AiOutlineCheck className="false" />
+                    </button></td>
+                  )}
+                  {/* <td>
                     {" "}
                     <button
                       key={Math.random()}
@@ -88,7 +99,7 @@ function InvoiceList() {
                     >
                       <AiOutlineCheck className="false" />
                     </button>
-                  </td>
+                  </td> */}
                   <td>
                     {" "}
                     <button
