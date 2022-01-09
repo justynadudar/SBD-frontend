@@ -47,7 +47,8 @@ class AddOrder extends Component {
     this.addOrderToOrdersList = this.addOrderToOrdersList.bind(this);
     this.addInvoiceBeforeAddOrder = this.addInvoiceBeforeAddOrder.bind(this);
     this.addPositionsToOrder = this.addPositionsToOrder.bind(this);
-    this.postPosition = this.postPosition.bind(this);
+    this.confirmPositionsToOrder = this.confirmPositionsToOrder.bind(this);
+
     this.getOrderFindedInvoice = this.getOrderFindedInvoice.bind(this);
     this.connectPositionWithOrder = this.connectPositionWithOrder.bind(this);
     this.handleClose = this.handleClose.bind(this);
@@ -63,16 +64,16 @@ class AddOrder extends Component {
       .then(([res1, res2, res3, res4]) =>
         Promise.all([res1.json(), res2.json(), res3.json(), res4.json()])
       )
-      .then(([data1, data2, data3, data4]) =>
+      .then(([data1, data2, data3, data4]) => {
         this.setState({
           clients: data1,
           employees: data2,
-          invoices: data3,
+          invoices: data3.filter((invoice) => invoice.dataRealizacji === null),
           orders: data4,
           thatOrder: null,
           loaded: true,
-        })
-      );
+        });
+      });
   }
 
   async changeInvoice(e) {
@@ -86,11 +87,13 @@ class AddOrder extends Component {
         invoiceNameInput: e.target.value,
         invoiceLoaded: false,
       });
-    } else if (e.target.value == -1) {
-      await this.addInvoiceBeforeAddOrder();
+    } else if (e.target.value == "Nowa Faktura") {
       this.setState({
         invoiceNameInput: "Nowa Faktura",
-        invoiceLoaded: true,
+        invoiceLoaded: false,
+        clientLoaded: false,
+        employeeLoaded: false,
+        oldInvoice: false,
       });
     } else {
       const finded = this.state.invoices.find(
@@ -183,14 +186,12 @@ class AddOrder extends Component {
       this.setState({
         itemsList: [...this.state.itemsList, item],
       });
-      console.log(item);
     } else {
       this.setState({
         itemsList: this.state.itemsList.map((el) => {
           if (el.id === confirmedOnce) {
             el.ilosc = item.ilosc;
           }
-          console.log(el);
           return el;
         }),
       });
@@ -211,47 +212,42 @@ class AddOrder extends Component {
     });
   };
 
-  async postPosition(object) {
-    await fetch(`http://localhost:8080/pozycje`, {
-      method: "POST", // or 'PUT'
-      headers: {
-        "content-type": "application/json",
-        Accept: "application/json",
-      },
-      body: JSON.stringify(object),
-    })
-      .then((resp) => resp.json())
-      .then((data) => {
-        console.log(data);
-        this.setState({
-          helpList: [...this.state.helpList, data],
-        });
-      });
-  }
-
   async addPositionsToOrder() {
-    if (this.state.emptyPositions) {
-      this.setState({
-        emptyPositions: false,
-      });
-    }
-
     let itemObject = {};
     this.state.itemsList.map(async (item) => {
       itemObject = {
         ilosc: item.ilosc,
         towar: item.towar,
       };
-      console.log(itemObject);
-      await this.postPosition(itemObject);
+      fetch(`http://localhost:8080/pozycje`, {
+        method: "POST", // or 'PUT'
+        headers: {
+          "content-type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify(itemObject),
+      })
+        .then((resp) => resp.json())
+        .then((data) => {
+          this.setState({
+            helpList: [...this.state.helpList, data],
+          });
+        });
     });
+  }
+
+  confirmPositionsToOrder() {
+    if (this.state.emptyPositions) {
+      this.setState({
+        emptyPositions: false,
+      });
+    }
     this.setState({
       show: false,
       positionsConfirmed: true,
     });
   }
 
-  //tworzymy fakture, gdy uzytkownik wybierze "Nowa faktura"
   async addInvoiceBeforeAddOrder() {
     await fetch(`http://localhost:8080/faktury`, {
       method: "POST", // or 'PUT'
@@ -265,6 +261,7 @@ class AddOrder extends Component {
       .then((data) => {
         this.setState({
           thatInvoice: data,
+          invoiceLoaded: true,
         });
       });
     this.componentDidMount();
@@ -277,8 +274,6 @@ class AddOrder extends Component {
         pracownik: this.state.thatEmployee,
         faktura: this.state.thatInvoice,
       };
-
-      console.log("tworze zamówienie");
       await fetch(`http://localhost:8080/zamowienia`, {
         method: "POST",
         headers: {
@@ -298,7 +293,6 @@ class AddOrder extends Component {
 
   async connectPositionWithOrder() {
     this.state.helpList.map((item) => {
-      console.log(item.nrPozycji);
       fetch(`http://localhost:8080/pozycje/zamowienie/${item.nrPozycji}`, {
         method: "PUT", // or 'PUT'
         headers: {
@@ -312,7 +306,7 @@ class AddOrder extends Component {
 
   //przypisywanie faktury do zamówienia
   async addOrderToOrdersList() {
-    if (!this.state.invoiceLoaded) {
+    if (this.state.invoiceNameInput === "") {
       this.setState({
         emptyInvoice: true,
       });
@@ -324,21 +318,25 @@ class AddOrder extends Component {
       this.setState({
         emptyEmployee: true,
       });
-    } else if (this.state.helpList.length === 0) {
+    } else if (this.state.itemsList.length === 0) {
       this.setState({
         emptyPositions: true,
       });
     } else {
       {
+        if (!this.state.oldInvoice) {
+          await this.addInvoiceBeforeAddOrder();
+        }
+
+        await this.addPositionsToOrder();
+
         await this.createOrder();
-        console.log(this.state.thatOrder);
 
-        //pozycje połączone z zamówieniem
-
-        this.connectPositionWithOrder();
+        //połączenie zamówienia i pozycji
+        await this.connectPositionWithOrder();
 
         //połączenie zamówienia i faktury
-        fetch(
+        await fetch(
           `http://localhost:8080/zamowienia/faktura/${this.state.thatOrder.idZamowienia}`,
           {
             method: "PUT", // or 'PUT'
@@ -350,34 +348,7 @@ class AddOrder extends Component {
           }
         );
       }
-      // else {
-      //   //pozycje połączone z zamówieniem
-      //   this.state.helpList.map((item) => {
-      //     console.log(item.nrPozycji);
 
-      //     fetch(`http://localhost:8080/pozycje/zamowienie/${item.nrPozycji}`, {
-      //       method: "PUT", // or 'PUT'
-      //       headers: {
-      //         "content-type": "application/json",
-      //         Accept: "application/json",
-      //       },
-      //       body: JSON.stringify(this.state.thatOrder),
-      //     });
-      //   });
-
-      //   //połączenie zamówinia i faktury
-      //   fetch(
-      //     `http://localhost:8080/zamowienia/faktura/${this.state.thatOrder.idZamowienia}`,
-      //     {
-      //       method: "PUT", // or 'PUT'
-      //       headers: {
-      //         "content-type": "application/json",
-      //         Accept: "application/json",
-      //       },
-      //       body: JSON.stringify(this.state.thatInvoice),
-      //     }
-      //   );
-      // }
       this.setState({
         orderAdded: true,
         show2: true,
@@ -432,18 +403,12 @@ class AddOrder extends Component {
                   <option key={Math.random()} value={""}>
                     {""}
                   </option>
-                  {this.state.invoiceLoaded ? (
-                    <option key={Math.random()} value={"Nowa Faktura"}>
-                      Nowa faktura
-                    </option>
-                  ) : (
-                    <option key={Math.random()} value={-1}>
-                      Nowa faktura
-                    </option>
-                  )}
+                  <option key={Math.random()} value={"Nowa Faktura"}>
+                    Nowa faktura
+                  </option>
 
                   {loaded
-                    ? invoices.map((invoice, index) => (
+                    ? invoices.map((invoice) => (
                         <option key={Math.random()} value={invoice.idFaktury}>
                           {"Nr: " +
                             invoice.idFaktury +
@@ -569,7 +534,7 @@ class AddOrder extends Component {
                   <ListGroup.Item>Ilość</ListGroup.Item>
                 </ListGroup>
                 {positionsConfirmed ? (
-                  this.state.helpList.map((item) => (
+                  this.state.itemsList.map((item) => (
                     <ListGroup horizontal className="productInfo">
                       <ListGroup.Item title={item.towar.nazwa}>
                         {item.towar.nazwa.slice(0, 12)}
@@ -620,6 +585,7 @@ class AddOrder extends Component {
             >
               Potwierdź pozycje
             </Button>
+
             {positionsAdded ? (
               <Modal show={show} onHide={this.handleClose}>
                 <Modal.Header closeButton></Modal.Header>
@@ -630,10 +596,9 @@ class AddOrder extends Component {
                 <Modal.Footer>
                   <Button
                     variant="secondary"
-                    onClick={this.addPositionsToOrder}
+                    onClick={this.confirmPositionsToOrder}
                   >
                     Tak, potwierdź
-                    {/* {show ? null : <Navigate to="/producenci" />} */}
                   </Button>
                   <Button
                     variant="secondary"
@@ -645,7 +610,6 @@ class AddOrder extends Component {
                     }}
                   >
                     Cofnij
-                    {/* {show ? null : <Navigate to="/producenci" />} */}
                   </Button>
                 </Modal.Footer>
               </Modal>
@@ -675,7 +639,9 @@ class AddOrder extends Component {
             {orderAdded ? (
               <Modal show={show2} onHide={this.handleClose}>
                 <Modal.Header closeButton></Modal.Header>
-                <Modal.Body>Zamówienie zostało dodane.</Modal.Body>
+                <Modal.Body>
+                  Zamówienie zostało dodane. Kwota zamówienia brutto wynosi...
+                </Modal.Body>
                 <Modal.Footer>
                   <Button variant="secondary" onClick={this.handleClose}>
                     OK

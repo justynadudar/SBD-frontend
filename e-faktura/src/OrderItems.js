@@ -92,9 +92,6 @@ class OrderItems extends Component {
         ilosc: parseInt(this.state.amountInput),
       };
 
-      this.state.products.map((item) => {
-        console.log(item);
-      });
       // this.state.items.filter(
       //   (item) => item.towar.idProduktu !== this.state.thatProduct.idProduktu
       // )
@@ -115,12 +112,23 @@ class OrderItems extends Component {
   }
 
   handleDelete(id) {
+    this.state.items.map((item) => {
+      if (item.id === id) console.log("prawda");
+      console.log(item.towar);
+    });
     this.setState({
+      products: [
+        ...this.state.products,
+        this.state.items.filter((item) => item.id === id)[0].towar,
+      ],
       items: this.state.items.filter((item) => item.id !== id),
       itemsLoaded: true,
       thatProduct: {},
       productNameInput: "",
       productLoaded: false,
+    });
+    this.state.products.map((item) => {
+      console.log(item);
     });
     this.props.deleteItem(id);
   }
