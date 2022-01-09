@@ -1,7 +1,8 @@
 import "./style/AddOrder.css";
 import React, { Component } from "react";
 import OrderItems from "./OrderItems";
-import { Form, Row, Col, ListGroup } from "react-bootstrap";
+import { Form, Row, Col, Modal, ListGroup, Button } from "react-bootstrap";
+import { Navigate } from "react-router-dom";
 
 class AddOrder extends Component {
   constructor(props) {
@@ -42,7 +43,10 @@ class AddOrder extends Component {
       clientLoaded: false,
       employeeLoaded: false,
       invoiceLoaded: false,
+      oldInvoice: false,
       itemsConfirmed: false,
+      positionsAdded: false,
+      show: false,
     };
 
     this.changeClient = this.changeClient.bind(this);
@@ -54,6 +58,8 @@ class AddOrder extends Component {
     this.addInvoiceBeforeAddOrder = this.addInvoiceBeforeAddOrder.bind(this);
     this.addPositionsToOrder = this.addPositionsToOrder.bind(this);
     this.postPosition = this.postPosition.bind(this);
+    this.getOrderFindedInvoice = this.getOrderFindedInvoice.bind(this);
+    this.handleClose = this.handleClose.bind(this);
   }
 
   componentDidMount() {
@@ -90,21 +96,41 @@ class AddOrder extends Component {
         invoiceNameInput: "Nowa Faktura",
         invoiceLoaded: true,
       });
-      // } else {
-      //   const finded = this.state.invoices.find(
-      //     (invoice) => invoice.idFaktury == e.target.value
-      //   );
-      //   console.log(finded);
-      //   this.setState({
-      //     invoiceNameInput: finded.imie,
-      //     thatInvoice: finded,
-      //     thatClient: finded.zamowienia[0].klient,
-      //     thatEmployee: finded.zamowienia[0].pracownik,
-      //     invoiceLoaded: true,
-      //     clientLoaded: true,
-      //     employeeLoaded: true,
-      //   });
+    } else {
+      const finded = this.state.invoices.find(
+        (invoice) => invoice.idFaktury == e.target.value
+      );
+      await this.getOrderFindedInvoice(finded);
+      this.setState({
+        invoiceNameInput: finded.idFaktury,
+        thatInvoice: finded,
+        invoiceLoaded: true,
+        clientLoaded: true,
+        employeeLoaded: true,
+        oldInvoice: true,
+      });
     }
+  }
+
+  async getOrderFindedInvoice(findedInvoice) {
+    await fetch(
+      `http://localhost:8080/faktury/zamowienia/${findedInvoice.idFaktury}`,
+      {
+        method: "GET", // or 'PUT'
+        headers: {
+          "content-type": "application/json",
+          Accept: "application/json",
+        },
+      }
+    )
+      .then((resp) => resp.json())
+      .then((data) => {
+        this.setState({
+          thatOrder: data[0],
+          thatClient: data[0].klient,
+          thatEmployee: data[0].pracownik,
+        });
+      });
   }
 
   changeClient(e) {
@@ -155,6 +181,11 @@ class AddOrder extends Component {
       itemsList: filtered,
     });
   }
+  handleClose = () => {
+    this.setState({
+      show: false,
+    });
+  };
 
   async postPosition(object) {
     await fetch(`http://localhost:8080/pozycje`, {
@@ -182,6 +213,9 @@ class AddOrder extends Component {
         towar: item.towar,
       };
       await this.postPosition(itemObject);
+    });
+    this.setState({
+      show: false,
     });
   }
 
@@ -232,33 +266,63 @@ class AddOrder extends Component {
 
   //przypisywanie faktury do zamówienia
   async addOrderToOrdersList() {
-    await this.createOrder();
+    if (!this.state.oldInvoice) {
+      await this.createOrder();
 
-    //pozycje połączone z zamówieniem
-    this.state.helpList.map((item) => {
-      console.log(item.nrPozycji);
+      //pozycje połączone z zamówieniem
+      this.state.helpList.map((item) => {
+        console.log(item.nrPozycji);
 
-      fetch(`http://localhost:8080/pozycje/zamowienie/${item.nrPozycji}`, {
-        method: "PUT", // or 'PUT'
-        headers: {
-          "content-type": "application/json",
-          Accept: "application/json",
-        },
-        body: JSON.stringify(this.state.thatOrder),
+        fetch(`http://localhost:8080/pozycje/zamowienie/${item.nrPozycji}`, {
+          method: "PUT", // or 'PUT'
+          headers: {
+            "content-type": "application/json",
+            Accept: "application/json",
+          },
+          body: JSON.stringify(this.state.thatOrder),
+        });
       });
-    });
 
-    fetch(
-      `http://localhost:8080/zamowienia/faktura/${this.state.thatOrder.idZamowienia}`,
-      {
-        method: "PUT", // or 'PUT'
-        headers: {
-          "content-type": "application/json",
-          Accept: "application/json",
-        },
-        body: JSON.stringify(this.state.thatInvoice),
-      }
-    );
+      //połączenie zamówienia i faktury
+      fetch(
+        `http://localhost:8080/zamowienia/faktura/${this.state.thatOrder.idZamowienia}`,
+        {
+          method: "PUT", // or 'PUT'
+          headers: {
+            "content-type": "application/json",
+            Accept: "application/json",
+          },
+          body: JSON.stringify(this.state.thatInvoice),
+        }
+      );
+    } else {
+      //pozycje połączone z zamówieniem
+      this.state.helpList.map((item) => {
+        console.log(item.nrPozycji);
+
+        fetch(`http://localhost:8080/pozycje/zamowienie/${item.nrPozycji}`, {
+          method: "PUT", // or 'PUT'
+          headers: {
+            "content-type": "application/json",
+            Accept: "application/json",
+          },
+          body: JSON.stringify(this.state.thatOrder),
+        });
+      });
+
+      //połączenie zamówinia i faktury
+      fetch(
+        `http://localhost:8080/zamowienia/faktura/${this.state.thatOrder.idZamowienia}`,
+        {
+          method: "PUT", // or 'PUT'
+          headers: {
+            "content-type": "application/json",
+            Accept: "application/json",
+          },
+          body: JSON.stringify(this.state.thatInvoice),
+        }
+      );
+    }
   }
 
   render() {
@@ -276,6 +340,9 @@ class AddOrder extends Component {
       employeeLoaded,
       defaultClient,
       defaultEmployee,
+      oldInvoice,
+      positionsAdded,
+      show,
     } = this.state;
 
     return (
@@ -331,22 +398,26 @@ class AddOrder extends Component {
             <Form.Group as={Row} className="mb-3">
               <Form.Label column>Klient</Form.Label>
               <Col className="allSelect">
-                <Form.Select
-                  aria-label="Klient"
-                  value={clientNameInput}
-                  onChange={this.changeClient}
-                >
-                  <option key={Math.random()} value={""}>
-                    {""}
-                  </option>
-                  {loaded
-                    ? clients.map((client) => (
-                        <option key={Math.random()} value={client.idKlienta}>
-                          {client.nazwaFirmy}
-                        </option>
-                      ))
-                    : null}
-                </Form.Select>
+                {oldInvoice ? (
+                  <Form.Select disabled aria-label="Klient"></Form.Select>
+                ) : (
+                  <Form.Select
+                    aria-label="Klient"
+                    value={clientNameInput}
+                    onChange={this.changeClient}
+                  >
+                    <option key={Math.random()} value={""}>
+                      {""}
+                    </option>
+                    {loaded
+                      ? clients.map((client) => (
+                          <option key={Math.random()} value={client.idKlienta}>
+                            {client.nazwaFirmy}
+                          </option>
+                        ))
+                      : null}
+                  </Form.Select>
+                )}
               </Col>
             </Form.Group>
 
@@ -372,30 +443,34 @@ class AddOrder extends Component {
             <Form.Group as={Row} className="mb-3 mt-3">
               <Form.Label column>Pracownik</Form.Label>
               <Col className="allSelect">
-                <Form.Select
-                  aria-label="Pracownik"
-                  value={employeeNameInput}
-                  onChange={this.changeEmployee}
-                >
-                  <option key={Math.random()} value={""}>
-                    {""}
-                  </option>
-                  {loaded
-                    ? employees.map((employee) => (
-                        <option
-                          key={Math.random()}
-                          value={employee.idPracownika}
-                        >
-                          {employee.imie +
-                            " " +
-                            employee.nazwisko +
-                            " (" +
-                            employee.stanowisko.nazwa +
-                            ") "}
-                        </option>
-                      ))
-                    : null}
-                </Form.Select>
+                {oldInvoice ? (
+                  <Form.Select disabled aria-label="Pracownik"></Form.Select>
+                ) : (
+                  <Form.Select
+                    aria-label="Pracownik"
+                    value={employeeNameInput}
+                    onChange={this.changeEmployee}
+                  >
+                    <option key={Math.random()} value={""}>
+                      {""}
+                    </option>
+                    {loaded
+                      ? employees.map((employee) => (
+                          <option
+                            key={Math.random()}
+                            value={employee.idPracownika}
+                          >
+                            {employee.imie +
+                              " " +
+                              employee.nazwisko +
+                              " (" +
+                              employee.stanowisko.nazwa +
+                              ") "}
+                          </option>
+                        ))
+                      : null}
+                  </Form.Select>
+                )}
               </Col>
             </Form.Group>
             {employeeLoaded ? (
@@ -436,9 +511,31 @@ class AddOrder extends Component {
             </Form.Group>
           </Form>
           <div>
-            <button onClick={this.addPositionsToOrder}>
+            <button
+              onClick={() =>
+                this.setState({ positionsAdded: true, show: true })
+              }
+            >
               Potwierdź pozycje
             </button>
+            {positionsAdded ? (
+              <Modal show={show} onHide={this.handleClose}>
+                <Modal.Header closeButton></Modal.Header>
+                <Modal.Body>
+                  Zatwierdzonych pozycji nie będzie można edytować, czy jesteś
+                  pewien, że chcesz potwierdzić?
+                </Modal.Body>
+                <Modal.Footer>
+                  <Button
+                    variant="secondary"
+                    onClick={this.addPositionsToOrder}
+                  >
+                    Tak, potwierdź
+                    {/* {show ? null : <Navigate to="/producenci" />} */}
+                  </Button>
+                </Modal.Footer>
+              </Modal>
+            ) : null}
             <button onClick={this.addOrderToOrdersList}>
               Dodaj zamówienie
             </button>
