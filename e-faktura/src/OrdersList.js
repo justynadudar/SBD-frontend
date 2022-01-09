@@ -47,9 +47,9 @@ function OrdersList({ orders }) {
   }
 
   function handleFinalize(id) {
-    fetch(`http://localhost:8080/zamowienia/realizuj/${id}`, { method: "DELETE" }).then(
-      () => console.log("Finalize successful")
-    );
+    fetch(`http://localhost:8080/zamowienia/realizuj/${id}`, {
+      method: "DELETE",
+    }).then(() => console.log("Finalize successful"));
   }
 
   return (
@@ -65,7 +65,7 @@ function OrdersList({ orders }) {
             <th>Pracownik</th>
             <th>Stan zamówienia</th>
             <th>Szczegóły</th>
-            <th>Zrealizuj</th>
+            <th>Zmień stan</th>
             <th>Usuń</th>
           </tr>
         </thead>
@@ -75,27 +75,47 @@ function OrdersList({ orders }) {
               return (
                 <tr>
                   <td>{order.idZamowienia}</td>
-                  <td>{order.klient.idKlienta} {order.klient.imie} {order.klient.nazwisko}</td>
-                  <td>{order.pracownik.idPracownika} {order.pracownik.imie} {order.pracownik.nazwisko}</td>
+                  <td>
+                    {order.klient.idKlienta} {order.klient.imie}{" "}
+                    {order.klient.nazwisko}
+                  </td>
+                  <td>
+                    {order.pracownik.idPracownika} {order.pracownik.imie}{" "}
+                    {order.pracownik.nazwisko}
+                  </td>
                   <td>{order.stanZamowienia}</td>
-                  <td if="{order.stanZamowienia} == 'W_REALIZACJI'">
-                      <Link
+                  <td>
+                    <Link
                       to={{
                         pathname: `/pozycje/zamowienie/${order.idZamowienia}`,
                         state: { modal: true },
                       }}
                     >
-                      <MdReadMore />
-                      </Link>
+                      Szczegóły
+                    </Link>
                   </td>
                   <td>
-                    
-                    <button
-                      key={Math.random()}
-                      onClick={() => handleFinalize(order.idZamowienia)}
-                    >
-                      <AiOutlineCheck className="false" />
-                    </button>
+                    {order.stanZamowienia === "DO_REALIZACJI" ? (
+                      <button
+                        key={Math.random()}
+                        onClick={() => handleFinalize(order.idZamowienia)}
+                      >
+                        Realizuj
+                      </button>
+                    ) : order.stanZamowienia === "W_REALIZACJI" ? (
+                      <button
+                        key={Math.random()}
+                        onClick={() => handleFinalize(order.idZamowienia)}
+                      >
+                        Zrealizuj
+                      </button>
+                    ) : order.stanZamowienia === "ZREALIZOWANE" ? (
+                      <p>Gotowe na opłacenie</p>
+                    ) : order.stanZamowienia === "OPLACONE" ? (
+                      <p>Opłacone</p>
+                    ) : order.stanZamowienia === "ANULOWANE" ? (
+                      <p>Anulowane</p>
+                    ) : null}
                   </td>
                   <td>
                     <button
