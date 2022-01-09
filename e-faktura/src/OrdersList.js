@@ -46,10 +46,16 @@ function OrdersList({ orders }) {
     );
   }
 
-  function handleFinalize(id) {
-    fetch(`http://localhost:8080/zamowienia/realizuj/${id}`, {
-      method: "DELETE",
-    }).then(() => console.log("Finalize successful"));
+  function handleInRealization(id) {
+    fetch(`http://localhost:8080/zamowienia/w-realizacji/${id}`, {
+      method: "PUT",
+    }).then(() => console.log("Order sent to realization successful"));
+  }
+
+  function handleToPay(id) {
+    fetch(`http://localhost:8080/zamowienia/do-zaplaty/${id}`, {
+      method: "PUT",
+    }).then(() => console.log("Order waiting for payment"));
   }
 
   return (
@@ -98,19 +104,19 @@ function OrdersList({ orders }) {
                     {order.stanZamowienia === "DO_REALIZACJI" ? (
                       <button
                         key={Math.random()}
-                        onClick={() => handleFinalize(order.idZamowienia)}
+                        onClick={() => handleInRealization(order.idZamowienia)}
                       >
-                        Realizuj
+                        Rozpocznij realizację
                       </button>
                     ) : order.stanZamowienia === "W_REALIZACJI" ? (
                       <button
                         key={Math.random()}
-                        onClick={() => handleFinalize(order.idZamowienia)}
+                        onClick={() => handleToPay(order.idZamowienia)}
                       >
-                        Zrealizuj
+                        Zakończ realizację
                       </button>
-                    ) : order.stanZamowienia === "ZREALIZOWANE" ? (
-                      <p>Gotowe na opłacenie</p>
+                    ) : order.stanZamowienia === "DO_OPLATY" ? (
+                      <p>Czeka na opłatę</p>
                     ) : order.stanZamowienia === "OPLACONE" ? (
                       <p>Opłacone</p>
                     ) : order.stanZamowienia === "ANULOWANE" ? (
