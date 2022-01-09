@@ -3,6 +3,7 @@ import React, { Component } from "react";
 import OrderItems from "./OrderItems";
 import { Form, Row, Col, Modal, ListGroup, Button } from "react-bootstrap";
 import { Navigate } from "react-router-dom";
+import Error from "./Error";
 
 class AddOrder extends Component {
   constructor(props) {
@@ -11,24 +12,6 @@ class AddOrder extends Component {
       clientNameInput: "",
       employeeNameInput: "",
       invoiceNameInput: "",
-      defaultClient: {
-        imie: "imie",
-        nazwisko: "nazwisko",
-        telefon: "telefon",
-        email: "e-mail",
-      },
-      defaultEmployee: {
-        imie: "imie",
-        nazwisko: "nazwisko",
-        stanowisko: "stanowisko",
-        telefon: "telefon",
-      },
-      defaultInvoice: {
-        id: "faktura.id",
-        klient: "faktura.zamowienie.klient.nazwaFirmy",
-        pracownik: "faktura.zamowienie.pracownik.nazwaFirmy",
-        data: "data wystawienia",
-      },
       thatOrder: {},
       thatClient: {},
       thatEmployee: {},
@@ -47,6 +30,13 @@ class AddOrder extends Component {
       itemsConfirmed: false,
       positionsAdded: false,
       show: false,
+      show2: false,
+      orderAdded: false,
+      positionsConfirmed: false,
+      emptyInvoice: false,
+      emptyClient: false,
+      emptyEmployee: false,
+      emptyPositions: false,
     };
 
     this.changeClient = this.changeClient.bind(this);
@@ -59,6 +49,7 @@ class AddOrder extends Component {
     this.addPositionsToOrder = this.addPositionsToOrder.bind(this);
     this.postPosition = this.postPosition.bind(this);
     this.getOrderFindedInvoice = this.getOrderFindedInvoice.bind(this);
+    this.connectPositionWithOrder = this.connectPositionWithOrder.bind(this);
     this.handleClose = this.handleClose.bind(this);
   }
 
@@ -85,6 +76,11 @@ class AddOrder extends Component {
   }
 
   async changeInvoice(e) {
+    if (this.state.emptyInvoice) {
+      this.setState({
+        emptyInvoice: false,
+      });
+    }
     if (e.target.value === "") {
       this.setState({
         invoiceNameInput: e.target.value,
@@ -134,6 +130,11 @@ class AddOrder extends Component {
   }
 
   changeClient(e) {
+    if (this.state.emptyClient) {
+      this.setState({
+        emptyClient: false,
+      });
+    }
     if (e.target.value === "") {
       this.setState({
         clientNameInput: e.target.value,
@@ -152,6 +153,11 @@ class AddOrder extends Component {
   }
 
   changeEmployee(e) {
+    if (this.state.emptyEmployee) {
+      this.setState({
+        emptyEmployee: false,
+      });
+    }
     if (e.target.value === "") {
       this.setState({
         employeeNameInput: e.target.value,
@@ -169,10 +175,26 @@ class AddOrder extends Component {
     }
   }
 
-  confirmItem(item) {
+  confirmItem(item, confirmedOnce) {
     this.setState({
-      itemsList: [...this.state.itemsList, item],
+      emptyPositions: false,
     });
+    if (confirmedOnce == -1) {
+      this.setState({
+        itemsList: [...this.state.itemsList, item],
+      });
+      console.log(item);
+    } else {
+      this.setState({
+        itemsList: this.state.itemsList.map((el) => {
+          if (el.id === confirmedOnce) {
+            el.ilosc = item.ilosc;
+          }
+          console.log(el);
+          return el;
+        }),
+      });
+    }
   }
 
   deleteItem(id) {
@@ -181,9 +203,11 @@ class AddOrder extends Component {
       itemsList: filtered,
     });
   }
+
   handleClose = () => {
     this.setState({
       show: false,
+      show2: false,
     });
   };
 
@@ -206,16 +230,24 @@ class AddOrder extends Component {
   }
 
   async addPositionsToOrder() {
+    if (this.state.emptyPositions) {
+      this.setState({
+        emptyPositions: false,
+      });
+    }
+
     let itemObject = {};
     this.state.itemsList.map(async (item) => {
       itemObject = {
         ilosc: item.ilosc,
         towar: item.towar,
       };
+      console.log(itemObject);
       await this.postPosition(itemObject);
     });
     this.setState({
       show: false,
+      positionsConfirmed: true,
     });
   }
 
@@ -264,64 +296,92 @@ class AddOrder extends Component {
     }
   }
 
+  async connectPositionWithOrder() {
+    this.state.helpList.map((item) => {
+      console.log(item.nrPozycji);
+      fetch(`http://localhost:8080/pozycje/zamowienie/${item.nrPozycji}`, {
+        method: "PUT", // or 'PUT'
+        headers: {
+          "content-type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify(this.state.thatOrder),
+      });
+    });
+  }
+
   //przypisywanie faktury do zamówienia
   async addOrderToOrdersList() {
-    if (!this.state.oldInvoice) {
-      await this.createOrder();
-
-      //pozycje połączone z zamówieniem
-      this.state.helpList.map((item) => {
-        console.log(item.nrPozycji);
-
-        fetch(`http://localhost:8080/pozycje/zamowienie/${item.nrPozycji}`, {
-          method: "PUT", // or 'PUT'
-          headers: {
-            "content-type": "application/json",
-            Accept: "application/json",
-          },
-          body: JSON.stringify(this.state.thatOrder),
-        });
+    if (!this.state.invoiceLoaded) {
+      this.setState({
+        emptyInvoice: true,
       });
-
-      //połączenie zamówienia i faktury
-      fetch(
-        `http://localhost:8080/zamowienia/faktura/${this.state.thatOrder.idZamowienia}`,
-        {
-          method: "PUT", // or 'PUT'
-          headers: {
-            "content-type": "application/json",
-            Accept: "application/json",
-          },
-          body: JSON.stringify(this.state.thatInvoice),
-        }
-      );
+    } else if (!this.state.clientLoaded) {
+      this.setState({
+        emptyClient: true,
+      });
+    } else if (!this.state.employeeLoaded) {
+      this.setState({
+        emptyEmployee: true,
+      });
+    } else if (this.state.helpList.length === 0) {
+      this.setState({
+        emptyPositions: true,
+      });
     } else {
-      //pozycje połączone z zamówieniem
-      this.state.helpList.map((item) => {
-        console.log(item.nrPozycji);
+      {
+        await this.createOrder();
+        console.log(this.state.thatOrder);
 
-        fetch(`http://localhost:8080/pozycje/zamowienie/${item.nrPozycji}`, {
-          method: "PUT", // or 'PUT'
-          headers: {
-            "content-type": "application/json",
-            Accept: "application/json",
-          },
-          body: JSON.stringify(this.state.thatOrder),
-        });
+        //pozycje połączone z zamówieniem
+
+        this.connectPositionWithOrder();
+
+        //połączenie zamówienia i faktury
+        fetch(
+          `http://localhost:8080/zamowienia/faktura/${this.state.thatOrder.idZamowienia}`,
+          {
+            method: "PUT", // or 'PUT'
+            headers: {
+              "content-type": "application/json",
+              Accept: "application/json",
+            },
+            body: JSON.stringify(this.state.thatInvoice),
+          }
+        );
+      }
+      // else {
+      //   //pozycje połączone z zamówieniem
+      //   this.state.helpList.map((item) => {
+      //     console.log(item.nrPozycji);
+
+      //     fetch(`http://localhost:8080/pozycje/zamowienie/${item.nrPozycji}`, {
+      //       method: "PUT", // or 'PUT'
+      //       headers: {
+      //         "content-type": "application/json",
+      //         Accept: "application/json",
+      //       },
+      //       body: JSON.stringify(this.state.thatOrder),
+      //     });
+      //   });
+
+      //   //połączenie zamówinia i faktury
+      //   fetch(
+      //     `http://localhost:8080/zamowienia/faktura/${this.state.thatOrder.idZamowienia}`,
+      //     {
+      //       method: "PUT", // or 'PUT'
+      //       headers: {
+      //         "content-type": "application/json",
+      //         Accept: "application/json",
+      //       },
+      //       body: JSON.stringify(this.state.thatInvoice),
+      //     }
+      //   );
+      // }
+      this.setState({
+        orderAdded: true,
+        show2: true,
       });
-
-      //połączenie zamówinia i faktury
-      fetch(
-        `http://localhost:8080/zamowienia/faktura/${this.state.thatOrder.idZamowienia}`,
-        {
-          method: "PUT", // or 'PUT'
-          headers: {
-            "content-type": "application/json",
-            Accept: "application/json",
-          },
-          body: JSON.stringify(this.state.thatInvoice),
-        }
-      );
     }
   }
 
@@ -338,11 +398,16 @@ class AddOrder extends Component {
       invoices,
       clientLoaded,
       employeeLoaded,
-      defaultClient,
-      defaultEmployee,
       oldInvoice,
       positionsAdded,
+      positionsConfirmed,
       show,
+      show2,
+      orderAdded,
+      emptyInvoice,
+      emptyClient,
+      emptyEmployee,
+      emptyPositions,
     } = this.state;
 
     return (
@@ -422,7 +487,7 @@ class AddOrder extends Component {
             </Form.Group>
 
             {clientLoaded ? (
-              <ListGroup horizontal>
+              <ListGroup horizontal className="personInfo">
                 <ListGroup.Item>{thatClient.imie}</ListGroup.Item>
 
                 <ListGroup.Item>{thatClient.nazwisko}</ListGroup.Item>
@@ -432,11 +497,11 @@ class AddOrder extends Component {
                 <ListGroup.Item>{thatClient.email}</ListGroup.Item>
               </ListGroup>
             ) : (
-              <ListGroup horizontal>
-                <ListGroup.Item>{defaultClient.imie}</ListGroup.Item>
-                <ListGroup.Item>{defaultClient.nazwisko}</ListGroup.Item>
-                <ListGroup.Item>{defaultClient.telefon}</ListGroup.Item>
-                <ListGroup.Item>{defaultClient.email}</ListGroup.Item>
+              <ListGroup horizontal className="personInfo">
+                <ListGroup.Item>Imię</ListGroup.Item>
+                <ListGroup.Item>Nazwisko</ListGroup.Item>
+                <ListGroup.Item>Telefon</ListGroup.Item>
+                <ListGroup.Item>E-mail</ListGroup.Item>
               </ListGroup>
             )}
 
@@ -474,7 +539,7 @@ class AddOrder extends Component {
               </Col>
             </Form.Group>
             {employeeLoaded ? (
-              <ListGroup horizontal>
+              <ListGroup horizontal className="personInfo">
                 <ListGroup.Item>{thatEmployee.imie}</ListGroup.Item>
 
                 <ListGroup.Item>{thatEmployee.nazwisko}</ListGroup.Item>
@@ -484,7 +549,7 @@ class AddOrder extends Component {
                 <ListGroup.Item>{thatEmployee.stanowisko.nazwa}</ListGroup.Item>
               </ListGroup>
             ) : (
-              <ListGroup horizontal>
+              <ListGroup horizontal className="personInfo">
                 <ListGroup.Item>Imię</ListGroup.Item>
                 <ListGroup.Item>Nazwisko</ListGroup.Item>
                 <ListGroup.Item>Telefon</ListGroup.Item>
@@ -503,21 +568,58 @@ class AddOrder extends Component {
                   <ListGroup.Item>Cena brutto</ListGroup.Item>
                   <ListGroup.Item>Ilość</ListGroup.Item>
                 </ListGroup>
-                <OrderItems
-                  confirmItem={this.confirmItem}
-                  deleteItem={this.deleteItem}
-                />
+                {positionsConfirmed ? (
+                  this.state.helpList.map((item) => (
+                    <ListGroup horizontal className="productInfo">
+                      <ListGroup.Item title={item.towar.nazwa}>
+                        {item.towar.nazwa.slice(0, 12)}
+                      </ListGroup.Item>
+                      <ListGroup.Item>
+                        {item.towar.kategoria.nazwa}
+                      </ListGroup.Item>
+                      <ListGroup.Item>
+                        {item.towar.producent.nazwa}
+                      </ListGroup.Item>
+                      <ListGroup.Item>{item.towar.cenaNetto}</ListGroup.Item>
+                      <ListGroup.Item>
+                        {item.towar.kategoria.stawkaVat}
+                      </ListGroup.Item>
+                      <ListGroup.Item>{item.towar.cenaBrutto}</ListGroup.Item>
+                      <ListGroup.Item>{item.ilosc}</ListGroup.Item>
+                    </ListGroup>
+                  ))
+                ) : (
+                  <OrderItems
+                    confirmItem={this.confirmItem}
+                    deleteItem={this.deleteItem}
+                  />
+                )}
               </Col>
             </Form.Group>
           </Form>
-          <div>
-            <button
-              onClick={() =>
-                this.setState({ positionsAdded: true, show: true })
-              }
+          <div className="forButtons">
+            <Error error={emptyPositions} info="Proszę wybrać pozycje." />
+            <Button
+              variant="secondary"
+              className={`confirmPositions ${
+                positionsConfirmed ? "invisible" : ""
+              }`}
+              onClick={() => {
+                if (this.state.itemsList.length === 0) {
+                  this.setState({
+                    emptyPositions: true,
+                  });
+                } else {
+                  this.setState({
+                    emptyPositions: false,
+                    positionsAdded: true,
+                    show: true,
+                  });
+                }
+              }}
             >
               Potwierdź pozycje
-            </button>
+            </Button>
             {positionsAdded ? (
               <Modal show={show} onHide={this.handleClose}>
                 <Modal.Header closeButton></Modal.Header>
@@ -533,12 +635,55 @@ class AddOrder extends Component {
                     Tak, potwierdź
                     {/* {show ? null : <Navigate to="/producenci" />} */}
                   </Button>
+                  <Button
+                    variant="secondary"
+                    onClick={() => {
+                      this.setState({
+                        show: false,
+                        positionsConfirmed: false,
+                      });
+                    }}
+                  >
+                    Cofnij
+                    {/* {show ? null : <Navigate to="/producenci" />} */}
+                  </Button>
                 </Modal.Footer>
               </Modal>
             ) : null}
-            <button onClick={this.addOrderToOrdersList}>
+            <Error
+              className="error"
+              error={emptyInvoice}
+              info="Pole Faktura nie może być puste!"
+            />
+            <Error
+              className="error"
+              error={emptyClient}
+              info="Pole Klient nie może być puste!"
+            />
+            <Error
+              className="error"
+              error={emptyEmployee}
+              info="Pole Pracownik nie może być puste!"
+            />
+            <Button
+              variant="primary"
+              className="addOrder"
+              onClick={this.addOrderToOrdersList}
+            >
               Dodaj zamówienie
-            </button>
+            </Button>
+            {orderAdded ? (
+              <Modal show={show2} onHide={this.handleClose}>
+                <Modal.Header closeButton></Modal.Header>
+                <Modal.Body>Zamówienie zostało dodane.</Modal.Body>
+                <Modal.Footer>
+                  <Button variant="secondary" onClick={this.handleClose}>
+                    OK
+                    {show2 ? null : <Navigate to="/zamowienia" />}
+                  </Button>
+                </Modal.Footer>
+              </Modal>
+            ) : null}
           </div>
         </div>
       </div>

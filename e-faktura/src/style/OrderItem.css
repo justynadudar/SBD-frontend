@@ -34,18 +34,28 @@
   width: 100%;
 }
 
-#bootstrap-overrides .AddItemForm .productInfoAccept .list-group-item {
-  width: 13%;
+#bootstrap-overrides
+  .AddItemForm
+  .productLoaded
+  .productLoaded2
+  .list-group-item {
+  width: 65%;
   padding: 0.5rem 0.5rem;
+  cursor: default;
 }
 
-#bootstrap-overrides .AddItemForm .productInfoAccept .productLoaded2 {
-  margin-top: 0%;
-  display: flex;
-  flex-direction: row;
-  flex-wrap: nowrap;
-  align-items: center;
-  width: 7%;
+#bootstrap-overrides .AddItemForm .productLoaded2 button {
+  padding-left: 10%;
+  border: none;
+  outline: none;
+  background-color: transparent;
+  cursor: pointer;
+}
+
+#bootstrap-overrides .AddItemForm .productLoaded2 svg {
+  padding-left: 2%;
+  color: rgb(212, 18, 18);
+  font-size: 120%;
 }
 
 .AddItemForm {
@@ -78,7 +88,8 @@
 }
 
 .OrdersList .AddItemForm select {
-  margin-bottom: 5%;
+  margin-top: 2%;
+  margin-bottom: 2%;
   font-size: 80%;
   width: 80%;
 }
@@ -90,21 +101,7 @@
   width: 10%;
 }
 
-.OrdersList .AddItemForm .productInfo svg {
-  padding-left: 2%;
-  color: rgb(212, 18, 18);
-  font-size: 15px;
-}
-
 .OrdersList .AddItemForm .productInfo .true {
   color: green;
   font-size: 15px;
-}
-
-.OrdersList .AddItemForm .productInfo button {
-  padding-left: 2%;
-  border: none;
-  outline: none;
-  background-color: transparent;
-  cursor: pointer;
 }
