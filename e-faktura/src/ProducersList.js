@@ -30,7 +30,13 @@ function ProducersList({ producers }) {
     fetch(`http://localhost:8080/producenci/${id}`, { method: "DELETE" }).then(
       () => {
         setShow(false);
-        window.location.reload();
+        const fetchData = async () => {
+          const response = await fetch("/producenci");
+          const body = await response.json();
+          setProducersListState(body);
+          setLoaded(true);
+        };
+        fetchData();
       }
     );
   }
@@ -82,7 +88,7 @@ function ProducersList({ producers }) {
       {show ? (
         <Modal show={show} onHide={handleClose}>
           <Modal.Header closeButton></Modal.Header>
-          <Modal.Body>Czy napewno chcesz usunąć ten produkt?</Modal.Body>
+          <Modal.Body>Czy napewno chcesz usunąć tego producenta?</Modal.Body>
           <Modal.Footer>
             <Button variant="secondary" onClick={() => handleDelete(deletedId)}>
               Tak, potwierdź
