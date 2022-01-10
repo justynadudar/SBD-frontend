@@ -15,6 +15,7 @@ class AddProducer extends Component {
       emptyNameField: false,
       producerAdded: false,
       show: false,
+      navigate: false,
     };
     this.changeName = this.changeName.bind(this);
     this.addProducerToProducersList =
@@ -81,11 +82,15 @@ class AddProducer extends Component {
   }
 
   render() {
-    const { nameInput, emptyNameField, producerAdded, show } = this.state;
+    const { nameInput, emptyNameField, producerAdded, show, navigate } =
+      this.state;
     return (
       <div className="ProducersList">
         <aside>
-          <button>Dodaj producenta</button>
+          <button onClick={() => this.setState({ navigate: true })}>
+            {navigate ? <Navigate to="/producenci" /> : null}
+            Powrót
+          </button>
         </aside>
         <div className="AddProducerForm">
           <h2>Nowy producent</h2>

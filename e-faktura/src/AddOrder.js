@@ -37,6 +37,7 @@ class AddOrder extends Component {
       emptyClient: false,
       emptyEmployee: false,
       emptyPositions: false,
+      navigate: false,
     };
 
     this.changeClient = this.changeClient.bind(this);
@@ -378,12 +379,16 @@ class AddOrder extends Component {
       emptyClient,
       emptyEmployee,
       emptyPositions,
+      navigate,
     } = this.state;
 
     return (
       <div className="OrdersList">
         <aside>
-          <button>Dodaj zamówienie</button>
+          <button onClick={() => this.setState({ navigate: true })}>
+            {navigate ? <Navigate to="/zamowienia" /> : null}
+            Powrót
+          </button>
         </aside>
         <div className="forForm">
           <Form className="m-3">
@@ -563,27 +568,6 @@ class AddOrder extends Component {
           </Form>
           <div className="forButtons">
             <Error error={emptyPositions} info="Proszę wybrać pozycje." />
-            <Button
-              variant="secondary"
-              className={`confirmPositions ${
-                positionsConfirmed ? "invisible" : ""
-              }`}
-              onClick={() => {
-                if (this.state.itemsList.length === 0) {
-                  this.setState({
-                    emptyPositions: true,
-                  });
-                } else {
-                  this.setState({
-                    emptyPositions: false,
-                    positionsAdded: true,
-                    show: true,
-                  });
-                }
-              }}
-            >
-              Potwierdź pozycje
-            </Button>
 
             {positionsAdded ? (
               <Modal show={show} onHide={this.handleClose}>
@@ -638,9 +622,7 @@ class AddOrder extends Component {
             {orderAdded ? (
               <Modal show={show2} onHide={this.handleClose}>
                 <Modal.Header closeButton></Modal.Header>
-                <Modal.Body>
-                  Zamówienie zostało dodane. Kwota zamówienia brutto wynosi...
-                </Modal.Body>
+                <Modal.Body>Zamówienie zostało dodane.</Modal.Body>
                 <Modal.Footer>
                   <Button variant="secondary" onClick={this.handleClose}>
                     OK

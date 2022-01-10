@@ -25,7 +25,9 @@ function EmployeesList({ orders }) {
 
   function handleDelete(id) {
     fetch(`http://localhost:8080/pracownicy/${id}`, { method: "DELETE" }).then(
-      () => console.log("Delete successful")
+      () => {
+        console.log("Delete successful");
+      }
     );
   }
 

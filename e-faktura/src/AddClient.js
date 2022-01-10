@@ -1,6 +1,7 @@
 import "./style/ClientsList.css";
 import "./style/AddClient.css";
 import React, { Component } from "react";
+import { Navigate } from "react-router-dom";
 
 class AddClient extends Component {
   constructor(props) {
@@ -18,6 +19,7 @@ class AddClient extends Component {
       streetInput: "",
       nipInput: "",
       clients: [],
+      navigate: false,
     };
     this.changeName = this.changeName.bind(this);
     this.changeSurname = this.changeSurname.bind(this);
@@ -144,11 +146,15 @@ class AddClient extends Component {
       townInput,
       countryInput,
       emailInput,
+      navigate,
     } = this.state;
     return (
       <div className="ClientsList">
         <aside>
-          <button>Dodaj klienta</button>
+          <button onClick={() => this.setState({ navigate: true })}>
+            {navigate ? <Navigate to="/klienci" /> : null}
+            Powrót
+          </button>
         </aside>
         <div className="AddClientForm">
           <h2>Nowy klient</h2>

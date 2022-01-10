@@ -1,5 +1,6 @@
 import "./style/AddProduct.css";
 import React, { Component } from "react";
+import { Navigate } from "react-router-dom";
 
 class AddProduct extends Component {
   constructor(props) {
@@ -14,6 +15,7 @@ class AddProduct extends Component {
       categories: [],
       products: [],
       loaded: false,
+      navigate: false,
     };
 
     this.changeName = this.changeName.bind(this);
@@ -111,12 +113,16 @@ class AddProduct extends Component {
       loaded,
       categories,
       producers,
+      navigate,
     } = this.state;
 
     return (
       <div className="Warehouse">
         <aside>
-          <button>Dodaj produkt</button>
+          <button onClick={() => this.setState({ navigate: true })}>
+            {navigate ? <Navigate to="/magazyn" /> : null}
+            Powrót
+          </button>
         </aside>
         <div className="AddProductForm">
           <h2>Nowy produkt</h2>

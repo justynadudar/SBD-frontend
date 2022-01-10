@@ -17,8 +17,8 @@
 .Warehouse aside button {
   margin-top: 10%;
   width: 70%;
-  height: 5%;
-  font-size: 0.6rem;
+  min-height: 5%;
+  font-size: 90%;
   border-radius: 8px;
   background-color: black;
   border: 2px solid #7dbaec;

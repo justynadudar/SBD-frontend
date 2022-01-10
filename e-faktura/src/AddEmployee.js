@@ -28,6 +28,7 @@ class AddEmployee extends Component {
       emptyPositionField: false,
       employeeAdded: false,
       show: false,
+      navigate: false,
     };
     this.changeName = this.changeName.bind(this);
     this.changeSurname = this.changeSurname.bind(this);
@@ -202,11 +203,15 @@ class AddEmployee extends Component {
       emptyPositionField,
       wrongNameField,
       wrongSurnameField,
+      navigate,
     } = this.state;
     return (
       <div className="EmployeesList">
         <aside>
-          <button>Dodaj pracownika</button>
+          <button onClick={() => this.setState({ navigate: true })}>
+            {navigate ? <Navigate to="/pracownicy" /> : null}
+            Powrót
+          </button>
         </aside>
         <div className="AddEmployeeForm">
           <h2>Nowy pracownik</h2>
