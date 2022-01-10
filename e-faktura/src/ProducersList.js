@@ -3,11 +3,14 @@ import { useNavigate } from "react-router-dom";
 import React, { useState, useEffect } from "react";
 import { AiOutlineClose } from "react-icons/ai";
 import { Table } from "react-bootstrap";
+import { Modal, Button } from "react-bootstrap";
 
 function ProducersList({ producers }) {
   let navigate = useNavigate();
   let [producersList, setProducersListState] = useState({ producersList: [] });
   let [loaded, setLoaded] = useState("");
+  let [show, setShow] = useState(false);
+  let [deletedId, setId] = useState("");
 
   useEffect(() => {
     const fetchData = async () => {
@@ -25,8 +28,15 @@ function ProducersList({ producers }) {
 
   function handleDelete(id) {
     fetch(`http://localhost:8080/producenci/${id}`, { method: "DELETE" }).then(
-      () => console.log("Delete successful")
+      () => {
+        setShow(false);
+        window.location.reload();
+      }
     );
+  }
+
+  function handleClose() {
+    setShow(false);
   }
 
   return (
@@ -53,7 +63,10 @@ function ProducersList({ producers }) {
                     {" "}
                     <button
                       key={Math.random()}
-                      onClick={() => handleDelete(producer.idProducenta)}
+                      onClick={() => {
+                        setShow(true);
+                        setId(producer.idProducenta);
+                      }}
                     >
                       <AiOutlineClose className="false" />
                     </button>
@@ -66,15 +79,26 @@ function ProducersList({ producers }) {
           )}
         </tbody>
       </Table>
-      {/* <div className="TableOfProducers">
-        <h2>Producenci</h2>
-        <div className="row">
-          <h4>Id</h4>
-          <h4>Nazwa</h4>
-        </div>
-
-       
-      </div> */}
+      {show ? (
+        <Modal show={show} onHide={handleClose}>
+          <Modal.Header closeButton></Modal.Header>
+          <Modal.Body>Czy napewno chcesz usunąć ten produkt?</Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={() => handleDelete(deletedId)}>
+              Tak, potwierdź
+              {show ? null : window.location.reload()}
+            </Button>
+            <Button
+              variant="secondary"
+              onClick={() => {
+                setShow(false);
+              }}
+            >
+              Cofnij
+            </Button>
+          </Modal.Footer>
+        </Modal>
+      ) : null}
     </div>
   );
 }

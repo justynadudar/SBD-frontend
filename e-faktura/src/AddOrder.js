@@ -304,7 +304,6 @@ class AddOrder extends Component {
     });
   }
 
-  //przypisywanie faktury do zamówienia
   async addOrderToOrdersList() {
     if (this.state.invoiceNameInput === "") {
       this.setState({
