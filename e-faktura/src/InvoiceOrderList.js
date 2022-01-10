@@ -38,6 +38,8 @@ function InvoiceOrderList({ orders }) {
         <thead>
           <tr>
             <th>Id</th>
+            <th>Nabywca</th>
+            <th>Pracownik realizujący</th>
             <th>Stan zamowienia</th>
             <th>Kwota brutto</th>
             <th>Kwota netto</th>
@@ -51,6 +53,8 @@ function InvoiceOrderList({ orders }) {
               return (
                 <tr>
                   <td key={Math.random()}>{order.idZamowienia}</td>
+                  <td key={Math.random()}>{order.klient.idKlienta} {order.klient.imie} {order.klient.nazwisko}</td>
+                  <td key={Math.random()}>{order.pracownik.idPracownika} {order.pracownik.imie} {order.pracownik.nazwisko}</td>
                   <td key={Math.random()}>{order.stanZamowienia}</td>
                   <td key={Math.random()}>{order.kwotaBrutto.toFixed(2)}</td>
                   <td key={Math.random()}>{order.kwotaNetto.toFixed(2)}</td>

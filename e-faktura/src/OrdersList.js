@@ -68,10 +68,10 @@ function OrdersList({ orders }) {
           <tr>
             <th>Id</th>
             <th>Klient</th>
-            <th>Pracownik</th>
+            <th>Pracownik realizujący</th>
             <th>Stan zamówienia</th>
-            <th>Szczegóły</th>
             <th>Zmień stan</th>
+            <th>Szczegóły</th>
             <th>Usuń</th>
           </tr>
         </thead>
@@ -90,16 +90,6 @@ function OrdersList({ orders }) {
                     {order.pracownik.nazwisko}
                   </td>
                   <td>{order.stanZamowienia}</td>
-                  <td>
-                    <Link
-                      to={{
-                        pathname: `/pozycje/zamowienie/${order.idZamowienia}`,
-                        state: { modal: true },
-                      }}
-                    >
-                      Szczegóły
-                    </Link>
-                  </td>
                   <td>
                     {order.stanZamowienia === "DO_REALIZACJI" ? (
                       <button
@@ -124,6 +114,19 @@ function OrdersList({ orders }) {
                     ) : null}
                   </td>
                   <td>
+                    <Link
+                      to={{
+                        pathname: `/pozycje/zamowienie/${order.idZamowienia}`,
+                        state: { modal: true },
+                      }}
+                    >
+                      Szczegóły
+                    </Link>
+                  </td>
+                  {order?.stanZamowienia === "OPLACONE" ? (
+                    <td></td>
+                  ) : (
+                    <td>
                     <button
                       key={Math.random()}
                       onClick={() => handleDelete(order.idZamowienia)}
@@ -131,6 +134,7 @@ function OrdersList({ orders }) {
                       <AiOutlineClose className="false" />
                     </button>
                   </td>
+                  )}
                 </tr>
               );
             })

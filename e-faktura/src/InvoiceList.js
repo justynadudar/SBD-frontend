@@ -41,15 +41,13 @@ function InvoiceList() {
         <thead>
           <tr>
             <th>Id faktury</th>
-            <th>Id pracownika</th>
-            <th>Nabywca</th>
             <th>Suma brutto</th>
             <th>Suma netto</th>
-            <th>Maksymalny termin zapłaty</th>
+            {/* <th>Maksymalny termin zapłaty</th> */}
             <th>Data zarejestrowania zapłaty</th>
 
-            <th>Zamówienia</th>
             <th>Zatwierdź wpłatę</th>
+            <th>Zamówienia</th>
             <th>Usuń</th>
           </tr>
         </thead>
@@ -59,16 +57,25 @@ function InvoiceList() {
               return (
                 <tr>
                   <td key={Math.random()}>{invoice.idFaktury}</td>
-                  <td></td>
-                  <td></td>
                   <td key={Math.random()}>{invoice.kwotaBrutto.toFixed(2)}</td>
                   <td key={Math.random()}>{invoice.kwotaNetto.toFixed(2)}</td>
-                  <td key={Math.random()}>{invoice.maxDataRealizacji}</td>
+                  {/* <td key={Math.random()}>{invoice.maxDataRealizacji}</td> */}
                   {invoice?.dataRealizacji === null ? (
-                    <td>NIEOPLACONA</td>
+                    <td>Nieopłacona</td>
                   ) : (
                     <td>{invoice.dataRealizacji}</td>
                   )}
+                  {invoice?.czyWszystkieZamowieniaZrealizowane === false ? (
+                    <td>Czeka na realizację wszystkich zamówień</td>
+                  ) : invoice?.dataRealizacji === null ? (
+                    <td>{" "}
+                    <button
+                      key={Math.random()}
+                      onClick={() => handlePayment(invoice.idFaktury)}
+                    >
+                      <AiOutlineCheck className="false" />
+                    </button></td>
+                  ) : <td>Opłacona</td>}
 
                   <td>
                       <Link
@@ -80,27 +87,8 @@ function InvoiceList() {
                       <MdReadMore />
                       </Link>
                   </td>
-                  {invoice?.czyWszystkieZamowieniaZrealizowane === false ? (
-                    <td>CZEKA NA REALIZACJĘ ZAMÓWIEŃ</td>
-                  ) : (
-                    <td>{" "}
-                    <button
-                      key={Math.random()}
-                      onClick={() => handlePayment(invoice.idFaktury)}
-                    >
-                      <AiOutlineCheck className="false" />
-                    </button></td>
-                  )}
-                  {/* <td>
-                    {" "}
-                    <button
-                      key={Math.random()}
-                      onClick={() => handlePayment(invoice.idFaktury)}
-                    >
-                      <AiOutlineCheck className="false" />
-                    </button>
-                  </td> */}
-                  <td>
+                  {invoice?.dataRealizacji === null ? (
+                    <td>
                     {" "}
                     <button
                       key={Math.random()}
@@ -109,6 +97,7 @@ function InvoiceList() {
                       <AiOutlineClose className="false" />
                     </button>
                   </td>
+                  ) : <td></td>}
                 </tr>
               );
             })
