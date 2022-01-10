@@ -40,8 +40,8 @@ function PositionsList({ positions }) {
             <th>Id</th>
             <th>Nazwa towaru</th>
             <th>Ilość</th>
-            <th>Cena brutto</th>
             <th>Cena netto</th>
+            <th>Cena brutto</th>
 
             <th>Usuń</th>
           </tr>
@@ -54,8 +54,8 @@ function PositionsList({ positions }) {
                   <td key={Math.random()}>{position.nrPozycji}</td>
                   <td key={Math.random()}>{position.towar.nazwa}</td>
                   <td key={Math.random()}>{position.ilosc}</td>
-                  <td key={Math.random()}>{(position.towar.cenaBrutto*position.ilosc).toFixed(2)}</td>
                   <td key={Math.random()}>{(position.towar.cenaNetto*position.ilosc).toFixed(2)}</td>
+                  <td key={Math.random()}>{(position.towar.cenaBrutto*position.ilosc).toFixed(2)}</td>
                   <td>
                     <button
                       key={Math.random()}

@@ -41,8 +41,8 @@ function InvoiceList() {
         <thead>
           <tr>
             <th>Id faktury</th>
-            <th>Suma brutto</th>
             <th>Suma netto</th>
+            <th>Suma brutto</th>
             {/* <th>Maksymalny termin zapłaty</th> */}
             <th>Data zarejestrowania zapłaty</th>
 
@@ -57,8 +57,8 @@ function InvoiceList() {
               return (
                 <tr>
                   <td key={Math.random()}>{invoice.idFaktury}</td>
-                  <td key={Math.random()}>{invoice.kwotaBrutto.toFixed(2)}</td>
                   <td key={Math.random()}>{invoice.kwotaNetto.toFixed(2)}</td>
+                  <td key={Math.random()}>{invoice.kwotaBrutto.toFixed(2)}</td>
                   {/* <td key={Math.random()}>{invoice.maxDataRealizacji}</td> */}
                   {invoice?.dataRealizacji === null ? (
                     <td>Nieopłacona</td>

@@ -71,8 +71,8 @@ function OrdersList({ orders }) {
             <th>Pracownik realizujący</th>
             <th>Stan zamówienia</th>
             <th>Zmień stan</th>
-            <th>Kwota brutto</th>
             <th>Kwota netto</th>
+            <th>Kwota brutto</th>
             <th>Szczegóły</th>
             <th>Usuń</th>
           </tr>
@@ -115,8 +115,8 @@ function OrdersList({ orders }) {
                       <p>Anulowane</p>
                     ) : null}
                   </td>
-                  <td>{order.kwotaBrutto.toFixed(2)}</td>
                   <td>{order.kwotaNetto.toFixed(2)}</td>
+                  <td>{order.kwotaBrutto.toFixed(2)}</td>
                   <td>
                     <Link
                       to={{
