@@ -18,7 +18,7 @@ class OrderItems extends Component {
         cenaBrutto: "cena brutto",
       },
       thatProduct: {},
-      amountInput: "",
+      amountInput: 0,
       products: [],
       items: [],
       itemId: 0,
@@ -27,6 +27,9 @@ class OrderItems extends Component {
       itemsLoaded: false,
       wrongAmount: false,
       editClicked: false,
+      editClickedId: 0,
+      sumN: 0,
+      sumB: 0,
     };
 
     this.changeProduct = this.changeProduct.bind(this);
@@ -34,6 +37,7 @@ class OrderItems extends Component {
     this.handleConfirm = this.handleConfirm.bind(this);
     this.handleDelete = this.handleDelete.bind(this);
     this.handleEdit = this.handleEdit.bind(this);
+    this.calculateTheSum = this.calculateTheSum.bind(this);
   }
 
   componentDidMount() {
@@ -73,10 +77,10 @@ class OrderItems extends Component {
     });
   }
 
-  handleConfirm() {
+  async handleConfirm() {
     if (
-      this.state.amountInput <= 0 ||
-      this.state.amountInput > this.state.thatProduct.ilosc
+      parseInt(this.state.amountInput) <= 0 ||
+      parseInt(this.state.amountInput) > this.state.thatProduct.ilosc
     ) {
       this.setState({
         wrongAmount: true,
@@ -92,11 +96,7 @@ class OrderItems extends Component {
         ilosc: parseInt(this.state.amountInput),
       };
 
-      // this.state.items.filter(
-      //   (item) => item.towar.idProduktu !== this.state.thatProduct.idProduktu
-      // )
-
-      this.setState({
+      await this.setState({
         items: [...this.state.items, newItem],
         itemsLoaded: true,
         products: this.state.products.filter(
@@ -105,18 +105,17 @@ class OrderItems extends Component {
         thatProduct: {},
         productNameInput: "",
         productLoaded: false,
+        sumN: 0,
+        sumB: 0,
         id: this.state.itemId++,
       });
+      this.calculateTheSum();
       this.props.confirmItem(newItem, -1);
     }
   }
 
-  handleDelete(id) {
-    this.state.items.map((item) => {
-      if (item.id === id) console.log("prawda");
-      console.log(item.towar);
-    });
-    this.setState({
+  async handleDelete(id) {
+    await this.setState({
       products: [
         ...this.state.products,
         this.state.items.filter((item) => item.id === id)[0].towar,
@@ -125,18 +124,18 @@ class OrderItems extends Component {
       itemsLoaded: true,
       thatProduct: {},
       productNameInput: "",
+      sumN: 0,
+      sumB: 0,
       productLoaded: false,
     });
-    this.state.products.map((item) => {
-      console.log(item);
-    });
+    this.calculateTheSum();
     this.props.deleteItem(id);
   }
 
-  handleEdit(item, id) {
+  async handleEdit(item, id) {
     if (
-      this.state.amountInput <= 0 ||
-      this.state.amountInput > item.towar.ilosc
+      parseInt(this.state.amountInput) <= 0 ||
+      parseInt(this.state.amountInput) > item.towar.ilosc
     ) {
       this.setState({
         wrongAmount: true,
@@ -147,12 +146,10 @@ class OrderItems extends Component {
         towar: item,
         ilosc: parseInt(this.state.amountInput),
       };
-      console.log(this.state.items.filter((item) => item.idProduktu !== id));
-      this.setState({
+      await this.setState({
         items: this.state.items.map((item) => {
           if (item.id == id) {
             item.ilosc = this.state.amountInput;
-            console.log(item);
           }
           return item;
         }),
@@ -160,11 +157,22 @@ class OrderItems extends Component {
         thatProduct: {},
         productNameInput: "",
         productLoaded: false,
-
+        sumN: 0,
+        sumB: 0,
         editClicked: false,
       });
+      this.calculateTheSum();
       this.props.confirmItem(newItem, id);
     }
+  }
+
+  calculateTheSum() {
+    this.state.items.map((item) => {
+      this.setState({
+        sumN: this.state.sumN + item.ilosc * item.towar.cenaNetto,
+        sumB: this.state.sumB + item.ilosc * item.towar.cenaBrutto,
+      });
+    });
   }
 
   render() {
@@ -180,6 +188,9 @@ class OrderItems extends Component {
       amountInput,
       wrongAmount,
       editClicked,
+      editClickedId,
+      sumN,
+      sumB,
     } = this.state;
 
     return (
@@ -187,58 +198,65 @@ class OrderItems extends Component {
         {itemsLoaded
           ? items.map((item) => {
               return (
-                <div className="productLoaded">
-                  <ListGroup
-                    horizontal
-                    key={Math.random()}
-                    className="productInfo"
-                  >
-                    <ListGroup.Item title={item.towar.nazwa}>
-                      {item.towar.nazwa.slice(0, 12)}
-                    </ListGroup.Item>
-                    <ListGroup.Item>
-                      {item.towar.kategoria.nazwa}
-                    </ListGroup.Item>
-                    <ListGroup.Item>
-                      {item.towar.producent.nazwa}
-                    </ListGroup.Item>
-                    <ListGroup.Item>{item.towar.cenaNetto}</ListGroup.Item>
-                    <ListGroup.Item>
-                      {item.towar.kategoria.stawkaVat}
-                    </ListGroup.Item>
-                    <ListGroup.Item>{item.towar.cenaBrutto}</ListGroup.Item>
-                  </ListGroup>
-                  {editClicked ? (
-                    <div className="productLoaded2">
-                      <input
-                        onChange={this.changeAmount}
-                        type="number"
-                        value={amountInput}
-                        className="countInput form-control"
-                        min="0"
-                        max={thatProduct.ilosc}
-                      />{" "}
-                      <button onClick={() => this.handleEdit(item, item.id)}>
-                        {" "}
-                        <AiOutlineCheck className="true" />
-                      </button>
-                    </div>
-                  ) : (
-                    <div className="productLoaded2">
-                      <ListGroup.Item
-                        onClick={() => this.setState({ editClicked: true })}
-                      >
-                        {item.ilosc}
+                <div className="productsSumContainer">
+                  <div className="productLoaded">
+                    <ListGroup
+                      horizontal
+                      key={Math.random()}
+                      className="productInfo"
+                    >
+                      <ListGroup.Item title={item.towar.nazwa}>
+                        {item.towar.nazwa.slice(0, 12)}
                       </ListGroup.Item>
+                      <ListGroup.Item>
+                        {item.towar.kategoria.nazwa}
+                      </ListGroup.Item>
+                      <ListGroup.Item>
+                        {item.towar.producent.nazwa}
+                      </ListGroup.Item>
+                      <ListGroup.Item>{item.towar.cenaNetto}</ListGroup.Item>
+                      <ListGroup.Item>
+                        {item.towar.kategoria.stawkaVat}
+                      </ListGroup.Item>
+                      <ListGroup.Item>{item.towar.cenaBrutto}</ListGroup.Item>
+                    </ListGroup>
+                    {editClicked && item.id === editClickedId ? (
+                      <div className="productLoaded2">
+                        <input
+                          onChange={this.changeAmount}
+                          type="number"
+                          value={amountInput}
+                          className="countInput form-control"
+                          min="1"
+                          max={thatProduct.ilosc}
+                        />{" "}
+                        <button onClick={() => this.handleEdit(item, item.id)}>
+                          {" "}
+                          <AiOutlineCheck className="true" />
+                        </button>
+                      </div>
+                    ) : (
+                      <div className="productLoaded2">
+                        <ListGroup.Item
+                          onClick={() =>
+                            this.setState({
+                              editClicked: true,
+                              editClickedId: item.id,
+                            })
+                          }
+                        >
+                          {item.ilosc}
+                        </ListGroup.Item>
 
-                      <button
-                        key={Math.random()}
-                        onClick={() => this.handleDelete(item.id)}
-                      >
-                        <AiOutlineClose className="false" />
-                      </button>
-                    </div>
-                  )}
+                        <button
+                          key={Math.random()}
+                          onClick={() => this.handleDelete(item.id)}
+                        >
+                          <AiOutlineClose className="false" />
+                        </button>
+                      </div>
+                    )}
+                  </div>
                 </div>
               );
             })
@@ -259,7 +277,7 @@ class OrderItems extends Component {
                 type="number"
                 value={amountInput}
                 className="countInput form-control"
-                min="0"
+                min="1"
                 max={thatProduct.ilosc}
               />{" "}
               <button onClick={() => this.handleConfirm()}>
@@ -279,6 +297,16 @@ class OrderItems extends Component {
             <li>{""}</li>
           </ul>
         )}
+        <div className="forSum">
+          <ListGroup vertical key={Math.random()} className="sum">
+            <ListGroup.Item>Suma netto</ListGroup.Item>
+            <ListGroup.Item>{sumN}</ListGroup.Item>
+          </ListGroup>
+          <ListGroup vertical key={Math.random()} className="sum2">
+            <ListGroup.Item>Suma brutto</ListGroup.Item>
+            <ListGroup.Item>{sumB}</ListGroup.Item>
+          </ListGroup>
+        </div>
         <Error error={wrongAmount} info={`Podana ilość jest nieprawidłowa `} />
         <Form.Select
           name="name"

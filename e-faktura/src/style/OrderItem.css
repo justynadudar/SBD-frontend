@@ -41,7 +41,37 @@
   .list-group-item {
   width: 65%;
   padding: 0.5rem 0.5rem;
+  cursor: pointer;
+}
+#bootstrap-overrides .AddItemForm .productsSumContainer .sum .list-group-item {
+  width: 100%;
+  padding: 0.5rem 0.5rem;
   cursor: default;
+  align-self: flex-end;
+}
+
+#bootstrap-overrides .AddItemForm .sum {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  width: 13%;
+}
+
+#bootstrap-overrides .AddItemForm .sum2 {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  width: 13%;
+  margin-right: 9%;
+}
+
+#bootstrap-overrides .AddItemForm .forSum {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: flex-end;
+  width: 100%;
+  margin-top: 2%;
 }
 
 #bootstrap-overrides .AddItemForm .productLoaded2 button {
