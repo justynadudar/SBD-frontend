@@ -422,7 +422,7 @@ class AddOrder extends Component {
                             //   invoice.zamowienia[0].pracownik.imie +
                             //   " (" +
                             //   invoice.zamowienia[0].pracownik.nazwisko +
-                            ") "}
+                            ""}
                         </option>
                       ))
                     : null}

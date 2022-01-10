@@ -1,5 +1,5 @@
 import "./style/InvoiceOrderList.css";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, Link } from "react-router-dom";
 import React, { useState, useEffect } from "react";
 import { AiOutlineClose } from "react-icons/ai";
 import { Table } from "react-bootstrap";
@@ -44,7 +44,7 @@ function InvoiceOrderList({ orders }) {
             <th>Kwota brutto</th>
             <th>Kwota netto</th>
 
-            {/* <th>Usuń</th> */}
+            <th>Szczegóły</th>
           </tr>
         </thead>
         <tbody>
@@ -58,14 +58,16 @@ function InvoiceOrderList({ orders }) {
                   <td key={Math.random()}>{order.stanZamowienia}</td>
                   <td key={Math.random()}>{order.kwotaBrutto.toFixed(2)}</td>
                   <td key={Math.random()}>{order.kwotaNetto.toFixed(2)}</td>
-                  {/* <td>
-                    <button
-                      key={Math.random()}
-                      onClick={() => handleDelete(position.nrPozycji)}
+                  <td>
+                    <Link
+                      to={{
+                        pathname: `/pozycje/zamowienie/${order.idZamowienia}`,
+                        state: { modal: true },
+                      }}
                     >
-                      <AiOutlineClose className="false" />
-                    </button>
-                  </td> */}
+                      Szczegóły
+                    </Link>
+                  </td>
                 </tr>
               );
             })
