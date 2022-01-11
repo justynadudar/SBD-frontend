@@ -8,7 +8,6 @@ import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
 import Select from "react-select";
 import countryList from "react-select-country-list";
-import Email from "react-email-autocomplete";
 
 class AddClient extends Component {
   constructor(props) {
@@ -466,7 +465,7 @@ class AddClient extends Component {
           </div>
           <div className="nextLineToAdd">
             <div className="inputContainer">
-              <p>Imie</p>
+              <p>Imię</p>
               <input
                 type="text"
                 class="form-control"

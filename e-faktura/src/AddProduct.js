@@ -1,6 +1,8 @@
 import "./style/AddProduct.css";
 import React, { Component } from "react";
 import { Navigate } from "react-router-dom";
+import Error from "./Error";
+import { Form } from "react-bootstrap";
 
 class AddProduct extends Component {
   constructor(props) {
@@ -16,6 +18,12 @@ class AddProduct extends Component {
       products: [],
       loaded: false,
       navigate: false,
+      emptyNameField: false,
+      emptyAmountField: false,
+      wrongAmount: false,
+      emptyCostField: false,
+      emptyCategoryField: false,
+      emptyProducerField: false,
     };
 
     this.changeName = this.changeName.bind(this);
@@ -42,65 +50,122 @@ class AddProduct extends Component {
   }
 
   changeName(e) {
+    if (this.state.emptyNameField) {
+      this.setState({
+        emptyNameField: false,
+      });
+    }
     this.setState({
       nameInput: e.target.value,
     });
   }
   changeAmount(e) {
+    if (this.state.emptyAmountField) {
+      this.setState({
+        emptyAmountField: false,
+      });
+    }
+    if (this.state.wrongAmount) {
+      this.setState({
+        wrongAmount: false,
+      });
+    }
     this.setState({
       amountInput: e.target.value,
     });
   }
   changeCost(e) {
+    if (this.state.emptyCostField) {
+      this.setState({
+        emptyCostField: false,
+      });
+    }
     this.setState({
       costInput: e.target.value,
     });
   }
 
-  changeCategory(e) {
+  changeCategory = (value) => {
+    if (this.state.emptyCategoryField) {
+      this.setState({
+        emptyCategoryField: false,
+      });
+    }
+    console.log(value);
     this.setState({
-      categoryInput: e.target.value,
+      categoryInput: value.nazwa,
     });
-  }
+  };
 
   changeProducer(e) {
+    if (this.state.emptyProducerField) {
+      this.setState({
+        emptyProducerField: false,
+      });
+    }
     this.setState({
       producerInput: e.target.value,
     });
   }
 
   async addProductToProductsList() {
-    const findedCategory = this.state.categories.find(
-      (el) => el.nazwa === this.state.categoryInput
-    );
-    console.log(findedCategory);
-    const findedProducer = this.state.producers.find(
-      (el) => el.nazwa === this.state.producerInput
-    );
-
-    const productObject = {
-      producent: findedProducer,
-      kategoria: findedCategory,
-      nazwa: this.state.nameInput,
-      ilosc: this.state.amountInput,
-      cenaNetto: this.state.costInput,
-    };
-    console.log(productObject);
-
-    fetch(`http://localhost:8080/towary`, {
-      method: "POST", // or 'PUT'
-      headers: {
-        "content-type": "application/json",
-        Accept: "application/json",
-      },
-      body: JSON.stringify(productObject),
-    })
-      .then((response) => {
-        return response.json();
-      })
-      .catch((error) => {
-        console.error("Error:", error);
+    if (this.state.nameInput.length === 0) {
+      this.setState({
+        emptyNameField: true,
       });
+    } else if (this.state.amountInput.length === 0) {
+      this.setState({
+        emptyAmountField: true,
+      });
+    } else if (parseInt(this.state.amountInput) <= 0) {
+      this.setState({
+        wrongAmount: true,
+      });
+    } else if (this.state.costInput.length === 0) {
+      this.setState({
+        emptyCostField: true,
+      });
+    } else if (this.state.categoryInput.length === 0) {
+      this.setState({
+        emptyCategoryField: true,
+      });
+    } else if (this.state.producerInput.length === 0) {
+      this.setState({
+        emptyProducerField: true,
+      });
+    } else {
+      const findedCategory = this.state.categories.find(
+        (el) => el.nazwa === this.state.categoryInput
+      );
+      console.log(findedCategory);
+      const findedProducer = this.state.producers.find(
+        (el) => el.nazwa === this.state.producerInput
+      );
+
+      const productObject = {
+        producent: findedProducer,
+        kategoria: findedCategory,
+        nazwa: this.state.nameInput,
+        ilosc: this.state.amountInput,
+        cenaNetto: this.state.costInput,
+      };
+      console.log(productObject);
+
+      fetch(`http://localhost:8080/towary`, {
+        method: "POST", // or 'PUT'
+        headers: {
+          "content-type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify(productObject),
+      })
+        .then((response) => {
+          return response.json();
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+        });
+    }
   }
 
   render() {
@@ -114,6 +179,12 @@ class AddProduct extends Component {
       categories,
       producers,
       navigate,
+      emptyNameField,
+      emptyAmountField,
+      emptyCostField,
+      emptyCategoryField,
+      emptyProducerField,
+      wrongAmount,
     } = this.state;
 
     return (
@@ -132,6 +203,8 @@ class AddProduct extends Component {
               <input
                 type="text"
                 name="name"
+                className="form-control"
+                placeholder="Nazwa produktu"
                 value={nameInput}
                 onChange={this.changeName}
               />
@@ -140,6 +213,8 @@ class AddProduct extends Component {
               <p>Ilość</p>
               <input
                 type="number"
+                className="form-control"
+                placeholder="Ilość"
                 name="amount"
                 value={amountInput}
                 onChange={this.changeAmount}
@@ -150,8 +225,9 @@ class AddProduct extends Component {
               <input
                 type="number"
                 step="0.01"
+                className="form-control"
+                placeholder="Cena netto"
                 min="0"
-                max="20"
                 name="cost"
                 value={costInput}
                 onChange={this.changeCost}
@@ -161,39 +237,61 @@ class AddProduct extends Component {
           <div className="nextLineToAdd">
             <div className="inputContainer">
               <p>Kategoria</p>
-              <input
-                type="text"
-                list="categories"
-                name="category"
+              <Form.Select
+                className="form-control"
                 value={categoryInput}
                 onChange={this.changeCategory}
-              />
-              <datalist id="categories">
+              >
+                <option key={Math.random()} value={""}>
+                  {""}
+                </option>
                 {loaded
                   ? categories.map((category) => (
                       <option key={Math.random()}>{category.nazwa}</option>
                     ))
                   : null}
-              </datalist>
+              </Form.Select>
             </div>
             <div className="inputContainer">
               <p>Producent</p>
-              <input
-                type="text"
-                list="producers"
-                name="producer"
+              <Form.Select
+                className="form-control"
                 value={producerInput}
                 onChange={this.changeProducer}
-              />
-              <datalist id="producers">
+              >
+                <option key={Math.random()} value={""}>
+                  {""}
+                </option>
                 {loaded
                   ? producers.map((producer) => (
                       <option key={Math.random()}>{producer.nazwa}</option>
                     ))
                   : null}
-              </datalist>
+              </Form.Select>
             </div>
           </div>
+          <Error
+            error={emptyNameField}
+            info="Pole Nazwa produktu nie może być puste!"
+          />
+          <Error
+            error={emptyAmountField}
+            info="Pole Ilość nie może być puste!"
+          />
+          <Error error={wrongAmount} info="Podano nieprawidłową ilość!" />
+          <Error
+            error={emptyCostField}
+            info="Pole Cena netto nie może być puste!"
+          />
+          <Error
+            error={emptyCategoryField}
+            info="Pole Kategoria nie może być puste!"
+          />
+          <Error
+            error={emptyProducerField}
+            info="Pole Producent nie może być puste!"
+          />
+
           <button onClick={this.addProductToProductsList}>Dodaj produkt</button>
         </div>
       </div>
