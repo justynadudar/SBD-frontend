@@ -92,7 +92,6 @@ function ProducersList({ producers }) {
           <Modal.Footer>
             <Button variant="secondary" onClick={() => handleDelete(deletedId)}>
               Tak, potwierdź
-              {show ? null : window.location.reload()}
             </Button>
             <Button
               variant="secondary"

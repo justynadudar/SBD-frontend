@@ -30,18 +30,19 @@ function PositionsList({ positions }) {
     navigate("/zamowienie/" + id);
   }
 
-  function handleDelete(id) {
-    fetch(`http://localhost:8080/pozycje/${id}`, { method: 'DELETE' })
-        .then(() => {
-          // setShow(false);
-          const fetchData = async () => {
-            const response = await fetch("/producenci");
-            const body = await response.json();
-            setPositionsListState(body);
-            setLoaded(true);
-          };
-          fetchData();
-        });
+  function handleDelete(id2) {
+    fetch(`http://localhost:8080/pozycje/${id2}`, { method: "DELETE" }).then(
+      () => {
+        setShow(false);
+        const fetchData = async () => {
+          const response = await fetch("/pozycje/zamowienie/" + id);
+          const body = await response.json();
+          setPositionsListState(body);
+          setLoaded(true);
+        };
+        fetchData();
+      }
+    );
   }
 
   return (
@@ -69,10 +70,14 @@ function PositionsList({ positions }) {
                   <td key={Math.random()}>{position.nrPozycji}</td>
                   <td key={Math.random()}>{position.towar.nazwa}</td>
                   <td key={Math.random()}>{position.ilosc}</td>
-                  <td key={Math.random()}>{(position.towar.cenaNetto*position.ilosc).toFixed(2)}</td>
-                  <td key={Math.random()}>{(position.towar.cenaBrutto*position.ilosc).toFixed(2)}</td>
+                  <td key={Math.random()}>
+                    {(position.towar.cenaNetto * position.ilosc).toFixed(2)}
+                  </td>
+                  <td key={Math.random()}>
+                    {(position.towar.cenaBrutto * position.ilosc).toFixed(2)}
+                  </td>
                   <td>
-                  <button
+                    <button
                       key={Math.random()}
                       onClick={() => {
                         setShow(true);
@@ -106,7 +111,6 @@ function PositionsList({ positions }) {
               onClick={() => handleDelete(deletedPositionId)}
             >
               Tak, potwierdź
-              {show ? null : window.location.reload()}
             </Button>
             <Button
               variant="secondary"

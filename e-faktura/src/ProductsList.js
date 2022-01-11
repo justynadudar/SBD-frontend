@@ -32,7 +32,7 @@ function ClientsList() {
     }).then(() => {
       setShow(false);
       const fetchData = async () => {
-        const response = await fetch("/producenci");
+        const response = await fetch("/towary");
         const body = await response.json();
         setProductsListState(body);
         setLoaded(true);

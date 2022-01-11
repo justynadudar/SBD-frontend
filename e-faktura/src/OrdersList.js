@@ -52,7 +52,7 @@ function OrdersList({ orders }) {
       () => {
         setShow(false);
         const fetchData = async () => {
-          const response = await fetch("/producenci");
+          const response = await fetch("/zamowienia");
           const body = await response.json();
           setOrdersListState(body);
           setLoaded(true);
@@ -147,17 +147,17 @@ function OrdersList({ orders }) {
                     <td></td>
                   ) : (
                     <td>
-                    {" "}
-                    <button
-                      key={Math.random()}
-                      onClick={() => {
-                        setShow(true);
-                        setId(order.idZamowienia);
-                      }}
-                    >
-                      <AiOutlineClose className="false" />
-                    </button>
-                  </td>
+                      {" "}
+                      <button
+                        key={Math.random()}
+                        onClick={() => {
+                          setShow(true);
+                          setId(order.idZamowienia);
+                        }}
+                      >
+                        <AiOutlineClose className="false" />
+                      </button>
+                    </td>
                   )}
                 </tr>
               );
