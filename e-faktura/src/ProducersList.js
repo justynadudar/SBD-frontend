@@ -68,14 +68,13 @@ function ProducersList({ producers }) {
                   <td>
                     {" "}
                     <button
+                      className="false btn-close btn-close-black "
                       key={Math.random()}
                       onClick={() => {
                         setShow(true);
                         setId(producer.idProducenta);
                       }}
-                    >
-                      <AiOutlineClose className="false" />
-                    </button>
+                    ></button>
                   </td>
                 </tr>
               );

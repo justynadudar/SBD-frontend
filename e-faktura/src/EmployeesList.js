@@ -73,14 +73,13 @@ function EmployeesList({ orders }) {
                   <td>{employee.telefon}</td>
                   <td>
                     <button
+                      className="false btn-close btn-close-black "
                       key={Math.random()}
                       onClick={() => {
                         setShow(true);
                         setId(employee.idPracownika);
                       }}
-                    >
-                      <AiOutlineClose className="false" />
-                    </button>
+                    ></button>
                   </td>
                 </tr>
               );

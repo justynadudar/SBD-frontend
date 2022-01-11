@@ -78,14 +78,13 @@ function ClientsList() {
                   <td key={Math.random()}>{product.cenaBrutto.toFixed(2)}</td>
                   <td>
                     <button
+                      className="false btn-close btn-close-black "
                       key={Math.random()}
                       onClick={() => {
                         setShow(true);
                         setId(product.idTowaru);
                       }}
-                    >
-                      <AiOutlineClose className="false" />
-                    </button>
+                    ></button>
                   </td>
                 </tr>
               );

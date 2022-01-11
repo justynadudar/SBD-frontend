@@ -33,6 +33,13 @@
   color: black;
   border: 2px solid rgb(125, 186, 236);
 }
+
+#bootstrap-overrides td a {
+  margin-top: 0;
+  color: black;
+  font-size: 120%;
+  text-decoration: none;
+}
 /* 
 .ClientsList .TableOfClients {
   margin-left: 2%;
@@ -63,8 +70,3 @@
   font-size: 1.2rem;
   width: 20%;
 } */
-#bootstrap-overrides td a {
-  margin-top: 0;
-  color: black;
-  font-size: 120%;
-}

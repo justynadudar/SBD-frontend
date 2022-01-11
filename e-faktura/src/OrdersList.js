@@ -65,13 +65,31 @@ function OrdersList({ orders }) {
   function handleInRealization(id) {
     fetch(`http://localhost:8080/zamowienia/w-realizacji/${id}`, {
       method: "PUT",
-    }).then(() => console.log("Order sent to realization successful"));
+    }).then(() => {
+      console.log("Order sent to realization successful");
+      const fetchData = async () => {
+        const response = await fetch("/zamowienia");
+        const body = await response.json();
+        setOrdersListState(body);
+        setLoaded(true);
+      };
+      fetchData();
+    });
   }
 
   function handleToPay(id) {
     fetch(`http://localhost:8080/zamowienia/do-zaplaty/${id}`, {
       method: "PUT",
-    }).then(() => console.log("Order waiting for payment"));
+    }).then(() => {
+      console.log("Order waiting for payment");
+      const fetchData = async () => {
+        const response = await fetch("/zamowienia");
+        const body = await response.json();
+        setOrdersListState(body);
+        setLoaded(true);
+      };
+      fetchData();
+    });
   }
 
   return (
@@ -149,14 +167,13 @@ function OrdersList({ orders }) {
                     <td>
                       {" "}
                       <button
+                        className="false btn-close btn-close-black "
                         key={Math.random()}
                         onClick={() => {
                           setShow(true);
                           setId(order.idZamowienia);
                         }}
-                      >
-                        <AiOutlineClose className="false" />
-                      </button>
+                      ></button>
                     </td>
                   )}
                 </tr>

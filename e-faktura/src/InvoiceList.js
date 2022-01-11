@@ -1,5 +1,5 @@
 import "./style/InvoiceList.css";
-import { useNavigate, Link  } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import React, { useState, useEffect } from "react";
 import { MdReadMore } from "react-icons/md";
 import { AiOutlineClose } from "react-icons/ai";
@@ -44,15 +44,23 @@ function InvoiceList() {
   }
 
   function handlePayment(id) {
-    fetch(`http://localhost:8080/faktury/oplacona/${id}`, { method: "PUT" }).then(
-      () => console.log("State changed successful")
-    );
+    fetch(`http://localhost:8080/faktury/oplacona/${id}`, {
+      method: "PUT",
+    }).then(() => {
+      console.log("State changed successful");
+      const fetchData = async () => {
+        const response = await fetch("/faktury");
+        const body = await response.json();
+        setInvoiceListState(body);
+        setLoaded(true);
+      };
+      fetchData();
+    });
   }
 
   return (
     <div className="InvoiceList">
-      <aside>
-      </aside>
+      <aside></aside>
       <Table striped bordered hover size="sm">
         <thead>
           <tr>
@@ -79,43 +87,49 @@ function InvoiceList() {
                   {invoice?.dataRealizacji === null ? (
                     <td>Nieopłacona</td>
                   ) : (
-                    <td>{invoice.dataRealizacji}</td>
+                    <td>{invoice.dataRealizacji.slice(0, 10)}</td>
                   )}
                   {invoice?.czyWszystkieZamowieniaZrealizowane === false ? (
                     <td>Czeka na realizację wszystkich zamówień</td>
                   ) : invoice?.dataRealizacji === null ? (
-                    <td>{" "}
-                    <button
-                      key={Math.random()}
-                      onClick={() => handlePayment(invoice.idFaktury)}
-                    >
-                      <AiOutlineCheck className="false" />
-                    </button></td>
-                  ) : <td>Opłacona</td>}
+                    <td>
+                      {" "}
+                      <button
+                        className="btn btn-outline-success"
+                        key={Math.random()}
+                        onClick={() => handlePayment(invoice.idFaktury)}
+                      >
+                        <AiOutlineCheck className="false" />
+                      </button>
+                    </td>
+                  ) : (
+                    <td>Opłacona</td>
+                  )}
 
                   <td>
-                      <Link
+                    <Link
                       to={{
                         pathname: `/faktury/zamowienia/${invoice.idFaktury}`,
                         state: { modal: true },
                       }}
                     >
-                      <MdReadMore />
-                      </Link>
+                      Szczegóły
+                    </Link>
                   </td>
                   {invoice?.dataRealizacji === null ? (
                     <td>
-                    <button
-                      key={Math.random()}
-                      onClick={() => {
-                        setShow(true);
-                        setId(invoice.idFaktury);
-                      }}
-                    >
-                      <AiOutlineClose className="false" />
-                    </button>
-                  </td>
-                  ) : <td></td>}
+                      <button
+                        className="false btn-close btn-close-black "
+                        key={Math.random()}
+                        onClick={() => {
+                          setShow(true);
+                          setId(invoice.idFaktury);
+                        }}
+                      ></button>
+                    </td>
+                  ) : (
+                    <td></td>
+                  )}
                 </tr>
               );
             })

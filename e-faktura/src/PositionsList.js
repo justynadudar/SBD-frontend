@@ -68,7 +68,9 @@ function PositionsList({ positions }) {
               return (
                 <tr>
                   <td key={Math.random()}>{position.nrPozycji}</td>
-                  <td key={Math.random()}>{position.towar.idTowaru} {position.towar.nazwa}</td>
+                  <td key={Math.random()}>
+                    {position.towar.idTowaru} {position.towar.nazwa}
+                  </td>
                   <td key={Math.random()}>{position.ilosc}</td>
                   <td key={Math.random()}>
                     {(position.towar.cenaNetto * position.ilosc).toFixed(2)}
@@ -78,14 +80,13 @@ function PositionsList({ positions }) {
                   </td>
                   <td>
                     <button
+                      className="false btn-close btn-close-black "
                       key={Math.random()}
                       onClick={() => {
                         setShow(true);
                         setId(position.nrPozycji);
                       }}
-                    >
-                      <AiOutlineClose className="false" />
-                    </button>
+                    ></button>
                     {/* <button
                       key={Math.random()}
                       onClick={() => handleDelete(position.nrPozycji)}

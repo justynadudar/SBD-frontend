@@ -140,6 +140,12 @@ class OrderItems extends Component {
       this.setState({
         wrongAmount: true,
       });
+    } else if (
+      parseFloat(this.state.amountInput) !== parseInt(this.state.amountInput)
+    ) {
+      this.setState({
+        wrongAmount: true,
+      });
     } else {
       const newItem = {
         id: id,
@@ -300,11 +306,11 @@ class OrderItems extends Component {
         <div className="forSum">
           <ListGroup vertical key={Math.random()} className="sum">
             <ListGroup.Item>Suma netto</ListGroup.Item>
-            <ListGroup.Item>{sumN}</ListGroup.Item>
+            <ListGroup.Item>{sumN.toFixed(2)}</ListGroup.Item>
           </ListGroup>
           <ListGroup vertical key={Math.random()} className="sum2">
             <ListGroup.Item>Suma brutto</ListGroup.Item>
-            <ListGroup.Item>{sumB}</ListGroup.Item>
+            <ListGroup.Item>{sumB.toFixed(2)}</ListGroup.Item>
           </ListGroup>
         </div>
         <Error error={wrongAmount} info={`Podana ilość jest nieprawidłowa `} />

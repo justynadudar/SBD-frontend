@@ -3,6 +3,7 @@ import React, { Component } from "react";
 import { Navigate } from "react-router-dom";
 import Error from "./Error";
 import { Form } from "react-bootstrap";
+import { Modal, Button } from "react-bootstrap";
 
 class AddProduct extends Component {
   constructor(props) {
@@ -24,6 +25,9 @@ class AddProduct extends Component {
       emptyCostField: false,
       emptyCategoryField: false,
       emptyProducerField: false,
+      wrongCost: false,
+      show: false,
+      productAdded: false,
     };
 
     this.changeName = this.changeName.bind(this);
@@ -32,6 +36,7 @@ class AddProduct extends Component {
     this.changeProducer = this.changeProducer.bind(this);
     this.changeCategory = this.changeCategory.bind(this);
     this.addProductToProductsList = this.addProductToProductsList.bind(this);
+    this.handleClose = this.handleClose.bind(this);
   }
 
   componentDidMount() {
@@ -80,22 +85,26 @@ class AddProduct extends Component {
         emptyCostField: false,
       });
     }
+    if (this.state.wrongCost) {
+      this.setState({
+        wrongCost: false,
+      });
+    }
     this.setState({
       costInput: e.target.value,
     });
   }
 
-  changeCategory = (value) => {
+  changeCategory(e) {
     if (this.state.emptyCategoryField) {
       this.setState({
         emptyCategoryField: false,
       });
     }
-    console.log(value);
     this.setState({
-      categoryInput: value.nazwa,
+      categoryInput: e.target.value,
     });
-  };
+  }
 
   changeProducer(e) {
     if (this.state.emptyProducerField) {
@@ -107,6 +116,12 @@ class AddProduct extends Component {
       producerInput: e.target.value,
     });
   }
+
+  handleClose = () => {
+    this.setState({
+      show: false,
+    });
+  };
 
   async addProductToProductsList() {
     if (this.state.nameInput.length === 0) {
@@ -121,9 +136,19 @@ class AddProduct extends Component {
       this.setState({
         wrongAmount: true,
       });
+    } else if (
+      parseFloat(this.state.amountInput) !== parseInt(this.state.amountInput)
+    ) {
+      this.setState({
+        wrongAmount: true,
+      });
     } else if (this.state.costInput.length === 0) {
       this.setState({
         emptyCostField: true,
+      });
+    } else if ((parseFloat(this.state.costInput) * 100) % 1 > 0.01) {
+      this.setState({
+        wrongCost: true,
       });
     } else if (this.state.categoryInput.length === 0) {
       this.setState({
@@ -158,13 +183,11 @@ class AddProduct extends Component {
           Accept: "application/json",
         },
         body: JSON.stringify(productObject),
-      })
-        .then((response) => {
-          return response.json();
-        })
-        .catch((error) => {
-          console.error("Error:", error);
-        });
+      });
+      this.setState({
+        productAdded: true,
+        show: true,
+      });
     }
   }
 
@@ -185,6 +208,9 @@ class AddProduct extends Component {
       emptyCategoryField,
       emptyProducerField,
       wrongAmount,
+      wrongCost,
+      productAdded,
+      show,
     } = this.state;
 
     return (
@@ -284,6 +310,10 @@ class AddProduct extends Component {
             info="Pole Cena netto nie może być puste!"
           />
           <Error
+            error={wrongCost}
+            info="Podano nieprawidłową cenę, cena może mieć maksymalnie 2 miejsca po przecinku!"
+          />
+          <Error
             error={emptyCategoryField}
             info="Pole Kategoria nie może być puste!"
           />
@@ -293,6 +323,18 @@ class AddProduct extends Component {
           />
 
           <button onClick={this.addProductToProductsList}>Dodaj produkt</button>
+          {productAdded ? (
+            <Modal show={show} onHide={this.handleClose}>
+              <Modal.Header closeButton></Modal.Header>
+              <Modal.Body>Produkt {nameInput} został dodany.</Modal.Body>
+              <Modal.Footer>
+                <Button variant="secondary" onClick={this.handleClose}>
+                  OK
+                  {show ? null : <Navigate to="/magazyn" />}
+                </Button>
+              </Modal.Footer>
+            </Modal>
+          ) : null}
         </div>
       </div>
     );

@@ -85,19 +85,18 @@ function ClientsList() {
                         state: { modal: true },
                       }}
                     >
-                      <MdReadMore />
+                      Szczegóły
                     </Link>
                   </td>
                   <td>
                     <button
+                      className="false btn-close btn-close-black "
                       key={Math.random()}
                       onClick={() => {
                         setShow(true);
                         setId(client.idKlienta);
                       }}
-                    >
-                      <AiOutlineClose className="false" />
-                    </button>
+                    ></button>
                   </td>
                 </tr>
               );
