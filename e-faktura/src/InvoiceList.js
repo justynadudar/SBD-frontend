@@ -5,11 +5,14 @@ import { MdReadMore } from "react-icons/md";
 import { AiOutlineClose } from "react-icons/ai";
 import { Table } from "react-bootstrap";
 import { AiOutlineCheck } from "react-icons/ai";
+import { Modal, Button } from "react-bootstrap";
 
 function InvoiceList() {
   let navigate = useNavigate();
   let [invoiceList, setInvoiceListState] = useState({ invoiceList: [] });
   let [loaded, setLoaded] = useState("");
+  let [show, setShow] = useState(false);
+  let [deletedProductId, setId] = useState("");
 
   useEffect(() => {
     const fetchData = async () => {
@@ -21,10 +24,23 @@ function InvoiceList() {
     fetchData();
   }, []);
 
-  function handleDelete(id) {
-    fetch(`http://localhost:8080/faktury/${id}`, { method: "DELETE" }).then(
-      () => console.log("Delete successful")
-    );
+  async function handleDelete(id) {
+    await fetch(`http://localhost:8080/faktury/${id}`, {
+      method: "DELETE",
+    }).then(() => {
+      setShow(false);
+      const fetchData = async () => {
+        const response = await fetch("/faktury");
+        const body = await response.json();
+        setInvoiceListState(body);
+        setLoaded(true);
+      };
+      fetchData();
+    });
+  }
+
+  function handleClose() {
+    setShow(false);
   }
 
   function handlePayment(id) {
@@ -89,10 +105,12 @@ function InvoiceList() {
                   </td>
                   {invoice?.dataRealizacji === null ? (
                     <td>
-                    {" "}
                     <button
                       key={Math.random()}
-                      onClick={() => handleDelete(invoice.idFaktury)}
+                      onClick={() => {
+                        setShow(true);
+                        setId(invoice.idFaktury);
+                      }}
                     >
                       <AiOutlineClose className="false" />
                     </button>
@@ -106,6 +124,29 @@ function InvoiceList() {
           )}
         </tbody>
       </Table>
+      {show ? (
+        <Modal show={show} onHide={handleClose}>
+          <Modal.Header closeButton></Modal.Header>
+          <Modal.Body>Czy napewno chcesz usunąć tą fakturę?</Modal.Body>
+          <Modal.Footer>
+            <Button
+              variant="secondary"
+              onClick={() => handleDelete(deletedProductId)}
+            >
+              Tak, potwierdź
+              {show ? null : window.location.reload()}
+            </Button>
+            <Button
+              variant="secondary"
+              onClick={() => {
+                setShow(false);
+              }}
+            >
+              Cofnij
+            </Button>
+          </Modal.Footer>
+        </Modal>
+      ) : null}
     </div>
   );
 }

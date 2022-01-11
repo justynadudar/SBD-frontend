@@ -68,7 +68,7 @@ function PositionsList({ positions }) {
               return (
                 <tr>
                   <td key={Math.random()}>{position.nrPozycji}</td>
-                  <td key={Math.random()}>{position.towar.nazwa}</td>
+                  <td key={Math.random()}>{position.towar.idTowaru} {position.towar.nazwa}</td>
                   <td key={Math.random()}>{position.ilosc}</td>
                   <td key={Math.random()}>
                     {(position.towar.cenaNetto * position.ilosc).toFixed(2)}

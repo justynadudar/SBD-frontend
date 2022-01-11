@@ -3,11 +3,14 @@ import { useNavigate } from "react-router-dom";
 import React, { useState, useEffect } from "react";
 import { AiOutlineClose } from "react-icons/ai";
 import { Table } from "react-bootstrap";
+import { Modal, Button } from "react-bootstrap";
 
 function EmployeesList({ orders }) {
   let navigate = useNavigate();
   let [employeesList, setEmployeesListState] = useState({ employeesList: [] });
   let [loaded, setLoaded] = useState("");
+  let [show, setShow] = useState(false);
+  let [deletedProductId, setId] = useState("");
 
   useEffect(() => {
     const fetchData = async () => {
@@ -23,12 +26,23 @@ function EmployeesList({ orders }) {
     navigate("/pracownicy/dodaj");
   }
 
-  function handleDelete(id) {
-    fetch(`http://localhost:8080/pracownicy/${id}`, { method: "DELETE" }).then(
-      () => {
-        console.log("Delete successful");
-      }
-    );
+  async function handleDelete(id) {
+    await fetch(`http://localhost:8080/pracownicy/${id}`, {
+      method: "DELETE",
+    }).then(() => {
+      setShow(false);
+      const fetchData = async () => {
+        const response = await fetch("/pracownicy");
+        const body = await response.json();
+        setEmployeesListState(body);
+        setLoaded(true);
+      };
+      fetchData();
+    });
+  }
+
+  function handleClose() {
+    setShow(false);
   }
 
   return (
@@ -60,7 +74,10 @@ function EmployeesList({ orders }) {
                   <td>
                     <button
                       key={Math.random()}
-                      onClick={() => handleDelete(employee.idPracownika)}
+                      onClick={() => {
+                        setShow(true);
+                        setId(employee.idPracownika);
+                      }}
                     >
                       <AiOutlineClose className="false" />
                     </button>
@@ -73,6 +90,29 @@ function EmployeesList({ orders }) {
           )}
         </tbody>
       </Table>
+      {show ? (
+        <Modal show={show} onHide={handleClose}>
+          <Modal.Header closeButton></Modal.Header>
+          <Modal.Body>Czy napewno chcesz usunąć tego pracownika?</Modal.Body>
+          <Modal.Footer>
+            <Button
+              variant="secondary"
+              onClick={() => handleDelete(deletedProductId)}
+            >
+              Tak, potwierdź
+              {show ? null : window.location.reload()}
+            </Button>
+            <Button
+              variant="secondary"
+              onClick={() => {
+                setShow(false);
+              }}
+            >
+              Cofnij
+            </Button>
+          </Modal.Footer>
+        </Modal>
+      ) : null}
     </div>
   );
 }

@@ -53,6 +53,7 @@ function ClientsList() {
       <Table striped bordered hover size="sm">
         <thead>
           <tr>
+            <th>Id</th>
             <th>Nazwa</th>
             <th>Kategoria</th>
             <th>Producent</th>
@@ -68,6 +69,7 @@ function ClientsList() {
             productsList.map((product) => {
               return (
                 <tr>
+                  <td key={Math.random()}>{product.idTowaru}</td>
                   <td key={Math.random()}>{product.nazwa}</td>
                   <td key={Math.random()}>{product.kategoria.nazwa}</td>
                   <td key={Math.random()}>{product.producent.nazwa}</td>
