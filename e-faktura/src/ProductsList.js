@@ -31,7 +31,13 @@ function ClientsList() {
       method: "DELETE",
     }).then(() => {
       setShow(false);
-      window.location.reload();
+      const fetchData = async () => {
+        const response = await fetch("/producenci");
+        const body = await response.json();
+        setProductsListState(body);
+        setLoaded(true);
+      };
+      fetchData();
     });
   }
 

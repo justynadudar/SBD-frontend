@@ -2,13 +2,15 @@ import "./style/PositionsList.css";
 import { useNavigate, useParams } from "react-router-dom";
 import React, { useState, useEffect } from "react";
 import { AiOutlineClose } from "react-icons/ai";
-import { Table } from "react-bootstrap";
+import { Modal, Table, Button } from "react-bootstrap";
 
 function PositionsList({ positions }) {
   const { id } = useParams();
   let navigate = useNavigate();
   let [positionsList, setPositionsListState] = useState({ positionsList: [] });
   let [loaded, setLoaded] = useState("");
+  let [show, setShow] = useState(false);
+  let [deletedPositionId, setId] = useState("");
 
   useEffect(() => {
     const fetchData = async () => {
@@ -20,13 +22,26 @@ function PositionsList({ positions }) {
     fetchData();
   }, []);
 
+  function handleClose() {
+    setShow(false);
+  }
+
   function handleOnClick() {
     navigate("/zamowienie/" + id);
   }
 
   function handleDelete(id) {
     fetch(`http://localhost:8080/pozycje/${id}`, { method: 'DELETE' })
-        .then(() => console.log('Delete successful'));
+        .then(() => {
+          // setShow(false);
+          const fetchData = async () => {
+            const response = await fetch("/producenci");
+            const body = await response.json();
+            setPositionsListState(body);
+            setLoaded(true);
+          };
+          fetchData();
+        });
   }
 
   return (
@@ -57,12 +72,21 @@ function PositionsList({ positions }) {
                   <td key={Math.random()}>{(position.towar.cenaNetto*position.ilosc).toFixed(2)}</td>
                   <td key={Math.random()}>{(position.towar.cenaBrutto*position.ilosc).toFixed(2)}</td>
                   <td>
-                    <button
+                  <button
+                      key={Math.random()}
+                      onClick={() => {
+                        setShow(true);
+                        setId(position.nrPozycji);
+                      }}
+                    >
+                      <AiOutlineClose className="false" />
+                    </button>
+                    {/* <button
                       key={Math.random()}
                       onClick={() => handleDelete(position.nrPozycji)}
                     >
                       <AiOutlineClose className="false" />
-                    </button>
+                    </button> */}
                   </td>
                 </tr>
               );
@@ -72,6 +96,29 @@ function PositionsList({ positions }) {
           )}
         </tbody>
       </Table>
+      {show ? (
+        <Modal show={show} onHide={handleClose}>
+          <Modal.Header closeButton></Modal.Header>
+          <Modal.Body>Czy napewno chcesz usunąć tą pozycję?</Modal.Body>
+          <Modal.Footer>
+            <Button
+              variant="secondary"
+              onClick={() => handleDelete(deletedPositionId)}
+            >
+              Tak, potwierdź
+              {show ? null : window.location.reload()}
+            </Button>
+            <Button
+              variant="secondary"
+              onClick={() => {
+                setShow(false);
+              }}
+            >
+              Cofnij
+            </Button>
+          </Modal.Footer>
+        </Modal>
+      ) : null}
     </div>
   );
 }

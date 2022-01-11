@@ -5,11 +5,14 @@ import { MdReadMore } from "react-icons/md";
 import { AiOutlineClose } from "react-icons/ai";
 import { AiOutlineCheck } from "react-icons/ai";
 import { Table } from "react-bootstrap";
+import { Modal, Button } from "react-bootstrap";
 
 function OrdersList({ orders }) {
   let navigate = useNavigate();
   let [ordersList, setOrdersListState] = useState({ ordersList: [] });
   let [loaded, setLoaded] = useState("");
+  let [show, setShow] = useState(false);
+  let [deletedId, setId] = useState("");
 
   useEffect(() => {
     const fetchData = async () => {
@@ -20,6 +23,10 @@ function OrdersList({ orders }) {
     };
     fetchData();
   }, []);
+
+  function handleClose() {
+    setShow(false);
+  }
 
   function handleOnClick() {
     const orderObject = {};
@@ -42,7 +49,16 @@ function OrdersList({ orders }) {
 
   function handleDelete(id) {
     fetch(`http://localhost:8080/zamowienia/${id}`, { method: "DELETE" }).then(
-      () => console.log("Delete successful")
+      () => {
+        setShow(false);
+        const fetchData = async () => {
+          const response = await fetch("/producenci");
+          const body = await response.json();
+          setOrdersListState(body);
+          setLoaded(true);
+        };
+        fetchData();
+      }
     );
   }
 
@@ -131,9 +147,13 @@ function OrdersList({ orders }) {
                     <td></td>
                   ) : (
                     <td>
+                    {" "}
                     <button
                       key={Math.random()}
-                      onClick={() => handleDelete(order.idZamowienia)}
+                      onClick={() => {
+                        setShow(true);
+                        setId(order.idZamowienia);
+                      }}
                     >
                       <AiOutlineClose className="false" />
                     </button>
@@ -147,6 +167,26 @@ function OrdersList({ orders }) {
           )}
         </tbody>
       </Table>
+      {show ? (
+        <Modal show={show} onHide={handleClose}>
+          <Modal.Header closeButton></Modal.Header>
+          <Modal.Body>Czy napewno chcesz usunąć to zamówienie?</Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={() => handleDelete(deletedId)}>
+              Tak, potwierdź
+              {show ? null : window.location.reload()}
+            </Button>
+            <Button
+              variant="secondary"
+              onClick={() => {
+                setShow(false);
+              }}
+            >
+              Cofnij
+            </Button>
+          </Modal.Footer>
+        </Modal>
+      ) : null}
     </div>
   );
 }
