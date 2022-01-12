@@ -28,6 +28,7 @@ class AddProduct extends Component {
       wrongCost: false,
       show: false,
       productAdded: false,
+      existingProduct: false,
     };
 
     this.changeName = this.changeName.bind(this);
@@ -58,6 +59,11 @@ class AddProduct extends Component {
     if (this.state.emptyNameField) {
       this.setState({
         emptyNameField: false,
+      });
+    }
+    if (this.state.existingProduct) {
+      this.setState({
+        existingProduct: false,
       });
     }
     this.setState({
@@ -158,6 +164,14 @@ class AddProduct extends Component {
       this.setState({
         emptyProducerField: true,
       });
+    } else if (
+      this.state.products.filter(
+        (product) => product.nazwa == this.state.nameInput
+      ).length !== 0
+    ) {
+      this.setState({
+        existingProduct: true,
+      });
     } else {
       const findedCategory = this.state.categories.find(
         (el) => el.nazwa === this.state.categoryInput
@@ -211,6 +225,7 @@ class AddProduct extends Component {
       wrongCost,
       productAdded,
       show,
+      existingProduct,
     } = this.state;
 
     return (
@@ -299,6 +314,10 @@ class AddProduct extends Component {
           <Error
             error={emptyNameField}
             info="Pole Nazwa produktu nie może być puste!"
+          />
+          <Error
+            error={existingProduct}
+            info="Produkt o takiej nazwie już istnieje!"
           />
           <Error
             error={emptyAmountField}

@@ -16,6 +16,7 @@ class AddProducer extends Component {
       producerAdded: false,
       show: false,
       navigate: false,
+      existingProducer: false,
     };
     this.changeName = this.changeName.bind(this);
     this.addProducerToProducersList =
@@ -39,6 +40,11 @@ class AddProducer extends Component {
         emptyNameField: false,
       });
     }
+    if (this.state.existingProducer) {
+      this.setState({
+        existingProducer: false,
+      });
+    }
     this.setState({
       nameInput: e.target.value,
     });
@@ -53,6 +59,14 @@ class AddProducer extends Component {
     if (this.state.nameInput.length === 0) {
       this.setState({
         emptyNameField: true,
+      });
+    } else if (
+      this.state.producers.filter(
+        (producer) => producer.nazwa == this.state.nameInput
+      )
+    ) {
+      this.setState({
+        existingProducer: true,
       });
     } else {
       const producerObject = {
@@ -82,8 +96,14 @@ class AddProducer extends Component {
   }
 
   render() {
-    const { nameInput, emptyNameField, producerAdded, show, navigate } =
-      this.state;
+    const {
+      nameInput,
+      emptyNameField,
+      producerAdded,
+      show,
+      navigate,
+      existingProducer,
+    } = this.state;
     return (
       <div className="ProducersList">
         <aside>
@@ -106,6 +126,10 @@ class AddProducer extends Component {
               <Error
                 error={emptyNameField}
                 info="Pole nazwa nie może być puste!"
+              />
+              <Error
+                error={existingProducer}
+                info="Producent o takiej nazwie już istnieje!"
               />
             </div>
           </div>
