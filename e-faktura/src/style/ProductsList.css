@@ -1,3 +1,7 @@
+#bootstrap-overrides aside label {
+  color: #ccc;
+}
+
 .Warehouse {
   display: flex;
   flex-direction: row;
@@ -16,8 +20,8 @@
 
 .Warehouse aside button {
   margin-top: 10%;
-  width: 70%;
-  min-height: 5%;
+  padding: 0 15%;
+  min-height: 3%;
   font-size: 90%;
   border-radius: 8px;
   background-color: black;
