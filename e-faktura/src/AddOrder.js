@@ -106,7 +106,7 @@ class AddOrder extends Component {
         thatInvoice: finded,
         invoiceLoaded: true,
         clientLoaded: true,
-        employeeLoaded: true,
+        employeeLoaded: false,
         oldInvoice: true,
       });
     }
@@ -215,12 +215,13 @@ class AddOrder extends Component {
 
   async addPositionsToOrder() {
     let itemObject = {};
-    this.state.itemsList.map(async (item) => {
+    await this.state.itemsList.map(async (item) => {
       itemObject = {
         ilosc: item.ilosc,
         towar: item.towar,
       };
-      fetch(`http://localhost:8080/pozycje`, {
+      console.log("h: " + this.state.helpList);
+      await fetch(`http://localhost:8080/pozycje`, {
         method: "POST", // or 'PUT'
         headers: {
           "content-type": "application/json",
@@ -269,30 +270,30 @@ class AddOrder extends Component {
   }
 
   async createOrder() {
-    if (this.state.invoiceLoaded) {
-      const orderObject = {
-        klient: this.state.thatClient,
-        pracownik: this.state.thatEmployee,
-        faktura: this.state.thatInvoice,
-      };
-      await fetch(`http://localhost:8080/zamowienia`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Access-Control-Allow-Origin": "*",
-        },
-        body: JSON.stringify(orderObject),
-      })
-        .then((resp) => resp.json())
-        .then((data) => {
-          this.setState({
-            thatOrder: data,
-          });
+    const orderObject = {
+      klient: this.state.thatClient,
+      pracownik: this.state.thatEmployee,
+      faktura: this.state.thatInvoice,
+    };
+    await fetch(`http://localhost:8080/zamowienia`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*",
+      },
+      body: JSON.stringify(orderObject),
+    })
+      .then((resp) => resp.json())
+      .then((data) => {
+        this.setState({
+          thatOrder: data,
         });
-    }
+      });
   }
 
   async connectPositionWithOrder() {
+    console.log(this.state.helpList);
+    console.log(this.state.thatOrder);
     this.state.helpList.map((item) => {
       fetch(`http://localhost:8080/pozycje/zamowienie/${item.nrPozycji}`, {
         method: "PUT", // or 'PUT'
@@ -331,9 +332,12 @@ class AddOrder extends Component {
         await this.addPositionsToOrder();
 
         await this.createOrder();
+        console.log(this.state.thatOrder);
 
         //połączenie zamówienia i pozycji
         await this.connectPositionWithOrder();
+        console.log(this.state.itemsList);
+        console.log(this.state.helpList);
 
         //połączenie zamówienia i faktury
         await fetch(
@@ -477,34 +481,30 @@ class AddOrder extends Component {
             <Form.Group as={Row} className="mb-3 mt-3">
               <Form.Label column>Pracownik</Form.Label>
               <Col className="allSelect">
-                {oldInvoice ? (
-                  <Form.Select disabled aria-label="Pracownik"></Form.Select>
-                ) : (
-                  <Form.Select
-                    aria-label="Pracownik"
-                    value={employeeNameInput}
-                    onChange={this.changeEmployee}
-                  >
-                    <option key={Math.random()} value={""}>
-                      {""}
-                    </option>
-                    {loaded
-                      ? employees.map((employee) => (
-                          <option
-                            key={Math.random()}
-                            value={employee.idPracownika}
-                          >
-                            {employee.imie +
-                              " " +
-                              employee.nazwisko +
-                              " (" +
-                              employee.stanowisko.nazwa +
-                              ") "}
-                          </option>
-                        ))
-                      : null}
-                  </Form.Select>
-                )}
+                <Form.Select
+                  aria-label="Pracownik"
+                  value={employeeNameInput}
+                  onChange={this.changeEmployee}
+                >
+                  <option key={Math.random()} value={""}>
+                    {""}
+                  </option>
+                  {loaded
+                    ? employees.map((employee) => (
+                        <option
+                          key={Math.random()}
+                          value={employee.idPracownika}
+                        >
+                          {employee.imie +
+                            " " +
+                            employee.nazwisko +
+                            " (" +
+                            employee.stanowisko.nazwa +
+                            ") "}
+                        </option>
+                      ))
+                    : null}
+                </Form.Select>
               </Col>
             </Form.Group>
             {employeeLoaded ? (

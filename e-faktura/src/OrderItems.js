@@ -306,11 +306,15 @@ class OrderItems extends Component {
         <div className="forSum">
           <ListGroup vertical key={Math.random()} className="sum">
             <ListGroup.Item>Suma netto</ListGroup.Item>
-            <ListGroup.Item>{sumN.toFixed(2)}</ListGroup.Item>
+            <ListGroup.Item>
+              {(Math.round(sumN * 100) / 100).toFixed(2)}
+            </ListGroup.Item>
           </ListGroup>
           <ListGroup vertical key={Math.random()} className="sum2">
             <ListGroup.Item>Suma brutto</ListGroup.Item>
-            <ListGroup.Item>{sumB.toFixed(2)}</ListGroup.Item>
+            <ListGroup.Item>
+              {(Math.round(sumB * 100) / 100).toFixed(2)}
+            </ListGroup.Item>
           </ListGroup>
         </div>
         <Error error={wrongAmount} info={`Podana ilość jest nieprawidłowa `} />

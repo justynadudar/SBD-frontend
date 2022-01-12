@@ -58,7 +58,6 @@ function ClientsList() {
             <th>Nazwisko</th>
             <th>Telefon</th>
             <th>E-mail</th>
-            <th>Rabat</th>
             <th>Szczegóły</th>
             <th>Usuń</th>
           </tr>
@@ -72,12 +71,6 @@ function ClientsList() {
                   <td>{client.nazwisko}</td>
                   <td>{client.telefon}</td>
                   <td>{client.email}</td>
-
-                  {client?.rabat?.procentRabatu === undefined ? (
-                    <td>0%</td>
-                  ) : (
-                    <td>{client.rabat.procentRabatu}%</td>
-                  )}
                   <td>
                     <Link
                       to={{
