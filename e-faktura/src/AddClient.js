@@ -49,6 +49,7 @@ class AddClient extends Component {
       smallFirstLetterSurname: false,
       wrongFormatPostcode: false,
       wrongFormatEmail: false,
+      wrongNIP: false,
     };
     this.changeName = this.changeName.bind(this);
     this.changeSurname = this.changeSurname.bind(this);
@@ -246,6 +247,13 @@ class AddClient extends Component {
       this.setState({
         wrongSizeNIP: true,
       });
+    } else if (
+      this.state.clients.filter((client) => client.nip == this.state.nipInput)
+        .length !== 0
+    ) {
+      this.setState({
+        wrongNIP: true,
+      });
     } else if (this.state.streetInput.length === 0) {
       this.setState({
         emptyStreetField: true,
@@ -378,6 +386,7 @@ class AddClient extends Component {
       smallFirstLetterName,
       smallFirstLetterSurname,
       wrongFormatEmail,
+      wrongNIP,
     } = this.state;
     return (
       <div className="ClientsList">
@@ -524,6 +533,7 @@ class AddClient extends Component {
             error={wrongSizeNIP}
             info="Pole NIP powinno zawierać 10 cyfr!"
           />
+          <Error error={wrongNIP} info="Klient z takim NIPEM już istnieje!" />
           <Error
             error={emptyStreetField}
             info="Pole Ulica nie może być puste!"
