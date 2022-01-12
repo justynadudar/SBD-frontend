@@ -87,9 +87,10 @@ class OrderItems extends Component {
       this.setState({
         wrongAmount: true,
       });
-    } else if (this.state.amountInput == "") {
+    } else if (this.state.amountInput === "") {
       this.setState({
         wrongAmount: true,
+        amountInput: 0,
       });
     } else if (
       parseFloat(this.state.amountInput) !== parseInt(this.state.amountInput)
