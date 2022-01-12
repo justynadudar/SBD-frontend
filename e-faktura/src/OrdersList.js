@@ -101,6 +101,7 @@ function OrdersList({ orders }) {
         <thead>
           <tr>
             <th>Id</th>
+            <th>Id faktura</th>
             <th>Klient</th>
             <th>Pracownik realizujący</th>
             <th>Stan zamówienia</th>
@@ -117,6 +118,7 @@ function OrdersList({ orders }) {
               return (
                 <tr>
                   <td>{order.idZamowienia}</td>
+                  <td>{order.faktura.idFaktury}</td>
                   <td>
                     {order.klient.idKlienta} {order.klient.imie}{" "}
                     {order.klient.nazwisko}
