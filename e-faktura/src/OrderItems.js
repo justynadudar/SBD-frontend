@@ -69,9 +69,11 @@ class OrderItems extends Component {
   }
 
   changeAmount(e) {
-    this.setState({
-      wrongAmount: false,
-    });
+    if (this.state.wrongAmount) {
+      this.setState({
+        wrongAmount: false,
+      });
+    }
     this.setState({
       amountInput: e.target.value,
     });
@@ -85,10 +87,17 @@ class OrderItems extends Component {
       this.setState({
         wrongAmount: true,
       });
-    } else {
+    } else if (this.state.amountInput == "") {
       this.setState({
-        wrongAmount: false,
+        wrongAmount: true,
       });
+    } else if (
+      parseFloat(this.state.amountInput) !== parseInt(this.state.amountInput)
+    ) {
+      this.setState({
+        wrongAmount: true,
+      });
+    } else {
       window.scrollBy(0, 200);
       const newItem = {
         id: this.state.itemId,
@@ -96,7 +105,9 @@ class OrderItems extends Component {
         ilosc: parseInt(this.state.amountInput),
       };
 
-      await this.setState({
+      this.componentDidMount();
+
+      this.setState({
         items: [...this.state.items, newItem],
         itemsLoaded: true,
         products: this.state.products.filter(
@@ -105,6 +116,7 @@ class OrderItems extends Component {
         thatProduct: {},
         productNameInput: "",
         productLoaded: false,
+        loaded: false,
         sumN: 0,
         sumB: 0,
         id: this.state.itemId++,
@@ -288,7 +300,7 @@ class OrderItems extends Component {
               />{" "}
               <button onClick={() => this.handleConfirm()}>
                 {" "}
-                <AiOutlineCheck className="true" />
+                <AiOutlineCheck />
               </button>
             </div>
           </div>

@@ -126,7 +126,6 @@ class AddOrder extends Component {
       .then((resp) => resp.json())
       .then((data) => {
         this.setState({
-          thatOrder: data[0],
           thatClient: data[0].klient,
           thatEmployee: data[0].pracownik,
         });
@@ -213,29 +212,52 @@ class AddOrder extends Component {
     });
   };
 
+  postPosition(item) {
+    fetch(`http://localhost:8080/pozycje`, {
+      method: "POST", // or 'PUT'
+      headers: {
+        "content-type": "application/json",
+        Accept: "application/json",
+      },
+      body: JSON.stringify(item),
+    })
+      .then((resp) => resp.json())
+      .then((data) => {
+        console.log(data);
+        fetch(`http://localhost:8080/pozycje/zamowienie/${data.nrPozycji}`, {
+          method: "PUT", // or 'PUT'
+          headers: {
+            "content-type": "application/json",
+            Accept: "application/json",
+          },
+          body: JSON.stringify(this.state.thatOrder),
+        })
+          .then((resp) => resp.json())
+          .then((data) => {
+            this.setState({
+              thatOrder: data,
+            });
+            console.log(data);
+          });
+        this.setState({
+          helpList: [...this.state.helpList, data],
+        });
+      });
+  }
+
   async addPositionsToOrder() {
+    console.log("addPositionsToOrder");
     let itemObject = {};
-    await this.state.itemsList.map(async (item) => {
+    this.state.itemsList.map((item) => {
       itemObject = {
         ilosc: item.ilosc,
         towar: item.towar,
       };
       console.log("h: " + this.state.helpList);
-      await fetch(`http://localhost:8080/pozycje`, {
-        method: "POST", // or 'PUT'
-        headers: {
-          "content-type": "application/json",
-          Accept: "application/json",
-        },
-        body: JSON.stringify(itemObject),
-      })
-        .then((resp) => resp.json())
-        .then((data) => {
-          this.setState({
-            helpList: [...this.state.helpList, data],
-          });
-        });
+      this.postPosition(itemObject);
     });
+    //połączenie zamówienia i pozycji
+    // await this.connectPositionWithOrder();
   }
 
   confirmPositionsToOrder() {
@@ -251,6 +273,7 @@ class AddOrder extends Component {
   }
 
   async addInvoiceBeforeAddOrder() {
+    console.log("addInvoiceBeforeAddOrder");
     await fetch(`http://localhost:8080/faktury`, {
       method: "POST", // or 'PUT'
       headers: {
@@ -270,6 +293,7 @@ class AddOrder extends Component {
   }
 
   async createOrder() {
+    console.log("createOrder");
     const orderObject = {
       klient: this.state.thatClient,
       pracownik: this.state.thatEmployee,
@@ -292,6 +316,7 @@ class AddOrder extends Component {
   }
 
   async connectPositionWithOrder() {
+    console.log("connectPositionWithOrder");
     console.log(this.state.helpList);
     console.log(this.state.thatOrder);
     this.state.helpList.map((item) => {
@@ -304,6 +329,21 @@ class AddOrder extends Component {
         body: JSON.stringify(this.state.thatOrder),
       });
     });
+  }
+
+  async connectInvoiceWithOrder() {
+    console.log("connectInvoiceWithOrder");
+    fetch(
+      `http://localhost:8080/zamowienia/faktura/${this.state.thatOrder.idZamowienia}`,
+      {
+        method: "PUT", // or 'PUT'
+        headers: {
+          "content-type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify(this.state.thatInvoice),
+      }
+    );
   }
 
   async addOrderToOrdersList() {
@@ -329,28 +369,14 @@ class AddOrder extends Component {
           await this.addInvoiceBeforeAddOrder();
         }
 
-        await this.addPositionsToOrder();
-
         await this.createOrder();
         console.log(this.state.thatOrder);
 
-        //połączenie zamówienia i pozycji
-        await this.connectPositionWithOrder();
-        console.log(this.state.itemsList);
-        console.log(this.state.helpList);
-
         //połączenie zamówienia i faktury
-        await fetch(
-          `http://localhost:8080/zamowienia/faktura/${this.state.thatOrder.idZamowienia}`,
-          {
-            method: "PUT", // or 'PUT'
-            headers: {
-              "content-type": "application/json",
-              Accept: "application/json",
-            },
-            body: JSON.stringify(this.state.thatInvoice),
-          }
-        );
+        await this.connectInvoiceWithOrder();
+
+        //tworze pozycję i od razu po stworzeniu przypisuje do niej zamówienie
+        this.addPositionsToOrder();
       }
 
       this.setState({
