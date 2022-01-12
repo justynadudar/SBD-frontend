@@ -78,8 +78,12 @@ function PositionsList({ positions }) {
                   <td key={Math.random()}>
                     {(position.towar.cenaBrutto * position.ilosc).toFixed(2)}
                   </td>
-                  <td>
-                    <button
+                  {position?.zamowienie?.stanZamowienia === "OPLACONE" ? (
+                    <td></td>
+                  ) : (
+                    <td>
+                      {" "}
+                      <button
                       className="false btn-close btn-close-black "
                       key={Math.random()}
                       onClick={() => {
@@ -87,13 +91,8 @@ function PositionsList({ positions }) {
                         setId(position.nrPozycji);
                       }}
                     ></button>
-                    {/* <button
-                      key={Math.random()}
-                      onClick={() => handleDelete(position.nrPozycji)}
-                    >
-                      <AiOutlineClose className="false" />
-                    </button> */}
-                  </td>
+                    </td>
+                  )}
                 </tr>
               );
             })
