@@ -1,4 +1,4 @@
-import "./style/ProductsList.css";
+import "../style/ProductsList.css";
 import { useNavigate } from "react-router-dom";
 import React, { useState, useEffect } from "react";
 import { AiOutlineClose } from "react-icons/ai";

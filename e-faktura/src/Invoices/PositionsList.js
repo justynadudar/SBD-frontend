@@ -1,4 +1,4 @@
-import "./style/PositionsList.css";
+import "../style/PositionsList.css";
 import { useNavigate, useParams } from "react-router-dom";
 import React, { useState, useEffect } from "react";
 import { AiOutlineClose } from "react-icons/ai";
@@ -84,13 +84,13 @@ function PositionsList({ positions }) {
                     <td>
                       {" "}
                       <button
-                      className="false btn-close btn-close-black "
-                      key={Math.random()}
-                      onClick={() => {
-                        setShow(true);
-                        setId(position.nrPozycji);
-                      }}
-                    ></button>
+                        className="false btn-close btn-close-black "
+                        key={Math.random()}
+                        onClick={() => {
+                          setShow(true);
+                          setId(position.nrPozycji);
+                        }}
+                      ></button>
                     </td>
                   )}
                 </tr>

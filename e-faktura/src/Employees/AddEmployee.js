@@ -1,9 +1,9 @@
-import "./style/EmployeesList.css";
-import "./style/AddEmployee.css";
+import "../style/EmployeesList.css";
+import "../style/AddEmployee.css";
 import React, { Component } from "react";
 import { Navigate } from "react-router-dom";
 import { Modal, Button } from "react-bootstrap";
-import Error from "./Error";
+import Error from "../Error";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
 

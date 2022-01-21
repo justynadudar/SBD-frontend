@@ -1,44 +1,44 @@
-import "./style/EmployeesList.css";
+import "../style/ProducersList.css";
 import { useNavigate } from "react-router-dom";
 import React, { useState, useEffect } from "react";
 import { AiOutlineClose } from "react-icons/ai";
 import { Table } from "react-bootstrap";
 import { Modal, Button } from "react-bootstrap";
 
-function EmployeesList({ orders }) {
+function ProducersList({ producers }) {
   let navigate = useNavigate();
-  let [employeesList, setEmployeesListState] = useState({ employeesList: [] });
+  let [producersList, setProducersListState] = useState({ producersList: [] });
   let [loaded, setLoaded] = useState("");
   let [show, setShow] = useState(false);
-  let [deletedProductId, setId] = useState("");
+  let [deletedId, setId] = useState("");
 
   useEffect(() => {
     const fetchData = async () => {
-      const response = await fetch("/pracownicy");
+      const response = await fetch("/producenci");
       const body = await response.json();
-      setEmployeesListState(body);
+      setProducersListState(body);
       setLoaded(true);
     };
     fetchData();
   }, []);
 
   function handleOnClick() {
-    navigate("/pracownicy/dodaj");
+    navigate("/producenci/dodaj");
   }
 
-  async function handleDelete(id) {
-    await fetch(`http://localhost:8080/pracownicy/${id}`, {
-      method: "DELETE",
-    }).then(() => {
-      setShow(false);
-      const fetchData = async () => {
-        const response = await fetch("/pracownicy");
-        const body = await response.json();
-        setEmployeesListState(body);
-        setLoaded(true);
-      };
-      fetchData();
-    });
+  function handleDelete(id) {
+    fetch(`http://localhost:8080/producenci/${id}`, { method: "DELETE" }).then(
+      () => {
+        setShow(false);
+        const fetchData = async () => {
+          const response = await fetch("/producenci");
+          const body = await response.json();
+          setProducersListState(body);
+          setLoaded(true);
+        };
+        fetchData();
+      }
+    );
   }
 
   function handleClose() {
@@ -46,38 +46,33 @@ function EmployeesList({ orders }) {
   }
 
   return (
-    <div className="EmployeesList">
+    <div className="ProducersList">
       <aside>
-        <button onClick={handleOnClick}>Nowy pracownik</button>
+        <button onClick={handleOnClick}>Nowy producent</button>
       </aside>
       <Table striped bordered hover size="sm">
         <thead>
           <tr>
             <th>Id</th>
-            <th>Imię</th>
-            <th>Nazwisko</th>
-            <th>Stanowisko</th>
-            <th>Telefon</th>
+            <th>Nazwa</th>
             <th>Usuń</th>
           </tr>
         </thead>
         <tbody>
           {loaded ? (
-            employeesList.map((employee) => {
+            producersList.map((producer) => {
               return (
                 <tr>
-                  <td>{employee.idPracownika}</td>
-                  <td>{employee.imie}</td>
-                  <td>{employee.nazwisko}</td>
-                  <td>{employee.stanowisko.nazwa}</td>
-                  <td>{employee.telefon}</td>
+                  <td>{producer.idProducenta}</td>
+                  <td>{producer.nazwa}</td>
                   <td>
+                    {" "}
                     <button
                       className="false btn-close btn-close-black "
                       key={Math.random()}
                       onClick={() => {
                         setShow(true);
-                        setId(employee.idPracownika);
+                        setId(producer.idProducenta);
                       }}
                     ></button>
                   </td>
@@ -92,14 +87,10 @@ function EmployeesList({ orders }) {
       {show ? (
         <Modal show={show} onHide={handleClose}>
           <Modal.Header closeButton></Modal.Header>
-          <Modal.Body>Czy napewno chcesz usunąć tego pracownika?</Modal.Body>
+          <Modal.Body>Czy napewno chcesz usunąć tego producenta?</Modal.Body>
           <Modal.Footer>
-            <Button
-              variant="secondary"
-              onClick={() => handleDelete(deletedProductId)}
-            >
+            <Button variant="secondary" onClick={() => handleDelete(deletedId)}>
               Tak, potwierdź
-              {show ? null : window.location.reload()}
             </Button>
             <Button
               variant="secondary"
@@ -116,4 +107,4 @@ function EmployeesList({ orders }) {
   );
 }
 
-export default EmployeesList;
+export default ProducersList;

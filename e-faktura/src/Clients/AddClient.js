@@ -1,9 +1,9 @@
-import "./style/ClientsList.css";
-import "./style/AddClient.css";
+import "../style/ClientsList.css";
+import "../style/AddClient.css";
 import React, { Component } from "react";
 import { Navigate } from "react-router-dom";
 import { Modal, Button } from "react-bootstrap";
-import Error from "./Error";
+import Error from "../Error";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
 import Select from "react-select";

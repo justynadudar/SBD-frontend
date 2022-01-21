@@ -1,4 +1,4 @@
-import "./style/InvoiceOrderList.css";
+import "../style/InvoiceOrderList.css";
 import { useNavigate, useParams, Link } from "react-router-dom";
 import React, { useState, useEffect } from "react";
 import { AiOutlineClose } from "react-icons/ai";
@@ -24,10 +24,10 @@ function InvoiceOrderList({ orders }) {
     navigate("/faktury/" + id);
   }
 
-//   function handleDelete(id) {
-//     fetch(`http://localhost:8080/pozycje/${id}`, { method: 'DELETE' })
-//         .then(() => console.log('Delete successful'));
-//   }
+  //   function handleDelete(id) {
+  //     fetch(`http://localhost:8080/pozycje/${id}`, { method: 'DELETE' })
+  //         .then(() => console.log('Delete successful'));
+  //   }
 
   return (
     <div className="InvoiceOrderList">
@@ -53,8 +53,14 @@ function InvoiceOrderList({ orders }) {
               return (
                 <tr>
                   <td key={Math.random()}>{order.idZamowienia}</td>
-                  <td key={Math.random()}>{order.klient.idKlienta} {order.klient.imie} {order.klient.nazwisko}</td>
-                  <td key={Math.random()}>{order.pracownik.idPracownika} {order.pracownik.imie} {order.pracownik.nazwisko}</td>
+                  <td key={Math.random()}>
+                    {order.klient.idKlienta} {order.klient.imie}{" "}
+                    {order.klient.nazwisko}
+                  </td>
+                  <td key={Math.random()}>
+                    {order.pracownik.idPracownika} {order.pracownik.imie}{" "}
+                    {order.pracownik.nazwisko}
+                  </td>
                   <td key={Math.random()}>{order.stanZamowienia}</td>
                   <td key={Math.random()}>{order.kwotaNetto.toFixed(2)}</td>
                   <td key={Math.random()}>{order.kwotaBrutto.toFixed(2)}</td>

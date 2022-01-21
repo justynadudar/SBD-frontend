@@ -2,21 +2,22 @@ import React, { useState, useEffect } from "react";
 import Navbar from "./Navbar";
 import "./style/App.css";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import ClientsList from "./ClientsList";
-import AddClient from "./AddClient";
-import ProductsList from "./ProductsList";
-import AddProduct from "./AddProduct";
-import OrdersList from "./OrdersList";
-import AddOrder from "./AddOrder";
-import InvoiceList from "./InvoiceList";
-import ClientDetails from "./ClientDetails";
-import EmployeesList from "./EmployeesList";
-import AddEmployee from "./AddEmployee";
-import ProducersList from "./ProducersList";
-import AddProducer from "./AddProducer";
-import PositionsList from "./PositionsList";
-import EditProduct from "./EditProduct";
-import InvoiceOrderList from "./InvoiceOrderList";
+import ClientsList from "./Clients/ClientsList";
+import AddClient from "./Clients/AddClient";
+import ProductsList from "./Products/ProductsList";
+import AddProduct from "./Products/AddProduct";
+import OrdersList from "./Orders/OrdersList";
+import AddOrder from "./Orders/AddOrder";
+import InvoiceList from "./Invoices/InvoiceList";
+import ClientDetails from "./Clients/ClientDetails";
+import EmployeesList from "./Employees/EmployeesList";
+import AddEmployee from "./Employees/AddEmployee";
+import ProducersList from "./Producers/ProducersList";
+import AddProducer from "./Producers/AddProducer";
+import PositionsList from "./Invoices/PositionsList";
+import EditProduct from "./Products/EditProduct";
+import InvoiceOrderList from "./Invoices/InvoiceOrderList";
+import LogoProxy from "./LogoProxy";
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
       <Router>
         <Navbar />
         <Routes>
+          <Route path="/" element={<LogoProxy />} />
           <Route path="/klienci" element={<ClientsList />} />
           <Route path="/klienci/dodaj" element={<AddClient />} />
           <Route path="/klienci/:id" element={<ClientDetails />} />
@@ -40,7 +42,10 @@ function App() {
           <Route path="/magazyn/edytuj" element={<EditProduct />} />
 
           <Route path="/faktury" element={<InvoiceList />} />
-          <Route path="/faktury/zamowienia/:id" element={<InvoiceOrderList />} />
+          <Route
+            path="/faktury/zamowienia/:id"
+            element={<InvoiceOrderList />}
+          />
 
           <Route path="/producenci" element={<ProducersList />} />
           <Route path="/producenci/dodaj" element={<AddProducer />} />

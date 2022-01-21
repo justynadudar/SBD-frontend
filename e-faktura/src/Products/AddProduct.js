@@ -1,7 +1,7 @@
-import "./style/AddProduct.css";
+import "../style/AddProduct.css";
 import React, { Component } from "react";
 import { Navigate } from "react-router-dom";
-import Error from "./Error";
+import Error from "../Error";
 import { Form } from "react-bootstrap";
 import { Modal, Button } from "react-bootstrap";
 

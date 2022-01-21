@@ -1,9 +1,9 @@
-import "./style/AddOrder.css";
+import "../style/AddOrder.css";
 import React, { Component } from "react";
 import OrderItems from "./OrderItems";
 import { Form, Row, Col, Modal, ListGroup, Button } from "react-bootstrap";
 import { Navigate } from "react-router-dom";
-import Error from "./Error";
+import Error from "../Error";
 
 class AddOrder extends Component {
   constructor(props) {

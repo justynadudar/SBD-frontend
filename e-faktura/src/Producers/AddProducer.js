@@ -1,9 +1,9 @@
-import "./style/ProducersList.css";
-import "./style/AddProducer.css";
+import "../style/ProducersList.css";
+import "../style/AddProducer.css";
 import React, { Component } from "react";
 import { Navigate } from "react-router-dom";
 import { Modal, Button } from "react-bootstrap";
-import Error from "./Error";
+import Error from "../Error";
 
 class AddProducer extends Component {
   constructor(props) {

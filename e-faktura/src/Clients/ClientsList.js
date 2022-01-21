@@ -1,4 +1,4 @@
-import "./style/ClientsList.css";
+import "../style/ClientsList.css";
 import { useNavigate, Link } from "react-router-dom";
 import React, { useState, useEffect } from "react";
 import { MdReadMore } from "react-icons/md";

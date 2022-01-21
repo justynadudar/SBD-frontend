@@ -1,8 +1,8 @@
-import "./style/OrderItem.css";
+import "../style/OrderItem.css";
 import React, { Component } from "react";
 import { AiOutlineClose, AiOutlineCheck } from "react-icons/ai";
 import { ListGroup, Form, OverlayTrigger, Tooltip } from "react-bootstrap";
-import Error from "./Error";
+import Error from "../Error";
 
 //tutaj powinno byc add order item
 class OrderItems extends Component {
