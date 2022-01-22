@@ -4,8 +4,9 @@ import React, { useState, useEffect } from "react";
 import { AiOutlineClose } from "react-icons/ai";
 import { Table } from "react-bootstrap";
 import { Modal, Button } from "react-bootstrap";
+import { deleteProducer } from "../Redux actions/actions";
 
-function ProducersList({ producers }) {
+function ProducersList({ deleteProducer }) {
   let navigate = useNavigate();
   let [producersList, setProducersListState] = useState({ producersList: [] });
   let [loaded, setLoaded] = useState("");
@@ -27,18 +28,16 @@ function ProducersList({ producers }) {
   }
 
   function handleDelete(id) {
-    fetch(`http://localhost:8080/producenci/${id}`, { method: "DELETE" }).then(
-      () => {
-        setShow(false);
-        const fetchData = async () => {
-          const response = await fetch("/producenci");
-          const body = await response.json();
-          setProducersListState(body);
-          setLoaded(true);
-        };
-        fetchData();
-      }
-    );
+    deleteProducer(id).then(() => {
+      setShow(false);
+      const fetchData = async () => {
+        const response = await fetch("/producenci");
+        const body = await response.json();
+        setProducersListState(body);
+        setLoaded(true);
+      };
+      fetchData();
+    });
   }
 
   function handleClose() {

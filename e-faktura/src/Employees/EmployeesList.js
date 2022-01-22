@@ -5,7 +5,7 @@ import { AiOutlineClose } from "react-icons/ai";
 import { Table } from "react-bootstrap";
 import { Modal, Button } from "react-bootstrap";
 
-function EmployeesList({ orders }) {
+function EmployeesList({ deleteEmployee }) {
   let navigate = useNavigate();
   let [employeesList, setEmployeesListState] = useState({ employeesList: [] });
   let [loaded, setLoaded] = useState("");
@@ -27,9 +27,7 @@ function EmployeesList({ orders }) {
   }
 
   async function handleDelete(id) {
-    await fetch(`http://localhost:8080/pracownicy/${id}`, {
-      method: "DELETE",
-    }).then(() => {
+    await deleteEmployee(id).then(() => {
       setShow(false);
       const fetchData = async () => {
         const response = await fetch("/pracownicy");

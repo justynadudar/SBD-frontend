@@ -164,20 +164,7 @@ class AddEmployee extends Component {
         stanowisko: findedPosition,
       };
 
-      fetch(`http://localhost:8080/pracownicy`, {
-        method: "POST", // or 'PUT'
-        headers: {
-          "content-type": "application/json",
-          Accept: "application/json",
-        },
-        body: JSON.stringify(employeeObject),
-      })
-        .then((response) => {
-          return response.json();
-        })
-        .catch((error) => {
-          console.error("Error:", error);
-        });
+      await this.props.addEmployee(employeeObject);
 
       this.setState({
         employeeAdded: true,

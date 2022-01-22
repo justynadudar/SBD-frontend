@@ -1,13 +1,10 @@
 import "../style/OrdersList.css";
 import { useNavigate, Link } from "react-router-dom";
 import React, { useState, useEffect } from "react";
-import { MdReadMore } from "react-icons/md";
-import { AiOutlineClose } from "react-icons/ai";
-import { AiOutlineCheck } from "react-icons/ai";
 import { Table } from "react-bootstrap";
 import { Modal, Button } from "react-bootstrap";
 
-function OrdersList({ orders }) {
+function OrdersList({ deleteOrder }) {
   let navigate = useNavigate();
   let [ordersList, setOrdersListState] = useState({ ordersList: [] });
   let [loaded, setLoaded] = useState("");
@@ -47,19 +44,17 @@ function OrdersList({ orders }) {
     navigate("/zamowienia/dodaj");
   }
 
-  function handleDelete(id) {
-    fetch(`http://localhost:8080/zamowienia/${id}`, { method: "DELETE" }).then(
-      () => {
-        setShow(false);
-        const fetchData = async () => {
-          const response = await fetch("/zamowienia");
-          const body = await response.json();
-          setOrdersListState(body);
-          setLoaded(true);
-        };
-        fetchData();
-      }
-    );
+  async function handleDelete(id) {
+    await deleteOrder(id).then(() => {
+      setShow(false);
+      const fetchData = async () => {
+        const response = await fetch("/zamowienia");
+        const body = await response.json();
+        setOrdersListState(body);
+        setLoaded(true);
+      };
+      fetchData();
+    });
   }
 
   function handleInRealization(id) {

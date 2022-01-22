@@ -6,7 +6,7 @@ import { AiOutlineClose } from "react-icons/ai";
 import { Table } from "react-bootstrap";
 import { Modal, Button } from "react-bootstrap";
 
-function ClientsList() {
+function ClientsList({ getClients, deleteClient }) {
   let navigate = useNavigate();
   let [clientsList, setClientsListState] = useState({ clientsList: [] });
   let [loaded, setLoaded] = useState("");
@@ -14,6 +14,7 @@ function ClientsList() {
   let [deletedProductId, setId] = useState("");
 
   useEffect(() => {
+    getClients();
     const fetchData = async () => {
       const response = await fetch("/klienci");
       const body = await response.json();
@@ -32,9 +33,8 @@ function ClientsList() {
   }
 
   async function handleDelete(id) {
-    await fetch(`http://localhost:8080/klienci/${id}`, {
-      method: "DELETE",
-    }).then(() => {
+    console.log(id);
+    await deleteClient(id).then(() => {
       setShow(false);
       const fetchData = async () => {
         const response = await fetch("/klienci");

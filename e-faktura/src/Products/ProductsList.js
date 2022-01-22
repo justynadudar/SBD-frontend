@@ -5,7 +5,7 @@ import { AiOutlineClose } from "react-icons/ai";
 import { Table } from "react-bootstrap";
 import { Modal, Button, Form } from "react-bootstrap";
 
-function ClientsList() {
+function ClientsList({ deleteProduct }) {
   let navigate = useNavigate();
   let [productsList, setProductsListState] = useState({ productsList: [] });
   let [filteredProductsList, setFilteredProductsListState] = useState({
@@ -79,9 +79,7 @@ function ClientsList() {
   }
 
   async function handleDelete(id) {
-    await fetch(`http://localhost:8080/towary/${id}`, {
-      method: "DELETE",
-    }).then(() => {
+    await deleteProduct(id).then(() => {
       setShow(false);
       const fetchData = async () => {
         const response = await fetch("/towary");

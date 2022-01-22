@@ -2,22 +2,18 @@ import "../style/ClientDetails.css";
 import { useNavigate, useParams } from "react-router-dom";
 import React, { useState, useEffect } from "react";
 
-function ClientDetails() {
+function ClientDetails({ getClients, clients }) {
   const { id } = useParams();
   let navigate = useNavigate();
   let [thatClient, setThatClientState] = useState({});
   let [loaded, setLoaded] = useState("");
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const response = await fetch("/klienci");
-      const body = await response.json();
-      setThatClientState(
-        body.find((client) => client.idKlienta === parseInt(id))
-      );
-      setLoaded(true);
-    };
-    fetchData();
+  useEffect(async () => {
+    await getClients();
+    setThatClientState(
+      clients.find((client) => client.idKlienta === parseInt(id))
+    );
+    setLoaded(true);
   }, []);
 
   function handleOnClick() {

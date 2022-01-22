@@ -61,7 +61,7 @@ class AddProducer extends Component {
         emptyNameField: true,
       });
     } else if (
-      this.state.producers.filter(
+      this.state.producers.find(
         (producer) => producer.nazwa == this.state.nameInput
       )
     ) {
@@ -73,20 +73,7 @@ class AddProducer extends Component {
         nazwa: this.state.nameInput,
       };
 
-      await fetch(`http://localhost:8080/producenci`, {
-        method: "POST", // or 'PUT'
-        headers: {
-          "content-type": "application/json",
-          Accept: "application/json",
-        },
-        body: JSON.stringify(producerObject),
-      })
-        .then((response) => {
-          return response.json();
-        })
-        .catch((error) => {
-          console.error("Error:", error);
-        });
+      await this.props.addProducer(producerObject);
 
       this.setState({
         producerAdded: true,

@@ -7,7 +7,7 @@ import { Table } from "react-bootstrap";
 import { AiOutlineCheck } from "react-icons/ai";
 import { Modal, Button } from "react-bootstrap";
 
-function InvoiceList() {
+function InvoiceList({ deleteInvoice }) {
   let navigate = useNavigate();
   let [invoiceList, setInvoiceListState] = useState({ invoiceList: [] });
   let [loaded, setLoaded] = useState("");
@@ -25,9 +25,7 @@ function InvoiceList() {
   }, []);
 
   async function handleDelete(id) {
-    await fetch(`http://localhost:8080/faktury/${id}`, {
-      method: "DELETE",
-    }).then(() => {
+    await deleteInvoice(id).then(() => {
       setShow(false);
       const fetchData = async () => {
         const response = await fetch("/faktury");

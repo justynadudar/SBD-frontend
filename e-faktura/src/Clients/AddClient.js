@@ -233,7 +233,6 @@ class AddClient extends Component {
   };
 
   async addClientToClientsList() {
-    var letters = /^[A-Za-z]+$/;
     var firstLetters = /^[A-Z]+$/;
     if (this.state.companyInput.length === 0) {
       this.setState({
@@ -336,14 +335,8 @@ class AddClient extends Component {
       };
       console.log(clientObject);
 
-      fetch(`http://localhost:8080/klienci`, {
-        method: "POST", // or 'PUT'
-        headers: {
-          "content-type": "application/json",
-          Accept: "application/json",
-        },
-        body: JSON.stringify(clientObject),
-      });
+      await this.props.addClient(clientObject);
+
       this.setState({
         clientAdded: true,
         show: true,

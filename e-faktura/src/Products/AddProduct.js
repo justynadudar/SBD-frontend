@@ -176,7 +176,6 @@ class AddProduct extends Component {
       const findedCategory = this.state.categories.find(
         (el) => el.nazwa === this.state.categoryInput
       );
-      console.log(findedCategory);
       const findedProducer = this.state.producers.find(
         (el) => el.nazwa === this.state.producerInput
       );
@@ -188,16 +187,7 @@ class AddProduct extends Component {
         ilosc: this.state.amountInput,
         cenaNetto: this.state.costInput,
       };
-      console.log(productObject);
-
-      fetch(`http://localhost:8080/towary`, {
-        method: "POST", // or 'PUT'
-        headers: {
-          "content-type": "application/json",
-          Accept: "application/json",
-        },
-        body: JSON.stringify(productObject),
-      });
+      await this.props.addProduct(productObject);
       this.setState({
         productAdded: true,
         show: true,
