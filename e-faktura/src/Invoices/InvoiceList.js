@@ -36,6 +36,9 @@ function InvoiceList({ deleteInvoice }) {
       fetchData();
     });
   }
+  async function handlePDF(id) {
+    await fetch(`http://localhost:8080/pliki/pdf/${id}`, { method: "GET" });
+  }
 
   function handleClose() {
     setShow(false);
@@ -126,7 +129,15 @@ function InvoiceList({ deleteInvoice }) {
                       ></button>
                     </td>
                   ) : (
-                    <td></td>
+                    <td>
+                      <button
+                        key={Math.random()}
+                        onClick={() => handlePDF(invoice.idFaktury)}
+                      >
+                        {" "}
+                        PDF
+                      </button>
+                    </td>
                   )}
                 </tr>
               );
