@@ -17,8 +17,6 @@ class AddProduct extends Component {
       producers: [],
       categories: [],
       products: [],
-      loaded: false,
-      navigate: false,
       emptyNameField: false,
       emptyAmountField: false,
       wrongAmount: false,
@@ -26,10 +24,41 @@ class AddProduct extends Component {
       emptyCategoryField: false,
       emptyProducerField: false,
       wrongCost: false,
-      show: false,
-      productAdded: false,
       existingProduct: false,
+
+      currentState: "empty",
+      returnState: "waiting",
     };
+
+    this.states = {
+      empty: "empty",
+      loaded: "loaded",
+      waitingForAClick: "waiting",
+      navigate: "navigate",
+      addedProduct: "added",
+      show: "show",
+    };
+
+    this.transitions = {
+      [this.states.empty]: {
+        FETCH: this.states.loaded,
+      },
+      [this.states.waitingForAClick]: {
+        CLICK: this.states.navigate,
+      },
+      [this.states.loaded]: {
+        CONFIRM: this.states.addedProduct,
+      },
+      [this.states.addedProduct]: {
+        CLOSE: this.states.navigate,
+      },
+    };
+
+    this.transition = this.transition.bind(this);
+    this.updateState = this.updateState.bind(this);
+
+    this.compareState = this.compareState.bind(this);
+    this.compareReturnState = this.compareReturnState.bind(this);
 
     this.changeName = this.changeName.bind(this);
     this.changeAmount = this.changeAmount.bind(this);
@@ -38,6 +67,32 @@ class AddProduct extends Component {
     this.changeCategory = this.changeCategory.bind(this);
     this.addProductToProductsList = this.addProductToProductsList.bind(this);
     this.handleClose = this.handleClose.bind(this);
+  }
+
+  transition(currentState, action) {
+    const nextState = this.transitions[currentState][action];
+    return nextState || currentState;
+  }
+
+  updateState(state, action) {
+    if (state == "currentState") {
+      console.log(this.state.currentState + ", " + action);
+      this.setState({
+        currentState: this.transition(this.state.currentState, action),
+      });
+    } else if (state == "returnState") {
+      this.setState({
+        returnState: this.transition(this.state.returnState, action),
+      });
+    }
+  }
+
+  compareState(state) {
+    console.log(this.state.currentState + " == " + state);
+    return this.state.currentState === state;
+  }
+  compareReturnState(state) {
+    return this.state.returnState === state;
   }
 
   componentDidMount() {
@@ -50,9 +105,9 @@ class AddProduct extends Component {
           products: data1,
           categories: data2,
           producers: data3,
-          loaded: true,
         })
       );
+    this.updateState("currentState", "FETCH");
   }
 
   changeName(e) {
@@ -123,11 +178,9 @@ class AddProduct extends Component {
     });
   }
 
-  handleClose = () => {
-    this.setState({
-      show: false,
-    });
-  };
+  handleClose() {
+    this.updateState("currentState", "CLOSE");
+  }
 
   async addProductToProductsList() {
     if (this.state.nameInput.length === 0) {
@@ -188,10 +241,8 @@ class AddProduct extends Component {
         cenaNetto: this.state.costInput,
       };
       await this.props.addProduct(productObject);
-      this.setState({
-        productAdded: true,
-        show: true,
-      });
+      //show == true
+      this.updateState("currentState", "CONFIRM");
     }
   }
 
@@ -202,10 +253,8 @@ class AddProduct extends Component {
       costInput,
       categoryInput,
       producerInput,
-      loaded,
       categories,
       producers,
-      navigate,
       emptyNameField,
       emptyAmountField,
       emptyCostField,
@@ -213,16 +262,16 @@ class AddProduct extends Component {
       emptyProducerField,
       wrongAmount,
       wrongCost,
-      productAdded,
-      show,
       existingProduct,
     } = this.state;
 
     return (
       <div className="Warehouse">
         <aside>
-          <button onClick={() => this.setState({ navigate: true })}>
-            {navigate ? <Navigate to="/magazyn" /> : null}
+          <button onClick={() => this.updateState("returnState", "CLICK")}>
+            {this.compareReturnState(this.states.navigate) ? (
+              <Navigate to="/magazyn" />
+            ) : null}
             Powrót
           </button>
         </aside>
@@ -276,7 +325,7 @@ class AddProduct extends Component {
                 <option key={Math.random()} value={""}>
                   {""}
                 </option>
-                {loaded
+                {this.compareState(this.states.loaded)
                   ? categories.map((category) => (
                       <option key={Math.random()}>{category.nazwa}</option>
                     ))
@@ -293,7 +342,7 @@ class AddProduct extends Component {
                 <option key={Math.random()} value={""}>
                   {""}
                 </option>
-                {loaded
+                {this.compareState(this.states.loaded)
                   ? producers.map((producer) => (
                       <option key={Math.random()}>{producer.nazwa}</option>
                     ))
@@ -332,14 +381,22 @@ class AddProduct extends Component {
           />
 
           <button onClick={this.addProductToProductsList}>Dodaj produkt</button>
-          {productAdded ? (
-            <Modal show={show} onHide={this.handleClose}>
+          {console.log(this.state.currentState)}
+          {this.compareState(this.states.addedProduct) ||
+          this.compareState(this.states.navigate) ? (
+            <Modal
+              show={this.compareState(this.states.addedProduct)}
+              onHide={this.handleClose}
+            >
               <Modal.Header closeButton></Modal.Header>
               <Modal.Body>Produkt {nameInput} został dodany.</Modal.Body>
               <Modal.Footer>
                 <Button variant="secondary" onClick={this.handleClose}>
+                  {console.log(this.currentState)}
                   OK
-                  {show ? null : <Navigate to="/magazyn" />}
+                  {this.compareState(this.states.navigate) ? (
+                    <Navigate to="/magazyn" />
+                  ) : null}
                 </Button>
               </Modal.Footer>
             </Modal>

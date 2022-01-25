@@ -5,6 +5,7 @@ class Logo {
   constructor() {
     const width = "600px";
     const height = "600px";
+    const context = "logo.png";
 
     this.load = function () {
       return (
@@ -15,37 +16,47 @@ class Logo {
             height: height,
             margin: "auto",
           }}
-          src={"logo.png"}
+          src={context}
         />
       );
     };
   }
 }
 
-function LogoProxy() {
+function LogoProxy({ load }) {
   let [logo, setLogo] = useState(null);
 
   const width = "600px";
   const height = "600px";
+
   setTimeout(() => {
-    setLogo(new Logo().load());
+    setLogo(new Logo().load);
   }, 1500);
+
+  return (
+    <div
+      style={{
+        backgroundColor: "#FFFFFF",
+        width: width,
+        height: height,
+        margin: "auto",
+      }}
+    >
+      {logo === null ? null : logo}
+    </div>
+  );
+}
+
+function HomePage() {
+  function load() {}
+
   return (
     <div className="LogoProxy">
       <h2>E-faktura</h2>
-      <div
-        style={{
-          backgroundColor: "#FFFFFF",
-          width: width,
-          height: height,
-          margin: "auto",
-        }}
-      >
-        {logo === null ? null : logo}
-      </div>
+      <LogoProxy load={load} />
       <h2>System zarządzania dokumentami w Twojej firmie.</h2>
     </div>
   );
 }
 
-export default LogoProxy;
+export default HomePage;

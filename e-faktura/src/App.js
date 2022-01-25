@@ -17,7 +17,7 @@ import AddProducer from "./Producers/AddProducer";
 import PositionsList from "./Invoices/PositionsList";
 import EditProduct from "./Products/EditProduct";
 import InvoiceOrderList from "./Invoices/InvoiceOrderList";
-import LogoProxy from "./LogoProxy";
+import HomePage from "./HomePage";
 
 function App({
   addClient,
@@ -38,7 +38,7 @@ function App({
       <Router>
         <Navbar />
         <Routes>
-          <Route path="/" element={<LogoProxy />} />
+          <Route path="/" element={<HomePage />} />
           <Route
             path="/klienci"
             element={
