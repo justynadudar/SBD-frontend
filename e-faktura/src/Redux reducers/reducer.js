@@ -4,11 +4,7 @@ import { combineReducers } from "redux";
 function error(state, action) {
   switch (action.type) {
     case "FETCH_DATA_FAILURE":
-      return {
-        loaded: false,
-        data: [],
-        error: action.payload,
-      };
+      return false;
     default:
       return "";
   }
