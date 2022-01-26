@@ -15,10 +15,9 @@ const DELETE_INVOICE = "DELETE_INVOICE";
 const DELETE_ORDER = "DELETE_ORDER";
 
 //THE ACTION = THE COMMAND
-export const fetchDataFailure = (error) => {
+export const fetchDataFailure = () => {
   return {
     type: FETCH_DATA_FAILURE,
-    payload: error,
   };
 };
 
